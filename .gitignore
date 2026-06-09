@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .env
+.claude
 package-lock.json
 committedAt
 src/__system__/

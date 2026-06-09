@@ -14,13 +14,13 @@ export abstract class BaseScene extends Phaser.Scene {
   protected abstract buildScene(): Phaser.GameObjects.GameObject[];
 
   protected fadeIn(children: Phaser.GameObjects.GameObject[]) {
-    children.forEach((child) => (child as Phaser.GameObjects.Components.Alpha).setAlpha(0));
+    children.forEach((child) => (child as unknown as Phaser.GameObjects.Components.AlphaSingle).setAlpha(0));
     this.tweens.add({
       targets: children,
       alpha: 1,
       duration: 300,
       ease: "Power2",
-      delay: this.tweens.stagger(60),
+      delay: this.tweens.stagger(60, {}),
     });
   }
 }
