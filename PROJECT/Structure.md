@@ -14,7 +14,8 @@ Component/global styles. `App.css` pins `html`/`body`/`.app` to `100vw` / `100vh
 
 ## `src/assets.json`
 
-Asset manifest (`{ "sprites": {} }`). Consumed by `MainScene` — populate entries here and load them in `preload()`.
+Asset manifest. Contains background assets:
+- `background.perion`: Perion (dryRock) background set from MSU CDN — mountain, mid-ground, and ground tile images.
 
 ## `src/components/GameComponent.tsx`
 
@@ -26,7 +27,7 @@ Exports `createGame(parent)`. Builds the `Phaser.Types.Core.GameConfig`:
 
 - `type: Phaser.AUTO`, full-window `width`/`height`, `parent` set to the React container id
 - `physics.default: 'arcade'` with `gravity.y: 2000` and `debug: false`
-  - `scene: [SceneA, SceneB, LoadingScene]`
+  - `scene: [TitleScene, SceneA, SceneB, LoadingScene]`
 - `scale.mode: Phaser.Scale.RESIZE`, `autoCenter: Phaser.Scale.CENTER_BOTH`
 
 Also installs a `game.events.once('ready', …)` patch that overrides `Sprite`/`Image` `setDisplaySize` + `setScale` and `TweenManager.add` so `scale`/`scaleX`/`scaleY` operate relative to a stored `baseDisplayWidth` / `baseDisplayHeight`. Marked `CRITICAL — LLM/AI MODIFICATION PROHIBITED`.
@@ -34,6 +35,15 @@ Also installs a `game.events.once('ready', …)` patch that overrides `Sprite`/`
 ## `src/game/scenes/LoadingScene.ts`
 
 Loading transition scene (key: `'LoadingScene'`). Receives `{ targetScene }` via `init()`. Dark navy background with "Loading..." text, a bordered progress bar that fills from left to right with an ease-out curve, and a percentage label. Progress simulates preload completion over ~2.5s with a **minimum 2-second visible duration** — even if loading finishes sooner, the scene stays until both conditions are met. Fades out before starting the target scene. Handles Stage 2 (During) and Stage 3 (After) of the transition internally.
+
+## `src/game/scenes/TitleScene.ts`
+
+Title scene (key: `'TitleScene'`) with Perion-themed background. Preloads 3 `dryRock` background layers from MSU CDN (`Map/Back/dryRock/back/`):
+- Mountain silhouette (`26.png`, 348×280)
+- Mid-ground terrain band (`1.png`, 900×441), tiled horizontally
+- Ground texture (`0.png`, 128×128), tiled both directions
+
+Displays "MapleSlot" title text and a "게임시작" button. Button navigates to `SceneA` via `goToScene`.
 
 ## `src/game/scenes/SceneA.ts`
 
@@ -59,3 +69,7 @@ Vite HTML shell. Serves `/src/main.tsx`, renders an inline `Loading` spinner ins
 ## `vite.config.ts`, `tsconfig*.json`, `tailwind.config.js`, `postcss.config.js`
 
 Standard Vite + React + TypeScript + Tailwind toolchain configuration.
+
+## MapleStory Asset Data
+
+- `src/assets.json` → `background.perion`: Perion `dryRock` background set from MSU CDN (`https://resource-static.msu.io/data/Map/Back/dryRock/back/`)

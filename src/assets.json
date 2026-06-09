@@ -1,3 +1,18 @@
 {
-  "sprites": {}
+  "sprites": {},
+  "background": {
+    "perion": {
+      "url": "https://resource-static.msu.io/data/Map/Back/dryRock/back/",
+      "description": "Perion (Victoria Island warrior town) background set - dryRock theme. Mountain silhouettes, rocky mid-ground, and ground tiles.",
+      "metadata": {
+        "set": "dryRock",
+        "frames": {
+          "mountain": "26.png (348x280)",
+          "midGround": "1.png (900x441)",
+          "ground": "0.png (128x128)"
+        },
+        "totalFrames": 28
+      }
+    }
+  }
 }

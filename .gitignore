@@ -14,6 +14,7 @@ dist-ssr
 .env
 package-lock.json
 committedAt
+src/__system__/
 
 # Editor directories and files
 .vscode/*
