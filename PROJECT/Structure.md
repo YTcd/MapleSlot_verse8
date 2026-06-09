@@ -26,10 +26,14 @@ Exports `createGame(parent)`. Builds the `Phaser.Types.Core.GameConfig`:
 
 - `type: Phaser.AUTO`, full-window `width`/`height`, `parent` set to the React container id
 - `physics.default: 'arcade'` with `gravity.y: 2000` and `debug: false`
-- `scene: [SceneA, SceneB]`
+  - `scene: [SceneA, SceneB, LoadingScene]`
 - `scale.mode: Phaser.Scale.RESIZE`, `autoCenter: Phaser.Scale.CENTER_BOTH`
 
 Also installs a `game.events.once('ready', …)` patch that overrides `Sprite`/`Image` `setDisplaySize` + `setScale` and `TweenManager.add` so `scale`/`scaleX`/`scaleY` operate relative to a stored `baseDisplayWidth` / `baseDisplayHeight`. Marked `CRITICAL — LLM/AI MODIFICATION PROHIBITED`.
+
+## `src/game/scenes/LoadingScene.ts`
+
+Loading transition scene (key: `'LoadingScene'`). Receives `{ targetScene }` via `init()`. Dark navy background with "Loading..." text, a bordered progress bar that fills from left to right with an ease-out curve, and a percentage label. Progress simulates preload completion over ~2.5s with a **minimum 2-second visible duration** — even if loading finishes sooner, the scene stays until both conditions are met. Fades out before starting the target scene. Handles Stage 2 (During) and Stage 3 (After) of the transition internally.
 
 ## `src/game/scenes/SceneA.ts`
 
@@ -42,11 +46,11 @@ Second test scene (key: `'SceneB'`). Dark green background, title/subtitle text,
 ## `src/game/utils/SceneTransition.ts`
 
 Exports `goToScene(currentScene, targetSceneKey)` — the single-function scene transition abstraction. Three documented stages with comments:
-- **Stage 1 (Before)**: Disable input on current scene; load/prepare target data.
-- **Stage 2 (During)**: Call `scene.start()` which destroys all current scene children via Phaser's built-in shutdown and builds the target scene fresh.
-- **Stage 3 (After)**: Each scene's `create()` re-enables input and plays a fade-in transition-complete effect.
+- **Stage 1 (Before)**: Disable input on current scene.
+- **Stage 2 (During)**: Start `LoadingScene` (passing target scene key), which destroys current scene children via Phaser's shutdown, displays a progress bar, and enforces a 2s minimum display.
+- **Stage 3 (After)**: LoadingScene fades out and starts the target scene; target scene's `create()` re-enables input and plays a fade-in transition-complete effect.
 
-Also exports `cleanupTextures(scene, textureKeys)` for removing textures between scenes.
+All scene transitions go through `LoadingScene` by default.
 
 ## `index.html`
 

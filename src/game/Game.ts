@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { SceneA } from "./scenes/SceneA";
 import { SceneB } from "./scenes/SceneB";
+import { LoadingScene } from "./scenes/LoadingScene";
 
 export const createGame = (parent: string) => {
   const originalSpriteSetDisplaySize = Phaser.GameObjects.Sprite.prototype.setDisplaySize;
@@ -21,7 +22,7 @@ export const createGame = (parent: string) => {
         debug: false,
       },
     },
-    scene: [SceneA, SceneB],
+    scene: [SceneA, SceneB, LoadingScene],
     scale: {
       mode: Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.CENTER_BOTH,
