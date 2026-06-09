@@ -1,24 +1,16 @@
 import Phaser from "phaser";
+import { BaseScene } from "./BaseScene";
 import { goToScene } from "../utils/SceneTransition";
 
-export class SceneA extends Phaser.Scene {
+export class SceneA extends BaseScene {
   constructor() {
     super({ key: "SceneA" });
   }
 
-  preload() {}
-
-  create() {
+  protected buildScene(): Phaser.GameObjects.GameObject[] {
     const { width, height } = this.cameras.main;
 
     this.cameras.main.setBackgroundColor("#2d2d44");
-
-    // ---------------------------------------------------------------
-    // STAGE 3 (continued): AFTER SCENE TRANSITION
-    // - Re-enable input now that the new scene is fully built.
-    // - Play a brief scale-bounce transition-complete effect.
-    // ---------------------------------------------------------------
-    this.input.enabled = true;
 
     const title = this.add
       .text(width / 2, height * 0.22, "SCENE A", {
@@ -37,13 +29,7 @@ export class SceneA extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    const btnBg = this.add.rectangle(
-      width / 2,
-      height * 0.55,
-      240,
-      64,
-      0x4a6fa5
-    );
+    const btnBg = this.add.rectangle(width / 2, height * 0.55, 240, 64, 0x4a6fa5);
     btnBg.setStrokeStyle(2, 0x88bbee);
     btnBg.setInteractive({ useHandCursor: true });
 
@@ -55,28 +41,10 @@ export class SceneA extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    btnBg.on("pointerover", () => {
-      btnBg.setFillStyle(0x5a8fc5);
-    });
-    btnBg.on("pointerout", () => {
-      btnBg.setFillStyle(0x4a6fa5);
-    });
-    btnBg.on("pointerdown", () => {
-      goToScene(this, "SceneB");
-    });
+    btnBg.on("pointerover", () => { btnBg.setFillStyle(0x5a8fc5); });
+    btnBg.on("pointerout", () => { btnBg.setFillStyle(0x4a6fa5); });
+    btnBg.on("pointerdown", () => { goToScene(this, "SceneB"); });
 
-    // Transition-complete effect: fade in the scene contents
-    const allChildren = [title, subtitle, btnBg, btnText];
-    allChildren.forEach((child) => child.setAlpha(0));
-
-    this.tweens.add({
-      targets: allChildren,
-      alpha: 1,
-      duration: 300,
-      ease: "Power2",
-      delay: this.tweens.stagger(60),
-    });
+    return [title, subtitle, btnBg, btnText];
   }
-
-  update() {}
 }

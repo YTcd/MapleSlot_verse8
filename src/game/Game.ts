@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { TitleScene } from "./scenes/TitleScene";
 import { SceneA } from "./scenes/SceneA";
 import { SceneB } from "./scenes/SceneB";
 import { LoadingScene } from "./scenes/LoadingScene";
@@ -22,7 +23,7 @@ export const createGame = (parent: string) => {
         debug: false,
       },
     },
-    scene: [SceneA, SceneB, LoadingScene],
+    scene: [TitleScene, SceneA, SceneB, LoadingScene],
     scale: {
       mode: Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.CENTER_BOTH,
