@@ -15,6 +15,7 @@ dist-ssr
 .claude
 package-lock.json
 committedAt
+.deployed
 src/__system__/
 data/maple/
 
