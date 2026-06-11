@@ -6,15 +6,13 @@ import {
   POOL_PADDING,
   SPIN_DURATION_BASE,
   SPIN_DURATION_PER_REEL,
-  SYMBOL_LABELS,
 } from "./SlotConstants";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
 const POOL_SIZE = VISIBLE_ROWS + POOL_PADDING * 2;
 
 interface PoolItem {
-  img: Phaser.GameObjects.Image;
-  label: Phaser.GameObjects.Text;
+  sprite: Phaser.GameObjects.Sprite;
 }
 
 export class SlotReel {
@@ -28,6 +26,7 @@ export class SlotReel {
   private container: Phaser.GameObjects.Container;
   private stripPos: number = 0;
   private spinning: boolean = false;
+  private rowSprites: (Phaser.GameObjects.Sprite | null)[] = [null, null, null];
 
   constructor(
     scene: Phaser.Scene,
@@ -55,21 +54,11 @@ export class SlotReel {
       const sym = this.strip[symIdx];
       const texKey = textureKeys[sym];
 
-      const img = this.scene.add.image(0, 0, texKey).setDisplaySize(SYMBOL_SIZE, SYMBOL_SIZE);
+      const sprite = this.scene.add.sprite(0, 0, texKey).setDisplaySize(SYMBOL_SIZE, SYMBOL_SIZE);
+      sprite.setVisible(false);
 
-      const label = this.scene.add
-        .text(0, 0, SYMBOL_LABELS[sym], {
-          fontFamily: "Arial, sans-serif",
-          fontSize: "28px",
-          color: "#ffffff",
-          fontStyle: "bold",
-          stroke: "#000000",
-          strokeThickness: 3,
-        })
-        .setOrigin(0.5);
-
-      this.container.add([img, label]);
-      this.items.push({ img, label });
+      this.container.add(sprite);
+      this.items.push({ sprite });
     }
   }
 
@@ -91,18 +80,27 @@ export class SlotReel {
     const baseRow = Math.floor(this.stripPos);
     const frac = this.stripPos - baseRow;
 
+    this.rowSprites = [null, null, null];
+
     for (let i = 0; i < POOL_SIZE; i++) {
       const virtualRow = baseRow + i - POOL_PADDING;
       const symIdx = ((virtualRow % stripLen) + stripLen) % stripLen;
       const sym = this.strip[symIdx];
 
       const item = this.items[i];
-      item.img.setTexture("slot_" + sym);
-      item.label.setText(SYMBOL_LABELS[sym]);
+      item.sprite.stop();
+      item.sprite.setTexture("slot_" + sym);
+      item.sprite.setVisible(true);
 
       const displayRow = i - POOL_PADDING - frac;
-      item.img.y = this.y + displayRow * CELL + CELL / 2;
-      item.label.y = this.y + displayRow * CELL + CELL / 2;
+      item.sprite.y = this.y + displayRow * CELL + CELL / 2;
+
+      if (displayRow >= -0.5 && displayRow < VISIBLE_ROWS - 0.5) {
+        const roundedRow = Math.round(displayRow);
+        if (roundedRow >= 0 && roundedRow < VISIBLE_ROWS) {
+          this.rowSprites[roundedRow] = item.sprite;
+        }
+      }
     }
   }
 
@@ -151,6 +149,17 @@ export class SlotReel {
     return symbols;
   }
 
+  getSpriteAtRow(rowIndex: number): Phaser.GameObjects.Sprite | null {
+    if (rowIndex < 0 || rowIndex >= VISIBLE_ROWS) return null;
+    return this.rowSprites[rowIndex];
+  }
+
+  stopAllAnimations() {
+    for (const item of this.items) {
+      item.sprite.stop();
+    }
+  }
+
   get isSpinning(): boolean {
     return this.spinning;
   }
@@ -158,5 +167,6 @@ export class SlotReel {
   destroy() {
     this.container.destroy();
     this.items = [];
+    this.rowSprites = [];
   }
 }

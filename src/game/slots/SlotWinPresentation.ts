@@ -6,7 +6,8 @@ import {
   PAYLINES,
   LINE_COLORS,
 } from "./SlotConstants";
-import type { SlotWin } from "./SlotMachine";
+import type { SlotMachine, SlotWin } from "./SlotMachine";
+import { getAnimKey } from "./SlotSymbolData";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
 
@@ -21,6 +22,7 @@ export class SlotWinPresentation {
   private scene: Phaser.Scene;
   private gridX: number;
   private gridY: number;
+  private slotMachine: SlotMachine;
 
   private overlayGfx: Phaser.GameObjects.Graphics;
   private timers: Phaser.Time.TimerEvent[] = [];
@@ -29,10 +31,11 @@ export class SlotWinPresentation {
 
   onButtonsReady: (() => void) | null = null;
 
-  constructor(scene: Phaser.Scene, gridX: number, gridY: number) {
+  constructor(scene: Phaser.Scene, gridX: number, gridY: number, slotMachine: SlotMachine) {
     this.scene = scene;
     this.gridX = gridX;
     this.gridY = gridY;
+    this.slotMachine = slotMachine;
 
     this.overlayGfx = scene.add.graphics();
     this.overlayGfx.setDepth(10);
@@ -54,23 +57,22 @@ export class SlotWinPresentation {
     const winCount = lineWins.length;
 
     if (this.phaseIndex < winCount) {
-      // Single line phase
       const win = lineWins[this.phaseIndex];
       this.drawLine(win.lineIndex, win.matchCount);
-      this.animateMatchedSymbols(win.lineIndex, win.matchCount);
+      this.animateMatchedSymbols(win.lineIndex, win.matchCount, win.symbol);
 
       this.timers.push(
-        this.scene.time.delayedCall(500, () => {
+        this.scene.time.delayedCall(800, () => {
           this.overlayGfx.clear();
+          this.slotMachine.stopAllSymbolAnimations();
           this.phaseIndex++;
           this.runPhase(lineWins);
         }),
       );
     } else {
-      // All lines phase
       for (const win of lineWins) {
         this.drawLine(win.lineIndex, win.matchCount);
-        this.animateMatchedSymbols(win.lineIndex, win.matchCount);
+        this.animateMatchedSymbols(win.lineIndex, win.matchCount, win.symbol);
       }
 
       if (!this.allPhaseReached) {
@@ -79,11 +81,11 @@ export class SlotWinPresentation {
       }
 
       this.timers.push(
-        this.scene.time.delayedCall(1000, () => {
+        this.scene.time.delayedCall(1500, () => {
           this.overlayGfx.clear();
-          // Pause phase
+          this.slotMachine.stopAllSymbolAnimations();
           this.timers.push(
-            this.scene.time.delayedCall(1000, () => {
+            this.scene.time.delayedCall(1500, () => {
               this.phaseIndex = 0;
               this.runPhase(lineWins);
             }),
@@ -106,7 +108,6 @@ export class SlotWinPresentation {
       const cy = this.gridY + row * CELL + SYMBOL_SIZE / 2;
       points.push({ reelIndex: reel, rowIndex: row, x: cx, y: cy });
 
-      // Draw highlight box on matching symbols
       if (reel < matchCount) {
         this.overlayGfx.lineStyle(3, color, 0.8);
         this.overlayGfx.strokeRect(
@@ -118,7 +119,6 @@ export class SlotWinPresentation {
       }
     }
 
-    // Draw connecting line
     this.overlayGfx.lineStyle(4, color, 0.7);
     this.overlayGfx.beginPath();
     this.overlayGfx.moveTo(points[0].x, points[0].y);
@@ -128,12 +128,20 @@ export class SlotWinPresentation {
     this.overlayGfx.strokePath();
   }
 
-  /**
-   * Placeholder: animate matched symbols on a payline.
-   * Override this to implement symbol-level effects (flash, pulse, glow, etc.)
-   */
-  animateMatchedSymbols(_lineIndex: number, _matchCount: number) {
-    // TODO: implement symbol animation (flash, glow, scale pulse, etc.)
+  animateMatchedSymbols(lineIndex: number, matchCount: number, symbol: number) {
+    const animKey = getAnimKey(symbol);
+    if (!this.scene.anims.exists(animKey)) return;
+
+    const payline = PAYLINES[lineIndex];
+    if (!payline) return;
+
+    for (let reel = 0; reel < matchCount; reel++) {
+      const row = payline[reel];
+      const sprite = this.slotMachine.getSpritesForPayline(lineIndex)?.[reel];
+      if (sprite) {
+        sprite.play(animKey);
+      }
+    }
   }
 
   stop() {
@@ -143,6 +151,7 @@ export class SlotWinPresentation {
     this.timers = [];
     this.overlayGfx.clear();
     this.overlayGfx.setVisible(false);
+    this.slotMachine.stopAllSymbolAnimations();
   }
 
   destroy() {

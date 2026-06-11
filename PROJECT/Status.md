@@ -13,6 +13,13 @@
 - 5 town scenes with top bar (back button + balance display with coin tier icons)
 - `BaseScene`: shared top bar, balance display, `setTopBarNumber()`, fade-in transitions
 - Embed-host size reporting via `postMessage` in `index.html`
+- **Slot machine in SceneHenesys** with MapleStory mob sprites as symbols:
+  - 7 symbols mapped to mobs: Mush(9833390), Snail(100000), Shroom(100001), Slime(100002), Stump(100003), Dark Stump(100004), Pig(1210100)
+  - Mob sprites loaded from MSU CDN via `preloadMobTextures()` in scene `preload()`
+  - `SlotSymbolData.ts`: central mapping of symbol index → mob render plan, preload/anim helpers
+  - `SlotReel.ts`: Uses `Phaser.GameObjects.Sprite` for animation-capable symbols
+  - `SlotWinPresentation.ts`: Plays mob stand animation on matched payline symbols (GIF-like win effect)
+  - Falls back to colored rectangles if CDN textures unavailable
 
 ## Server (GameServer SDK)
 

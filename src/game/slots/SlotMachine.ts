@@ -9,16 +9,37 @@ import {
   VISIBLE_ROWS,
   SYMBOL_SIZE,
   SYMBOL_GAP,
-  SYMBOL_COLORS,
+  SYMBOL_COUNT,
 } from "./SlotConstants";
+import {
+  MOB_SYMBOLS,
+  createMobAnimations,
+  getSlotTextureKey,
+  getAnimKey,
+  getFrameKey,
+  getRawFrameKey,
+  getBorderColor,
+} from "./SlotSymbolData";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
-const GRID_WIDTH = REEL_COUNT * CELL - SYMBOL_GAP;
-const GRID_HEIGHT = VISIBLE_ROWS * CELL - SYMBOL_GAP;
 
 export interface SlotWin {
   totalWin: number;
   lineWins: { lineIndex: number; symbol: number; matchCount: number; multiplier: number; win: number }[];
+}
+
+function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
 }
 
 export class SlotMachine {
@@ -47,23 +68,86 @@ export class SlotMachine {
     this.balance = balance;
 
     this.createTextures();
+    createMobAnimations(this.scene);
     this.createReels();
   }
 
   private createTextures() {
-    for (let i = 0; i < 7; i++) {
-      const key = "slot_" + i;
-      if (this.scene.textures.exists(key)) continue;
+    for (let i = 0; i < SYMBOL_COUNT; i++) {
+      const slotKey = getSlotTextureKey(i);
+      if (this.scene.textures.exists(slotKey)) {
+        this.textureKeys.push(slotKey);
+        continue;
+      }
 
-      const gfx = this.scene.make.graphics({ x: 0, y: 0 });
-      gfx.fillStyle(SYMBOL_COLORS[i], 1);
-      gfx.fillRoundedRect(2, 2, SYMBOL_SIZE - 4, SYMBOL_SIZE - 4, 8);
-      gfx.lineStyle(2, 0xffffff, 0.3);
-      gfx.strokeRoundedRect(2, 2, SYMBOL_SIZE - 4, SYMBOL_SIZE - 4, 8);
-      gfx.generateTexture(key, SYMBOL_SIZE, SYMBOL_SIZE);
-      gfx.destroy();
-      this.textureKeys.push(key);
+      const mob = MOB_SYMBOLS[i];
+      for (let f = 0; f < mob.frameCount; f++) {
+        const rawKey = getRawFrameKey(i, f);
+        const compKey = getFrameKey(i, f);
+        if (!this.scene.textures.exists(compKey)) {
+          this.drawCompositeTexture(i, f, rawKey, compKey);
+        }
+      }
+
+      const firstCompKey = getFrameKey(i, 0);
+      if (this.scene.textures.exists(firstCompKey)) {
+        const src = this.scene.textures.get(firstCompKey).getSourceImage();
+        this.scene.textures.addImage(slotKey, src);
+      } else {
+        this.drawFallbackTexture(i);
+      }
+      this.textureKeys.push(slotKey);
     }
+  }
+
+  private drawCompositeTexture(symIdx: number, _frameIdx: number, rawKey: string, outKey: string) {
+    const borderColor = getBorderColor(symIdx);
+    const borderW = 4;
+    const pad = 3;
+    const innerSize = SYMBOL_SIZE - (borderW + pad) * 2;
+
+    const hex = "#" + borderColor.toString(16).padStart(6, "0");
+
+    const canvasTex = this.scene.textures.createCanvas(outKey, SYMBOL_SIZE, SYMBOL_SIZE);
+    if (!canvasTex) return;
+    const ctx = canvasTex.context;
+    if (!ctx) return;
+
+    ctx.fillStyle = "#111122";
+    roundRectPath(ctx, borderW, borderW, SYMBOL_SIZE - borderW * 2, SYMBOL_SIZE - borderW * 2, 6);
+    ctx.fill();
+
+    ctx.strokeStyle = hex;
+    ctx.lineWidth = borderW;
+    roundRectPath(ctx, borderW, borderW, SYMBOL_SIZE - borderW * 2, SYMBOL_SIZE - borderW * 2, 6);
+    ctx.stroke();
+
+    if (this.scene.textures.exists(rawKey)) {
+      const rawTex = this.scene.textures.get(rawKey);
+      const source = rawTex.getSourceImage() as HTMLImageElement | HTMLCanvasElement;
+      if (source && source.width > 0 && source.height > 0) {
+        const s = Math.min(innerSize / source.width, innerSize / source.height);
+        const dw = source.width * s;
+        const dh = source.height * s;
+        const dx = (SYMBOL_SIZE - dw) / 2;
+        const dy = (SYMBOL_SIZE - dh) / 2;
+        ctx.drawImage(source, dx, dy, dw, dh);
+      }
+    }
+
+    canvasTex.refresh();
+  }
+
+  private drawFallbackTexture(symIdx: number) {
+    const key = getSlotTextureKey(symIdx);
+    const borderColor = getBorderColor(symIdx);
+    const gfx = this.scene.make.graphics({ x: 0, y: 0 });
+    gfx.fillStyle(0x111122, 1);
+    gfx.fillRoundedRect(2, 2, SYMBOL_SIZE - 4, SYMBOL_SIZE - 4, 8);
+    gfx.lineStyle(3, borderColor, 1);
+    gfx.strokeRoundedRect(2, 2, SYMBOL_SIZE - 4, SYMBOL_SIZE - 4, 8);
+    gfx.generateTexture(key, SYMBOL_SIZE, SYMBOL_SIZE);
+    gfx.destroy();
   }
 
   private createReels() {
@@ -80,8 +164,6 @@ export class SlotMachine {
       this.reels.push(reel);
     }
   }
-
-  // --- public API ---
 
   get currentState(): SlotState {
     return this.state;
@@ -153,8 +235,6 @@ export class SlotMachine {
   stopAuto() {
     this.autoStopRequested = true;
   }
-
-  // --- internal ---
 
   private setState(newState: SlotState) {
     this.state = newState;
@@ -269,6 +349,21 @@ export class SlotMachine {
 
     const totalWin = lineWins.reduce((sum, lw) => sum + lw.win, 0);
     return { totalWin, lineWins };
+  }
+
+  getSpritesForPayline(lineIndex: number): (Phaser.GameObjects.Sprite | null)[] {
+    const payline = PAYLINES[lineIndex];
+    if (!payline) return [];
+
+    return payline.map((rowIdx, reelIdx) =>
+      this.reels[reelIdx].getSpriteAtRow(rowIdx),
+    );
+  }
+
+  stopAllSymbolAnimations() {
+    for (const reel of this.reels) {
+      reel.stopAllAnimations();
+    }
   }
 
   destroy() {

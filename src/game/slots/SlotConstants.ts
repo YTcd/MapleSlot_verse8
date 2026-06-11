@@ -26,18 +26,8 @@ export const PAY_TABLE: Record<number, number[]> = {
   5: [225, 375, 600, 1200, 1800, 3750, 7500],
 };
 
-/** Symbol display colors (placeholder until art assets are available) */
-export const SYMBOL_COLORS: number[] = [
-  0xdd4444, // 0 red
-  0x44aa44, // 1 green
-  0x4444dd, // 2 blue
-  0xdddd44, // 3 yellow
-  0xdd44dd, // 4 magenta
-  0x44dddd, // 5 cyan
-  0xff8844, // 6 orange
-];
-
-export const SYMBOL_LABELS: string[] = ["0","1","2","3","4","5","6"];
+/** Total number of distinct symbols on reel strips */
+export const SYMBOL_COUNT = 7;
 
 /** Default configuration */
 export const DEFAULT_BET = 100;
