@@ -50,6 +50,8 @@ export class SceneHenesys extends BaseScene {
       onPlay: () => this.handlePlay(),
       onAuto: () => this.handleAuto(),
       onStopAuto: () => this.handleStopAuto(),
+      onBetChange: (value) => this.slotMachine.setBet(value),
+      onLineChange: (value) => this.slotMachine.setLines(value),
     });
 
     this.slotMachine.setOnBalanceChange((newBalance) => {

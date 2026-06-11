@@ -37,13 +37,21 @@ export class SlotUI {
   private onPlay: () => void;
   private onAuto: () => void;
   private onStopAuto: () => void;
+  private onBetChange: (value: number) => void;
+  private onLineChange: (value: number) => void;
 
   constructor(
     scene: Phaser.Scene,
     x: number,
     y: number,
     width: number,
-    callbacks: { onPlay: () => void; onAuto: () => void; onStopAuto: () => void },
+    callbacks: {
+      onPlay: () => void;
+      onAuto: () => void;
+      onStopAuto: () => void;
+      onBetChange: (value: number) => void;
+      onLineChange: (value: number) => void;
+    },
   ) {
     this.scene = scene;
     this.x = x;
@@ -52,6 +60,8 @@ export class SlotUI {
     this.onPlay = callbacks.onPlay;
     this.onAuto = callbacks.onAuto;
     this.onStopAuto = callbacks.onStopAuto;
+    this.onBetChange = callbacks.onBetChange;
+    this.onLineChange = callbacks.onLineChange;
 
     this.container = scene.add.container(0, 0);
     this.build();
@@ -216,8 +226,14 @@ export class SlotUI {
     });
   }
 
-  updateBetDisplay(value: number) { this.betText.setText(`Bet: ${value}`); }
-  updateLineDisplay(value: number) { this.lineText.setText(`Lines: ${value}`); }
+  updateBetDisplay(value: number) {
+    this.betText.setText(`Bet: ${value}`);
+    this.onBetChange(value);
+  }
+  updateLineDisplay(value: number) {
+    this.lineText.setText(`Lines: ${value}`);
+    this.onLineChange(value);
+  }
 
   private closePanel() {
     this.panelOpen = null;

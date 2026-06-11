@@ -42,7 +42,7 @@ export const SYMBOL_LABELS: string[] = ["0","1","2","3","4","5","6"];
 /** Default configuration */
 export const DEFAULT_BET = 100;
 export const BET_OPTIONS = [1, 2, 5, 10, 20, 50, 100];
-export const LINE_OPTIONS = [1];
+export const LINE_OPTIONS = [1, 5, 9, 15, 25];
 
 /** Slot grid layout */
 export const REEL_COUNT = 5;
@@ -56,7 +56,31 @@ export const SPIN_DURATION_BASE = 1500;
 export const SPIN_DURATION_PER_REEL = 200; // stagger each reel
 export const SPIN_EASING = "Quad.easeOut";
 
-/** Active payline: center row only (expandable) */
+/** All 25 paylines (0-based row indices per reel: 0=top, 1=center, 2=bottom) */
 export const PAYLINES: number[][] = [
-  [1, 1, 1, 1, 1], // row index per reel (0=top, 1=center, 2=bottom)
+  [1,1,1,1,1], // 1
+  [0,0,0,0,0], // 2
+  [2,2,2,2,2], // 3
+  [2,1,0,1,2], // 4
+  [0,1,2,1,0], // 5
+  [1,0,0,0,1], // 6
+  [1,2,2,2,1], // 7
+  [0,0,1,2,2], // 8
+  [2,2,1,0,0], // 9
+  [1,0,1,2,1], // 10
+  [1,2,1,0,1], // 11
+  [0,1,1,1,0], // 12
+  [2,1,1,1,2], // 13
+  [0,1,0,1,0], // 14
+  [2,1,2,1,2], // 15
+  [1,1,2,1,1], // 16
+  [1,1,0,1,1], // 17
+  [0,0,2,0,0], // 18
+  [2,2,0,2,2], // 19
+  [0,2,2,2,0], // 20
+  [2,0,0,0,2], // 21
+  [1,0,2,0,1], // 22
+  [1,2,0,2,1], // 23
+  [0,2,0,2,0], // 24
+  [2,0,2,0,2], // 25
 ];
