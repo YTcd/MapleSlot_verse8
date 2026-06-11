@@ -1,0 +1,62 @@
+/** Slot machine state machine */
+export const enum SlotState {
+  IDLE = "IDLE",
+  SPINNING = "SPINNING",
+  EVALUATING = "EVALUATING",
+  WIN_PRESENTATION = "WIN_PRESENTATION",
+  AUTO_SPINNING = "AUTO_SPINNING",
+}
+
+/** Reel strip data — each array is a 50-symbol reel strip (symbols 0–6) */
+export const REELS: Int8Array[] = [
+  new Int8Array([5,0,3,1,4,1,0,3,6,0,3,3,2,6,0,4,1,2,5,1,0,2,6,0,0,0,5,5,4,1,3,5,0,4,1,0,5,1,4,2,3,2,2,3,3,1,0,2,6,2]),
+  new Int8Array([0,1,6,0,2,3,6,0,6,1,1,3,3,2,6,2,4,4,1,2,4,2,5,4,3,0,0,1,5,2,2,1,5,0,3,5,0,5,0,1,2,5,3,3,3,0,1,0,4,0]),
+  new Int8Array([2,3,6,4,0,1,0,2,0,3,3,2,1,4,2,2,0,5,1,6,3,5,1,4,1,1,0,0,3,0,5,3,6,3,2,3,5,4,0,5,1,4,1,2,5,0,2,6,0,0]),
+  new Int8Array([2,6,1,1,0,2,2,6,0,0,5,2,2,6,1,2,0,0,1,0,0,4,3,4,3,3,0,5,3,2,3,3,5,1,1,4,1,5,0,5,0,6,5,3,4,2,0,3,4,1]),
+  new Int8Array([4,2,4,2,1,6,5,6,5,5,0,1,3,3,3,1,0,0,3,4,5,5,3,2,3,2,0,6,0,4,2,1,1,2,3,1,0,1,4,5,0,0,0,0,3,2,6,0,2,1]),
+];
+
+/**
+ * Pay table: multipliers at bet=1
+ * [matchCount_3, matchCount_4, matchCount_5] → array of [symbol0, ..., symbol6]
+ */
+export const PAY_TABLE: Record<number, number[]> = {
+  3: [4.5, 6, 7.5, 9, 12, 18, 30],
+  4: [30, 45, 60, 90, 150, 300, 600],
+  5: [225, 375, 600, 1200, 1800, 3750, 7500],
+};
+
+/** Symbol display colors (placeholder until art assets are available) */
+export const SYMBOL_COLORS: number[] = [
+  0xdd4444, // 0 red
+  0x44aa44, // 1 green
+  0x4444dd, // 2 blue
+  0xdddd44, // 3 yellow
+  0xdd44dd, // 4 magenta
+  0x44dddd, // 5 cyan
+  0xff8844, // 6 orange
+];
+
+export const SYMBOL_LABELS: string[] = ["0","1","2","3","4","5","6"];
+
+/** Default configuration */
+export const DEFAULT_BET = 100;
+export const BET_OPTIONS = [1, 2, 5, 10, 20, 50, 100];
+export const LINE_OPTIONS = [1];
+
+/** Slot grid layout */
+export const REEL_COUNT = 5;
+export const VISIBLE_ROWS = 3;
+export const SYMBOL_SIZE = 96;
+export const SYMBOL_GAP = 4;
+export const POOL_PADDING = 2; // extra symbols above/below visible area for smooth scroll
+
+/** Spin animation timing (ms) */
+export const SPIN_DURATION_BASE = 1500;
+export const SPIN_DURATION_PER_REEL = 200; // stagger each reel
+export const SPIN_EASING = "Quad.easeOut";
+
+/** Active payline: center row only (expandable) */
+export const PAYLINES: number[][] = [
+  [1, 1, 1, 1, 1], // row index per reel (0=top, 1=center, 2=bottom)
+];
