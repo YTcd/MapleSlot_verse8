@@ -10,6 +10,7 @@ import {
   SYMBOL_SIZE,
   SYMBOL_GAP,
   SYMBOL_COLORS,
+  POOL_PADDING,
 } from "./SlotConstants";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
