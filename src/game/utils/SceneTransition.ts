@@ -1,6 +1,15 @@
 import Phaser from "phaser";
 
-export function goToScene(currentScene: Phaser.Scene, targetSceneKey: string): void {
+export interface SceneTransitionData {
+  targetScene: string;
+  passData?: Record<string, unknown>;
+}
+
+export function goToScene(
+  currentScene: Phaser.Scene,
+  targetSceneKey: string,
+  passData?: Record<string, unknown>,
+): void {
   // ===================================================================
   // STAGE 1: BEFORE SCENE TRANSITION
   // ===================================================================
@@ -13,20 +22,24 @@ export function goToScene(currentScene: Phaser.Scene, targetSceneKey: string): v
   // ===================================================================
   // STAGE 2: DURING SCENE TRANSITION (LoadingScene)
   // ===================================================================
-  // - Starts LoadingScene, passing the target scene key.
+  // - Starts LoadingScene, passing the target scene key and any data.
   // - LoadingScene handles the actual work:
-  //   • Destroys current scene children via Phaser's shutdown()
-  //   • Displays progress bar simulating preload (network calls, asset
+  //   * Destroys current scene children via Phaser's shutdown()
+  //   * Displays progress bar simulating preload (network calls, asset
   //     loading, etc.) with a minimum 2-second visible duration.
-  //   • Once loading completes AND 2 seconds have elapsed, transitions
-  //     to the target scene.
+  //   * Fetches server data (e.g., balance) during loading.
+  //   * Once loading completes AND 2 seconds have elapsed, transitions
+  //     to the target scene with the fetched data.
   // ===================================================================
-  currentScene.scene.start("LoadingScene", { targetScene: targetSceneKey });
+  currentScene.scene.start("LoadingScene", {
+    targetScene: targetSceneKey,
+    passData,
+  } as SceneTransitionData);
 }
 
 export function cleanupTextures(
   scene: Phaser.Scene,
-  textureKeys: string[]
+  textureKeys: string[],
 ): void {
   const manager = scene.textures;
 

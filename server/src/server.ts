@@ -1,0 +1,52 @@
+/**
+ * MapleSlot GameServer
+ *
+ * Install types: npm install -D @agent8/gameserver-node
+ * Types are automatically available: $global, $sender, $room, $asset
+ */
+
+/** 변경해서 사용할 초기 balance 값 */
+const INITIAL_BALANCE = 300_000_000;
+
+export class Server {
+  async ping(): Promise<string> {
+    return 'pong';
+  }
+
+  async getMyAccount(): Promise<string> {
+    return $sender.account;
+  }
+
+  /**
+   * 현재 유저의 balance를 조회한다.
+   * 처음 접속한 유저라면 INITIAL_BALANCE로 초기화한 뒤 반환한다.
+   */
+  async getBalance(): Promise<{ balance: number }> {
+    const myState = await $global.getMyState();
+    if (myState.balance === undefined || myState.balance === null) {
+      await $global.updateMyState({ balance: INITIAL_BALANCE });
+      return { balance: INITIAL_BALANCE };
+    }
+    return { balance: myState.balance };
+  }
+
+  /**
+   * balance를 변경하고 변경 사유를 기록한다.
+   * @param balance - 변경할 balance 값
+   * @param reason - 변경 사유 (예: "slot_win", "slot_bet", "daily_reward")
+   */
+  async updateBalance(
+    balance: number,
+    reason: string,
+  ): Promise<{ balance: number; reason: string }> {
+    if (typeof balance !== 'number' || isNaN(balance)) {
+      throw new Error('Invalid balance value');
+    }
+    if (balance < 0) {
+      throw new Error('Balance cannot be negative');
+    }
+
+    await $global.updateMyState({ balance });
+    return { balance, reason };
+  }
+}

@@ -11,8 +11,15 @@ const COIN_TIERS = [
 export abstract class BaseScene extends Phaser.Scene {
   private topBarNumberText?: Phaser.GameObjects.Text;
   private topBarCoinIcon?: Phaser.GameObjects.Image;
+  protected balance: number = 0;
 
   preload() {}
+
+  init(data?: Record<string, unknown>) {
+    if (data?.balance !== undefined) {
+      this.balance = data.balance as number;
+    }
+  }
 
   create() {
     this.input.enabled = true;
@@ -33,6 +40,7 @@ export abstract class BaseScene extends Phaser.Scene {
   }
 
   protected setTopBarNumber(value: number): void {
+    this.balance = value;
     if (this.topBarNumberText) {
       this.topBarNumberText.setText(value.toLocaleString("en-US"));
     }
@@ -43,7 +51,7 @@ export abstract class BaseScene extends Phaser.Scene {
   }
 
   protected createTopBar(
-    backScene: string = "TownSelectScene"
+    backScene: string = "TownSelectScene",
   ): Phaser.GameObjects.GameObject[] {
     const { width, height } = this.cameras.main;
     const barH = height * 0.1;
@@ -82,12 +90,15 @@ export abstract class BaseScene extends Phaser.Scene {
     gfx.setPosition(width - numBgW - 12, barH / 2 - numBgH / 2);
 
     const pillLeft = width - numBgW - 12;
-    const coinIcon = this.add.image(pillLeft + 18, barH / 2, "coin_bronze");
+    const displayTier =
+      COIN_TIERS.find((t) => this.balance <= t.max) ||
+      COIN_TIERS[COIN_TIERS.length - 1];
+    const coinIcon = this.add.image(pillLeft + 18, barH / 2, displayTier.key);
     coinIcon.setDisplaySize(22, 22);
     this.topBarCoinIcon = coinIcon;
 
     const numText = this.add
-      .text(width - 20, barH / 2, "0", {
+      .text(width - 20, barH / 2, this.balance.toLocaleString("en-US"), {
         fontFamily: "Arial, sans-serif",
         fontSize: "18px",
         color: "#ffffff",

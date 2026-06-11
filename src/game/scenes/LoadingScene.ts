@@ -1,23 +1,27 @@
 import Phaser from "phaser";
+import { fetchBalance } from "../utils/ServerBridge";
 
 const MIN_LOAD_DURATION = 2000;
 
 export class LoadingScene extends Phaser.Scene {
-  private progressBarBg: Phaser.GameObjects.Rectangle;
-  private progressBarFill: Phaser.GameObjects.Rectangle;
-  private progressText: Phaser.GameObjects.Text;
-  private loadingText: Phaser.GameObjects.Text;
+  private progressBarBg!: Phaser.GameObjects.Rectangle;
+  private progressBarFill!: Phaser.GameObjects.Rectangle;
+  private progressText!: Phaser.GameObjects.Text;
+  private loadingText!: Phaser.GameObjects.Text;
 
   private elapsed: number = 0;
   private targetSceneKey: string = "";
+  private passData: Record<string, unknown> = {};
   private transitioning: boolean = false;
+  private serverDataReady: boolean = false;
 
   constructor() {
     super({ key: "LoadingScene" });
   }
 
-  init(data: { targetScene: string }) {
+  init(data: { targetScene: string; passData?: Record<string, unknown> }) {
     this.targetSceneKey = data.targetScene;
+    this.passData = data.passData || {};
   }
 
   create() {
@@ -27,6 +31,7 @@ export class LoadingScene extends Phaser.Scene {
     this.input.enabled = false;
     this.elapsed = 0;
     this.transitioning = false;
+    this.serverDataReady = false;
 
     this.loadingText = this.add
       .text(width / 2, height * 0.35, "Loading...", {
@@ -53,7 +58,7 @@ export class LoadingScene extends Phaser.Scene {
         barY,
         0,
         barHeight - 4,
-        0x4466ff
+        0x4466ff,
       )
       .setOrigin(0, 0.5)
       .setAlpha(0);
@@ -78,6 +83,19 @@ export class LoadingScene extends Phaser.Scene {
       duration: 200,
       ease: "Power2",
     });
+
+    this.fetchServerData();
+  }
+
+  private async fetchServerData() {
+    try {
+      const balance = await fetchBalance();
+      this.passData.balance = balance;
+    } catch (err) {
+      console.warn("[LoadingScene] Failed to fetch balance:", err);
+      this.passData.balance = 300_000_000;
+    }
+    this.serverDataReady = true;
   }
 
   update(_time: number, delta: number) {
@@ -85,20 +103,20 @@ export class LoadingScene extends Phaser.Scene {
 
     this.elapsed += delta;
 
-    const rawProgress = Math.min(this.elapsed / 2500, 1);
-
-    const smoothProgress = easeOutQuad(rawProgress);
+    const timeProgress = Math.min(this.elapsed / 2500, 1);
+    const smoothProgress = easeOutQuad(timeProgress);
 
     const percentage = Math.floor(smoothProgress * 100);
 
     const barWidth = this.progressBarBg.width - 4;
     const fillWidth = barWidth * smoothProgress;
     this.progressBarFill.width = fillWidth;
-    this.progressBarFill.x = this.progressBarBg.x - this.progressBarBg.width / 2 + 2;
+    this.progressBarFill.x =
+      this.progressBarBg.x - this.progressBarBg.width / 2 + 2;
 
     this.progressText.setText(`${percentage}%`);
 
-    if (this.elapsed >= MIN_LOAD_DURATION && percentage >= 100) {
+    if (this.serverDataReady && this.elapsed >= MIN_LOAD_DURATION) {
       this.transitionToTarget();
     }
   }
@@ -116,15 +134,7 @@ export class LoadingScene extends Phaser.Scene {
       duration: 200,
       ease: "Power2",
       onComplete: () => {
-        // ===================================================================
-        // STAGE 2: DURING SCENE TRANSITION
-        // ===================================================================
-        // - Phaser's scene.start() destroys this loading scene and all
-        //   its children automatically via shutdown().
-        // - The target scene's create() builds the scene fresh.
-        // - Textures from previous scene can be cleaned up here if needed.
-        // ===================================================================
-        this.scene.start(this.targetSceneKey);
+        this.scene.start(this.targetSceneKey, this.passData);
       },
     });
   }

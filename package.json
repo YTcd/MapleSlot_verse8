@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@agent8/gameserver": "^1.10.2",
     "phaser": "^3.90.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
