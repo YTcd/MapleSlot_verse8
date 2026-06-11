@@ -29,7 +29,6 @@ export class SlotUI {
   private betText!: Phaser.GameObjects.Text;
   private lineBtn!: Phaser.GameObjects.Rectangle;
   private lineText!: Phaser.GameObjects.Text;
-  private balanceText!: Phaser.GameObjects.Text;
   private winText!: Phaser.GameObjects.Text;
 
   private panelOpen: "bet" | "line" | null = null;
@@ -68,30 +67,19 @@ export class SlotUI {
     gfx.fillRect(this.x, this.y, this.width, BAR_HEIGHT);
     this.container.add(gfx);
 
-    // --- Left: Balance ---
-    this.balanceText = this.scene.add
-      .text(this.x + 16, this.y + 12, "0", {
-        fontFamily: "Arial, sans-serif",
-        fontSize: "18px",
-        color: "#f0d060",
-        fontStyle: "bold",
-      })
-      .setOrigin(0, 0);
-    this.container.add(this.balanceText);
-
-    // Win text
+    // Win text (centered above buttons, shown on win)
     this.winText = this.scene.add
-      .text(this.x + 16, this.y + 36, "", {
+      .text(this.x + this.width / 2, this.y + 12, "", {
         fontFamily: "Arial, sans-serif",
         fontSize: "14px",
         color: "#66ff66",
       })
-      .setOrigin(0, 0)
+      .setOrigin(0.5, 0)
       .setAlpha(0);
     this.container.add(this.winText);
 
-    // --- Center-left: Line & Bet buttons ---
-    const btnStartX = this.x + this.width * 0.25;
+    // --- Left: Line & Bet buttons ---
+    const btnStartX = this.x + 16;
 
     this.lineBtn = this.makeButton(btnStartX, this.y + (BAR_HEIGHT - BTN_H) / 2, BTN_W, BTN_H, 0x3a5a8a);
     this.container.add(this.lineBtn);
@@ -237,10 +225,6 @@ export class SlotUI {
       this.panelContainer.destroy();
       this.panelContainer = null;
     }
-  }
-
-  setBalance(value: number) {
-    this.balanceText.setText(value.toLocaleString("en-US"));
   }
 
   showWin(amount: number) {

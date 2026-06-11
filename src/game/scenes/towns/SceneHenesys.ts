@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { BaseScene } from "../BaseScene";
 import { SlotMachine } from "../../slots/SlotMachine";
 import { SlotUI } from "../../slots/SlotUI";
-import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP, BET_OPTIONS } from "../../slots/SlotConstants";
+import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/SlotConstants";
 import { updateBalanceOnServer } from "../../utils/ServerBridge";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
@@ -52,11 +52,8 @@ export class SceneHenesys extends BaseScene {
       onStopAuto: () => this.handleStopAuto(),
     });
 
-    this.slotUI.setBalance(this.balance);
-
     this.slotMachine.setOnBalanceChange((newBalance) => {
       this.setTopBarNumber(newBalance);
-      this.slotUI.setBalance(newBalance);
       this.persistBalance(newBalance);
     });
 
