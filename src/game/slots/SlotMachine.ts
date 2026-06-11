@@ -10,7 +10,6 @@ import {
   SYMBOL_SIZE,
   SYMBOL_GAP,
   SYMBOL_COLORS,
-  POOL_PADDING,
 } from "./SlotConstants";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
@@ -34,7 +33,6 @@ export class SlotMachine {
   private balance: number = 0;
   private textureKeys: string[] = [];
   private autoStopRequested: boolean = false;
-  private maskGraphics: Phaser.GameObjects.Graphics;
 
   private onBalanceChange: ((balance: number) => void) | null = null;
   private onStateChange: ((state: SlotState) => void) | null = null;
@@ -48,7 +46,6 @@ export class SlotMachine {
 
     this.createTextures();
     this.createReels();
-    this.createMask();
   }
 
   private createTextures() {
@@ -70,40 +67,15 @@ export class SlotMachine {
   private createReels() {
     for (let i = 0; i < REEL_COUNT; i++) {
       const reelX = this.x + i * CELL + SYMBOL_SIZE / 2;
-      const reelY = this.y;
       const reel = new SlotReel(
         this.scene,
         i,
         REELS[i],
         this.textureKeys,
         reelX,
-        reelY - POOL_PADDING * CELL,
+        this.y,
       );
       this.reels.push(reel);
-    }
-  }
-
-  private createMask() {
-    this.maskGraphics = this.scene.add.graphics();
-    this.maskGraphics.fillStyle(0x000000, 1);
-    this.maskGraphics.fillRect(
-      this.x,
-      this.y,
-      GRID_WIDTH,
-      GRID_HEIGHT,
-    );
-
-    const mask = this.maskGraphics.createGeometryMask();
-    for (const reel of this.reels) {
-      // Apply mask — container-based masking in Phaser is done per-container
-    }
-  }
-
-  private updateMask() {
-    if (this.maskGraphics) {
-      this.maskGraphics.clear();
-      this.maskGraphics.fillStyle(0x000000, 1);
-      this.maskGraphics.fillRect(this.x, this.y, GRID_WIDTH, GRID_HEIGHT);
     }
   }
 
@@ -190,7 +162,7 @@ export class SlotMachine {
 
     for (let i = 0; i < REEL_COUNT; i++) {
       const targetPos = Math.floor(Math.random() * stripLen);
-      const delay = i * 100; // stagger reel starts
+      const delay = i * 100;
 
       this.reels[i].spin(targetPos, delay, () => {
         results[i] = this.reels[i].getVisibleSymbols();
@@ -295,5 +267,3 @@ export class SlotMachine {
     }
   }
 }
-
-

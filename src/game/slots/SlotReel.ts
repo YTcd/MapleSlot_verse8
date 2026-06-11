@@ -1,18 +1,21 @@
 import Phaser from "phaser";
 import {
-  REEL_COUNT,
   VISIBLE_ROWS,
   SYMBOL_SIZE,
   SYMBOL_GAP,
   POOL_PADDING,
   SPIN_DURATION_BASE,
   SPIN_DURATION_PER_REEL,
-  SYMBOL_COLORS,
   SYMBOL_LABELS,
 } from "./SlotConstants";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
 const POOL_SIZE = VISIBLE_ROWS + POOL_PADDING * 2;
+
+interface PoolItem {
+  img: Phaser.GameObjects.Image;
+  label: Phaser.GameObjects.Text;
+}
 
 export class SlotReel {
   readonly reelIndex: number;
@@ -21,9 +24,9 @@ export class SlotReel {
   readonly y: number;
 
   private scene: Phaser.Scene;
-  private pool: Phaser.GameObjects.Container[] = [];
+  private items: PoolItem[] = [];
+  private container: Phaser.GameObjects.Container;
   private stripPos: number = 0;
-  private spinTween: Phaser.Tweens.Tween | null = null;
   private spinning: boolean = false;
 
   constructor(
@@ -40,16 +43,20 @@ export class SlotReel {
     this.x = x;
     this.y = y;
 
+    this.container = scene.add.container(x, 0);
     this.buildPool(textureKeys);
+    this.applyMask();
+    this.positionItems();
   }
 
   private buildPool(textureKeys: string[]) {
     for (let i = 0; i < POOL_SIZE; i++) {
-      const symIdx = i % this.strip.length;
+      const symIdx = ((i - POOL_PADDING) % this.strip.length + this.strip.length) % this.strip.length;
       const sym = this.strip[symIdx];
       const texKey = textureKeys[sym];
 
       const img = this.scene.add.image(0, 0, texKey).setDisplaySize(SYMBOL_SIZE, SYMBOL_SIZE);
+
       const label = this.scene.add
         .text(0, 0, SYMBOL_LABELS[sym], {
           fontFamily: "Arial, sans-serif",
@@ -61,77 +68,84 @@ export class SlotReel {
         })
         .setOrigin(0.5);
 
-      const container = this.scene.add.container(this.x, this.y + i * CELL, [img, label]);
-      this.pool.push(container);
+      this.container.add([img, label]);
+      this.items.push({ img, label });
     }
   }
 
-  private repositionSymbols() {
+  private applyMask() {
+    const maskGfx = this.scene.make.graphics({ x: 0, y: 0 });
+    maskGfx.fillStyle(0xffffff);
+    maskGfx.fillRect(
+      this.x,
+      this.y,
+      SYMBOL_SIZE,
+      VISIBLE_ROWS * CELL - SYMBOL_GAP,
+    );
+    const mask = maskGfx.createGeometryMask();
+    this.container.setMask(mask);
+  }
+
+  private positionItems() {
     const stripLen = this.strip.length;
+    const baseRow = Math.floor(this.stripPos);
+    const frac = this.stripPos - baseRow;
+
     for (let i = 0; i < POOL_SIZE; i++) {
-      const container = this.pool[i];
-      const virtualRow = Math.floor(this.stripPos) + i;
-
-      // Wrap symbol position within visible zone
-      const wrappedPoolIdx = ((virtualRow % POOL_SIZE) + POOL_SIZE) % POOL_SIZE;
-      const poolTopRow = Math.floor(this.stripPos);
-      const targetPoolIdx = ((i - POOL_PADDING + poolTopRow) % POOL_SIZE + POOL_SIZE) % POOL_SIZE;
-
+      const virtualRow = baseRow + i - POOL_PADDING;
       const symIdx = ((virtualRow % stripLen) + stripLen) % stripLen;
       const sym = this.strip[symIdx];
 
-      const img = container.getAt(0) as Phaser.GameObjects.Image;
-      img.setTexture("slot_" + sym);
+      const item = this.items[i];
+      item.img.setTexture("slot_" + sym);
+      item.label.setText(SYMBOL_LABELS[sym]);
 
-      const label = container.getAt(1) as Phaser.GameObjects.Text;
-      label.setText(SYMBOL_LABELS[sym]);
-
-      const floatRow = this.stripPos + i;
-      container.y = this.y + floatRow * CELL;
+      const displayRow = i - POOL_PADDING - frac;
+      item.img.y = this.y + displayRow * CELL + CELL / 2;
+      item.label.y = this.y + displayRow * CELL + CELL / 2;
     }
   }
 
   spin(targetPos: number, delay: number, onComplete: () => void) {
     this.spinning = true;
 
-    // Ensure target position wraps correctly
     const stripLen = this.strip.length;
     const normalizedTarget = ((targetPos % stripLen) + stripLen) % stripLen;
 
-    // Calculate total travel: spin several full cycles + offset to target
     const fullCycles = 3 + this.reelIndex;
     const currentPos = this.stripPos;
-    const offsetToTarget = normalizedTarget - (currentPos % stripLen);
-    const adjustedOffset = offsetToTarget > 0 ? offsetToTarget : offsetToTarget + stripLen;
-    const totalTravel = fullCycles * stripLen + adjustedOffset;
+    const offsetToTarget =
+      ((normalizedTarget - (currentPos % stripLen)) + stripLen) % stripLen;
+    const totalTravel = fullCycles * stripLen + offsetToTarget;
     const endPos = currentPos + totalTravel;
 
     const duration = SPIN_DURATION_BASE + this.reelIndex * SPIN_DURATION_PER_REEL;
 
-    this.spinTween = this.scene.tweens.add({
-      targets: { pos: currentPos },
-      pos: endPos,
+    this.scene.tweens.addCounter({
+      from: currentPos,
+      to: endPos,
       duration,
       delay,
       ease: "Quad.easeOut",
-      onUpdate: (tween) => {
-        this.stripPos = tween.getValue();
-        this.repositionSymbols();
+      onUpdate: (_tween: Phaser.Tweens.Tween, _target: unknown, _key: string, current: number) => {
+        this.stripPos = current;
+        this.positionItems();
       },
       onComplete: () => {
         this.stripPos = ((endPos % stripLen) + stripLen) % stripLen;
-        this.repositionSymbols();
+        this.positionItems();
         this.spinning = false;
         onComplete();
       },
-    } as Phaser.Types.Tweens.TweenBuilderConfig);
+    });
   }
 
   getVisibleSymbols(): number[] {
     const stripLen = this.strip.length;
+    const baseRow = Math.floor(this.stripPos);
     const symbols: number[] = [];
     for (let row = 0; row < VISIBLE_ROWS; row++) {
-      const idx = (Math.floor(this.stripPos) + row) % stripLen;
+      const idx = ((baseRow + row) % stripLen + stripLen) % stripLen;
       symbols.push(this.strip[idx]);
     }
     return symbols;
@@ -141,17 +155,8 @@ export class SlotReel {
     return this.spinning;
   }
 
-  get currentPosition(): number {
-    return this.stripPos;
-  }
-
   destroy() {
-    if (this.spinTween) {
-      this.spinTween.destroy();
-    }
-    for (const container of this.pool) {
-      container.destroy();
-    }
-    this.pool = [];
+    this.container.destroy();
+    this.items = [];
   }
 }
