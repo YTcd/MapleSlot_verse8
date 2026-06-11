@@ -66,6 +66,21 @@ All scene transitions go through `LoadingScene` by default.
 
 Vite HTML shell. Serves `/src/main.tsx`, renders an inline `Loading` spinner inside `#root` for pre-mount, and posts `GAME_SIZE_RESPONSE` messages to `window.parent` on `load` / `resize` / `REQUEST_GAME_SIZE` for embedding hosts.
 
+## `src/game/utils/ServerBridge.ts`
+
+Bridge between Phaser scenes and GameServer SDK. Uses `GameServer.getInstance()` singleton:
+
+- `fetchBalance()`: Calls `server.remoteFunction("getBalance")`. Waits up to 6s for connection. Falls back to 300,000,000 if server unreachable.
+- `updateBalanceOnServer(balance, reason)`: Calls `server.remoteFunction("updateBalance", [balance, reason])`.
+
+## `server/` (GameServer SDK Structured Project)
+
+Agent8 GameServer backend:
+
+- `server/src/server.ts`: `getBalance()` auto-initializes new users at 300M, `updateBalance(balance, reason)` validates and persists
+- `server/test/server.test.ts`: 6 tests covering init, persistence, update, validation, user isolation
+- Built to `server/dist/server.js` (auto-deployed by platform)
+
 ## `vite.config.ts`, `tsconfig*.json`, `tailwind.config.js`, `postcss.config.js`
 
 Standard Vite + React + TypeScript + Tailwind toolchain configuration.
