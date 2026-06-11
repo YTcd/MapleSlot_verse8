@@ -77,7 +77,7 @@ export class SlotReel {
     const maskGfx = this.scene.make.graphics({ x: 0, y: 0 });
     maskGfx.fillStyle(0xffffff);
     maskGfx.fillRect(
-      this.x,
+      this.x - SYMBOL_SIZE / 2,
       this.y,
       SYMBOL_SIZE,
       VISIBLE_ROWS * CELL - SYMBOL_GAP,
