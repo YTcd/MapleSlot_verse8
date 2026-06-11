@@ -33,10 +33,12 @@ export class SlotMachine {
   private balance: number = 0;
   private textureKeys: string[] = [];
   private autoStopRequested: boolean = false;
+  private resumeAuto: boolean = false;
 
   private onBalanceChange: ((balance: number) => void) | null = null;
   private onStateChange: ((state: SlotState) => void) | null = null;
   private onWin: ((win: SlotWin) => void) | null = null;
+  private onAutoEnd: (() => void) | null = null;
 
   constructor(scene: Phaser.Scene, x: number, y: number, balance: number) {
     this.scene = scene;
@@ -124,6 +126,10 @@ export class SlotMachine {
     this.onWin = cb;
   }
 
+  setOnAutoEnd(cb: () => void) {
+    this.onAutoEnd = cb;
+  }
+
   play(): boolean {
     if (this.state !== SlotState.IDLE) return false;
 
@@ -140,7 +146,7 @@ export class SlotMachine {
   startAuto() {
     if (this.state !== SlotState.IDLE) return;
     this.autoStopRequested = false;
-    this.setState(SlotState.AUTO_SPINNING);
+    this.resumeAuto = true;
     this.doAutoSpin();
   }
 
@@ -184,35 +190,39 @@ export class SlotMachine {
       this.balance += win.totalWin;
       this.onBalanceChange?.(this.balance);
       this.onWin?.(win);
+      this.resumeAuto = this.state === SlotState.AUTO_SPINNING || this.resumeAuto;
       this.setState(SlotState.WIN_PRESENTATION);
-
-      this.scene.time.delayedCall(600, () => {
-        this.afterEvaluation();
-      });
     } else {
       this.afterEvaluation();
     }
   }
 
+  setPresentationDone() {
+    if (this.state === SlotState.WIN_PRESENTATION) {
+      this.afterEvaluation();
+    }
+  }
+
   private afterEvaluation() {
-    if (this.state === SlotState.AUTO_SPINNING) {
-      if (this.autoStopRequested) {
-        this.setState(SlotState.IDLE);
-      } else {
-        this.doAutoSpin();
-      }
+    if (this.resumeAuto && !this.autoStopRequested) {
+      this.resumeAuto = false;
+      this.doAutoSpin();
     } else {
+      const wasAuto = this.resumeAuto;
+      this.resumeAuto = false;
+      this.autoStopRequested = false;
       this.setState(SlotState.IDLE);
+      if (wasAuto) this.onAutoEnd?.();
     }
   }
 
   private doAutoSpin() {
-    if (this.state !== SlotState.AUTO_SPINNING) return;
-
     const cost = this.bet * this.lines;
     if (this.balance < cost) {
-      this.setState(SlotState.IDLE);
       this.autoStopRequested = false;
+      this.resumeAuto = false;
+      this.setState(SlotState.IDLE);
+      this.onAutoEnd?.();
       return;
     }
 

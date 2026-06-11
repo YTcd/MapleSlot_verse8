@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { BaseScene } from "../BaseScene";
 import { SlotMachine } from "../../slots/SlotMachine";
 import { SlotUI } from "../../slots/SlotUI";
+import { SlotWinPresentation } from "../../slots/SlotWinPresentation";
 import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/SlotConstants";
 import { updateBalanceOnServer } from "../../utils/ServerBridge";
 
@@ -13,6 +14,7 @@ const BAR_HEIGHT = 72;
 export class SceneHenesys extends BaseScene {
   private slotMachine!: SlotMachine;
   private slotUI!: SlotUI;
+  private winPresentation!: SlotWinPresentation;
 
   constructor() {
     super({ key: "SceneHenesys" });
@@ -44,6 +46,7 @@ export class SceneHenesys extends BaseScene {
     const gridY = height * 0.22;
 
     this.slotMachine = new SlotMachine(this, gridX, gridY, this.balance);
+    this.winPresentation = new SlotWinPresentation(this, gridX, gridY);
 
     const barY = height - BAR_HEIGHT;
     this.slotUI = new SlotUI(this, 0, barY, width, {
@@ -62,20 +65,22 @@ export class SceneHenesys extends BaseScene {
     this.slotMachine.setOnStateChange((state) => {
       const isIdle = state === SlotState.IDLE;
       this.slotUI.setButtonsEnabled(isIdle);
-      if (!isIdle) this.slotUI.setAutoMode(
-        state === SlotState.AUTO_SPINNING ||
-        state === SlotState.SPINNING ||
-        state === SlotState.EVALUATING ||
-        state === SlotState.WIN_PRESENTATION,
-      );
-      if (state === SlotState.IDLE) this.slotUI.setAutoMode(false);
     });
 
     this.slotMachine.setOnWin((win) => {
       if (win.totalWin > 0) {
         this.slotUI.showWin(win.totalWin);
+        this.winPresentation.start(win.lineWins);
       }
     });
+
+    this.slotMachine.setOnAutoEnd(() => {
+      this.slotUI.setAutoMode(false);
+    });
+
+    this.winPresentation.onButtonsReady = () => {
+      this.slotMachine.setPresentationDone();
+    };
 
     const gridBorder = this.add.graphics();
     gridBorder.lineStyle(3, 0x4488cc, 0.6);
@@ -96,18 +101,23 @@ export class SceneHenesys extends BaseScene {
   }
 
   private handlePlay() {
+    this.winPresentation.stop();
     this.slotMachine.play();
   }
 
   private handleAuto() {
+    this.winPresentation.stop();
+    this.slotUI.setAutoMode(true);
     this.slotMachine.startAuto();
   }
 
   private handleStopAuto() {
     this.slotMachine.stopAuto();
+    this.slotUI.setAutoMode(false);
   }
 
   shutdown() {
+    this.winPresentation?.destroy();
     this.slotMachine?.destroy();
     this.slotUI?.destroy();
   }
