@@ -59,6 +59,8 @@ export class SceneHenesys extends BaseScene {
       onLineChange: (value) => this.slotMachine.setLines(value),
     });
 
+    this.slotUI.updateLineDisplay(25);
+
     this.slotMachine.setOnBalanceChange((newBalance) => {
       this.setTopBarNumber(newBalance);
       this.persistBalance(newBalance);
