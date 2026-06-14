@@ -150,6 +150,7 @@ export class CascadeSlotMachine extends SlotBase {
       for (let row = CASCADE_BUFFER_ROWS; row < CASCADE_TOTAL_ROWS; row++) {
         const cell = this.cells[col]?.[row];
         if (!cell) continue;
+        this.scene.tweens.killTweensOf(cell.container);
         const visibleRow = row - CASCADE_BUFFER_ROWS;
         cell.container.y = this.gridY + visibleRow * CELL + CELL / 2;
         cell.container.setAlpha(1);
@@ -195,8 +196,8 @@ export class CascadeSlotMachine extends SlotBase {
       }
     }
 
-    const dropDuration = 800;
-    const rowStagger = 200;
+    const dropDuration = 1050;
+    const rowStagger = 260;
 
     for (let visibleRow = CASCADE_VISIBLE_ROWS - 1; visibleRow >= 0; visibleRow--) {
       const delay = (CASCADE_VISIBLE_ROWS - 1 - visibleRow) * rowStagger;
@@ -206,12 +207,12 @@ export class CascadeSlotMachine extends SlotBase {
         if (!cell) continue;
 
         const sym = this.grid[col]?.[gridRow] ?? 0;
-        this.drawCell(cell, sym);
 
         const finalY = this.gridY + visibleRow * CELL + CELL / 2;
         cell.container.y = this.gridY - CELL * 2;
         cell.container.setAlpha(1);
-        cell.container.setVisible(true);
+
+        this.drawCell(cell, sym);
 
         this.scene.tweens.add({
           targets: cell.container,
@@ -334,6 +335,14 @@ export class CascadeSlotMachine extends SlotBase {
   }
 
   private processCascade() {
+    this.renderAll();
+    for (let col = 0; col < CASCADE_REEL_COUNT; col++) {
+      for (let row = CASCADE_BUFFER_ROWS; row < CASCADE_TOTAL_ROWS; row++) {
+        const cell = this.cells[col]?.[row];
+        if (cell) this.scene.tweens.killTweensOf(cell.container);
+      }
+    }
+
     const visible = this.getVisibleGrid();
     const winInfo = this.findWinningInfo(visible);
 
@@ -381,8 +390,6 @@ export class CascadeSlotMachine extends SlotBase {
       });
     }
 
-    const savedOldVisible = this.getVisibleGrid();
-
     this.scene.time.delayedCall(1100, () => {
       this.highlightGfx.clear();
       this.highlightGfx.setVisible(false);
@@ -415,43 +422,35 @@ export class CascadeSlotMachine extends SlotBase {
           }
         }
 
-        this.dropSymbols();
         const dropMap = this.dropSymbols();
-
-        const newVisible = this.getVisibleGrid();
 
         for (let row = CASCADE_VISIBLE_ROWS - 1; row >= 0; row--) {
           for (let col = 0; col < CASCADE_REEL_COUNT; col++) {
-            const oldSym = savedOldVisible[col]?.[row] ?? -1;
-            const newSym = newVisible[col]?.[row] ?? -1;
-
-            if (oldSym === newSym) continue;
-
             const gridRow = CASCADE_BUFFER_ROWS + row;
             const cell = this.cells[col]?.[gridRow];
             if (!cell) continue;
 
-            this.drawCell(cell, newSym);
-
-            const dropCells = dropMap[col]?.[row] ?? CASCADE_VISIBLE_ROWS;
+            const sym = this.grid[col]?.[gridRow] ?? 0;
+            const dropCells = dropMap[col]?.[row] ?? 0;
 
             const finalY = this.gridY + row * CELL + CELL / 2;
             cell.container.y = finalY - dropCells * CELL;
             cell.container.setAlpha(1);
-            cell.container.setVisible(true);
 
-            const stagger = (CASCADE_VISIBLE_ROWS - 1 - row) * 65;
+            this.drawCell(cell, sym);
+
+            const stagger = (CASCADE_VISIBLE_ROWS - 1 - row) * 85;
             this.scene.tweens.add({
               targets: cell.container,
               y: finalY,
-              duration: 1000,
+              duration: 1300,
               delay: stagger,
               ease: "Bounce.easeOut",
             });
           }
         }
 
-        this.scene.time.delayedCall(1000 + 2 * 65 + 100, () => {
+        this.scene.time.delayedCall(1300 + 2 * 85 + 100, () => {
           this.renderAll();
           this.evaluateCascade();
         });
