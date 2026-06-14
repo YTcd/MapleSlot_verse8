@@ -1,0 +1,24 @@
+{
+  "audio": {
+    "bgm": {
+      "url": "https://resource-static.msu.io/data/Sound/Bgm00/GoPicnic.mp3",
+      "description": "MapleStory Bgm00: GoPicnic - cheerful background music for Henesys slot machine"
+    },
+    "sfxWin": {
+      "url": "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc45c686f3ecf63d-1781021996644/static-assets/audio-a093ae4e-d8a9-493d-bf1c-3659ee66ff28.ogg",
+      "description": "Arcade celebration chime fanfare for slot machine win (3 seconds)"
+    }
+  },
+  "background": {
+    "perion": {
+      "url": "https://resource-static.msu.io/data/Map/Back/dryRock/back/",
+      "description": "Perion (Victoria Island warrior town) background set - dryRock theme.",
+      "metadata": { "set": "dryRock" }
+    },
+    "henesys": {
+      "url": "https://resource-static.msu.io/data/Map/Back/grassySoil_new/back/",
+      "description": "Henesys map (323090120) background set - grassySoil_new theme.",
+      "metadata": { "set": "grassySoil_new", "mapId": "323090120" }
+    }
+  }
+}
