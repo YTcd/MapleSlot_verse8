@@ -228,7 +228,7 @@ export class SceneHenesys extends BaseScene {
     this.attackQueue--;
     this.isAttacking = true;
     this.shootToggle = !this.shootToggle;
-    this.player.setAction(this.shootToggle ? "shoot2" : "shoot1");
+    this.player.attack(this.shootToggle ? 1 : 0);
     this.time.delayedCall(600, () => {
       this.player.stand();
       this.isAttacking = false;
