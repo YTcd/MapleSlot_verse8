@@ -3,11 +3,9 @@ import { BaseScene } from "./BaseScene";
 import { goToScene } from "../utils/SceneTransition";
 
 const TOWN_SCENES = [
-  { name: "Lith Harbor", key: "SceneLithHarbor" },
   { name: "Henesys", key: "SceneHenesys" },
-  { name: "Ellinia", key: "SceneEllinia" },
-  { name: "Perion", key: "ScenePerion" },
-  { name: "Kerning City", key: "SceneKerningCity" },
+  { name: "Sleepywood", key: "SceneSleepywood" },
+  { name: "Ludibrium", key: "SceneLudibrium" },
 ];
 
 export class TownSelectScene extends BaseScene {
@@ -33,7 +31,8 @@ export class TownSelectScene extends BaseScene {
 
     const btnW = 140;
     const btnH = 56;
-    const gap = 16;
+    const areaWidth = width * 0.6;
+    const gap = (areaWidth - TOWN_SCENES.length * btnW) / (TOWN_SCENES.length - 1);
     const totalW = TOWN_SCENES.length * btnW + (TOWN_SCENES.length - 1) * gap;
     const startX = (width - totalW) / 2 + btnW / 2;
     const btnY = height * 0.55;

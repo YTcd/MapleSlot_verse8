@@ -148,3 +148,9 @@ Henesys slot machine town scene with:
 - `data/maple/mob_100003.json`: Spore render plan (3 stand frames)
 - `data/maple/mob_100004.json`: Orange Mushroom render plan (2 stand frames)
 - `data/maple/mob_2220100.json`: Blue Mushroom render plan (2 stand frames)
+
+- `data/maple/body_2000.json`: Body render plan (30 entries, stand1/stabO1/stabO2/shoot1/shoot2)
+- `data/maple/head_12000.json`: Head render plan (75 entries, stand1/stabO1/stabO2/shoot1/shoot2)
+- `data/maple/face_20000.json`: Face render plan (1 entry, default expression)
+- `data/maple/hair_30000.json`: Hair render plan (30 entries, stand1/stabO1/stabO2/shoot1/shoot2)
+- `data/maple/weapon_1472263.json`: Maple Treasure Thief Claw render plan (7 entries, stand1/stabO1/stabO2/shoot1/shoot2)

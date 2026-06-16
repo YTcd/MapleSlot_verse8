@@ -1,9 +1,9 @@
 import Phaser from "phaser";
 import { BaseScene } from "../BaseScene";
 
-export class SceneKerningCity extends BaseScene {
+export class SceneLudibrium extends BaseScene {
   constructor() {
-    super({ key: "SceneKerningCity" });
+    super({ key: "SceneLudibrium" });
   }
 
   preload() {
@@ -13,17 +13,17 @@ export class SceneKerningCity extends BaseScene {
   protected buildScene(): Phaser.GameObjects.GameObject[] {
     const { width, height } = this.cameras.main;
 
-    this.cameras.main.setBackgroundColor("#2d2d2d");
+    this.cameras.main.setBackgroundColor("#2d1a4a");
 
     const topBar = this.createTopBar();
 
     const title = this.add
-      .text(width / 2, height * 0.22, "Kerning City", {
+      .text(width / 2, height * 0.22, "Ludibrium", {
         fontFamily: "Arial, sans-serif",
         fontSize: "48px",
-        color: "#d0d0d0",
+        color: "#c0a0f0",
         fontStyle: "bold",
-        stroke: "#1a1a1a",
+        stroke: "#1a0a3a",
         strokeThickness: 4,
       })
       .setOrigin(0.5);

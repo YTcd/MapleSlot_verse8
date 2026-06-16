@@ -2,11 +2,9 @@ import Phaser from "phaser";
 import { TitleScene } from "./scenes/TitleScene";
 import { LoadingScene } from "./scenes/LoadingScene";
 import { TownSelectScene } from "./scenes/TownSelectScene";
-import { SceneLithHarbor } from "./scenes/towns/SceneLithHarbor";
 import { SceneHenesys } from "./scenes/towns/SceneHenesys";
-import { SceneEllinia } from "./scenes/towns/SceneEllinia";
-import { ScenePerion } from "./scenes/towns/ScenePerion";
-import { SceneKerningCity } from "./scenes/towns/SceneKerningCity";
+import { SceneSleepywood } from "./scenes/towns/SceneSleepywood";
+import { SceneLudibrium } from "./scenes/towns/SceneLudibrium";
 
 export const createGame = (parent: string) => {
   const originalSpriteSetDisplaySize = Phaser.GameObjects.Sprite.prototype.setDisplaySize;
@@ -27,7 +25,7 @@ export const createGame = (parent: string) => {
         debug: false,
       },
     },
-    scene: [TitleScene, LoadingScene, TownSelectScene, SceneLithHarbor, SceneHenesys, SceneEllinia, ScenePerion, SceneKerningCity],
+    scene: [TitleScene, LoadingScene, TownSelectScene, SceneHenesys, SceneSleepywood, SceneLudibrium],
     scale: {
       mode: Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.CENTER_BOTH,

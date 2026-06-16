@@ -1,11 +1,13 @@
 import Phaser from "phaser";
 import { BaseScene } from "../BaseScene";
-import { SlotMachine } from "../../slots/SlotMachine";
+import { CascadeSlotMachine } from "../../slots/CascadeSlotMachine";
 import { SlotUI } from "../../slots/SlotUI";
-import { SlotWinPresentation } from "../../slots/SlotWinPresentation";
-import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/SlotConstants";
-import { preloadMobTextures } from "../../slots/SlotSymbolData";
+import { SlotState } from "../../slots/SlotConstants";
 import { updateBalanceOnServer } from "../../utils/ServerBridge";
+import {
+  CASCADE_REEL_COUNT,
+  CASCADE_VISIBLE_ROWS,
+} from "../../slots/CascadeSlotConstants";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
@@ -14,59 +16,49 @@ import faceData from "../../../../data/maple/face_20000.json";
 import hairData from "../../../../data/maple/hair_30000.json";
 import weaponData from "../../../../data/maple/weapon_1472263.json";
 
-const CELL = SYMBOL_SIZE + SYMBOL_GAP;
-const GRID_WIDTH = REEL_COUNT * CELL - SYMBOL_GAP;
-const GRID_HEIGHT = 3 * CELL - SYMBOL_GAP;
+const CELL = 100;
+const GRID_WIDTH = CASCADE_REEL_COUNT * CELL;
+const GRID_HEIGHT = CASCADE_VISIBLE_ROWS * CELL;
 const BAR_HEIGHT = 72;
-
-const BGM_URL = "https://resource-static.msu.io/data/Sound/Bgm00/GoPicnic.mp3";
-const WIN_SFX_URL = "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc45c686f3ecf63d-1781021996644/static-assets/audio-a093ae4e-d8a9-493d-bf1c-3659ee66ff28.ogg";
 const BOSS_URL = "https://resource-static.msu.io/data/Mob/9303082/stand/0.png";
 
-export class SceneHenesys extends BaseScene {
-  private slotMachine!: SlotMachine;
+export class SceneSleepywood extends BaseScene {
+  private slotMachine!: CascadeSlotMachine;
   private slotUI!: SlotUI;
-  private winPresentation!: SlotWinPresentation;
-  private bgMusic: Phaser.Sound.BaseSound | null = null;
-  private audioLoaded: boolean = false;
   private player!: MapleSprite;
   private attackQueue = 0;
   private isAttacking = false;
   private shootToggle = false;
 
   constructor() {
-    super({ key: "SceneHenesys" });
+    super({ key: "SceneSleepywood" });
   }
 
   preload() {
     this.preloadTopBarIcons();
-    preloadMobTextures(this);
 
     for (const d of [bodyData, headData, faceData, hairData, weaponData]) {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
     this.load.image("boss_balrog", BOSS_URL);
-    this.load.audio("bgm_gopicnic", BGM_URL);
-    this.load.audio("sfx_win", WIN_SFX_URL);
-    this.load.once("complete", () => { this.audioLoaded = true; });
   }
 
   protected buildScene(): Phaser.GameObjects.GameObject[] {
     const { width, height } = this.cameras.main;
 
-    this.cameras.main.setBackgroundColor("#1a3a5c");
+    this.cameras.main.setBackgroundColor("#2d5a1e");
 
     const topBar = this.createTopBar();
 
     const title = this.add
-      .text(width / 2, height * 0.08, "Henesys", {
+      .text(width / 2, height * 0.08, "Sleepywood", {
         fontFamily: '"Gowun Batang", "Noto Serif KR", serif',
         fontSize: "40px",
-        color: "#a0d8f0",
+        color: "#f5e6c8",
         fontStyle: "bold",
-        stroke: "#0a2a3c",
-        strokeThickness: 4,
+        stroke: "#2a1a0a",
+        strokeThickness: 5,
       })
       .setOrigin(0.5)
       .setDepth(1);
@@ -82,8 +74,7 @@ export class SceneHenesys extends BaseScene {
     const topPad = Math.max(0, (availableH - totalBlockH) / 2);
     const gridY = contentTop + topPad + charH;
 
-    this.slotMachine = new SlotMachine(this, gridX, gridY, this.balance);
-    this.winPresentation = new SlotWinPresentation(this, gridX, gridY, this.slotMachine);
+    this.slotMachine = new CascadeSlotMachine(this, gridX, gridY, this.balance);
 
     const barY = height - BAR_HEIGHT;
     this.slotUI = new SlotUI(this, 0, barY, width, {
@@ -93,6 +84,8 @@ export class SceneHenesys extends BaseScene {
       onBetChange: (value) => this.slotMachine.setBet(value),
       onLineChange: (value) => this.slotMachine.setLines(value),
     });
+
+    this.slotUI.updateLineDisplay(25);
 
     this.slotMachine.setOnBalanceChange((newBalance) => {
       this.setTopBarNumber(newBalance);
@@ -107,8 +100,6 @@ export class SceneHenesys extends BaseScene {
     this.slotMachine.setOnWin((win) => {
       if (win.totalWin > 0) {
         this.slotUI.showWin(win.totalWin);
-        this.playWinSound();
-        this.winPresentation.start(win.lineWins);
         this.queueAttack();
       }
     });
@@ -116,10 +107,6 @@ export class SceneHenesys extends BaseScene {
     this.slotMachine.setOnAutoEnd(() => {
       this.slotUI.setAutoMode(false);
     });
-
-    this.winPresentation.onButtonsReady = () => {
-      this.slotMachine.setPresentationDone();
-    };
 
     const gridBorder = this.add.graphics();
     gridBorder.lineStyle(3, 0x4488cc, 0.6);
@@ -158,37 +145,7 @@ export class SceneHenesys extends BaseScene {
     bossImg.setDisplaySize(displayH, displayH);
     bossImg.setOrigin(1, 0.5);
 
-    this.time.delayedCall(200, () => this.startBgm());
-
     return [...topBar, title, bossHPBar.getContainer(), this.player, bossImg, gridBorder];
-  }
-
-  private startBgm() {
-    if (this.bgMusic) return;
-    if (!this.audioLoaded) return;
-    try {
-      this.bgMusic = this.sound.add("bgm_gopicnic", { loop: true, volume: 0.35 });
-      this.bgMusic.play();
-    } catch {
-      // audio unavailable
-    }
-  }
-
-  private playWinSound() {
-    if (!this.audioLoaded) return;
-    try {
-      if (this.bgMusic?.isPlaying) {
-        this.bgMusic.pause();
-      }
-      this.sound.play("sfx_win", { volume: 0.6 });
-      this.time.delayedCall(3000, () => {
-        if (this.bgMusic && !this.bgMusic.isPlaying) {
-          this.bgMusic.resume();
-        }
-      });
-    } catch {
-      // audio unavailable
-    }
   }
 
   private lastSyncedBalance = 0;
@@ -198,17 +155,15 @@ export class SceneHenesys extends BaseScene {
     this.lastSyncedBalance = newBalance;
 
     updateBalanceOnServer(newBalance, "slot").catch((err) => {
-      console.warn("[SceneHenesys] Failed to sync balance:", err);
+      console.warn("[SceneSleepywood] Failed to sync balance:", err);
     });
   }
 
   private handlePlay() {
-    this.winPresentation.stop();
     this.slotMachine.play();
   }
 
   private handleAuto() {
-    this.winPresentation.stop();
     this.slotUI.setAutoMode(true);
     this.slotMachine.startAuto();
   }
@@ -237,10 +192,7 @@ export class SceneHenesys extends BaseScene {
   }
 
   shutdown() {
-    try { this.bgMusic?.stop(); } catch { /* ignore */ }
-    this.bgMusic = null;
     this.player?.destroy();
-    this.winPresentation?.destroy();
     this.slotMachine?.destroy();
     this.slotUI?.destroy();
   }
