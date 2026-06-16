@@ -16,8 +16,6 @@ dist-ssr
 package-lock.json
 committedAt
 .deployed
-src/__system__/
-data/maple/
 
 # Editor directories and files
 .vscode/*
