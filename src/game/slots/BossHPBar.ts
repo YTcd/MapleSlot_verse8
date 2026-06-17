@@ -26,10 +26,11 @@ export class BossHPBar {
 
     this.container = scene.add.container(0, 0);
 
-    const panelH = 32;
+    const panelH = 46;
     const panelRadius = 6;
-    const iconSize = 28;
+    const iconSize = 36;
     const barH = 14;
+    const pad = 6;
 
     const panelGfx = scene.add.graphics();
     panelGfx.fillStyle(0x1a1a2e, 0.9);
@@ -42,26 +43,27 @@ export class BossHPBar {
     const iconY = panelH / 2;
     const iconFrame = scene.add.graphics();
     iconFrame.fillStyle(0x222244, 1);
-    iconFrame.fillRoundedRect(iconX - iconSize / 2 - 2, iconY - iconSize / 2 - 2, iconSize + 4, iconSize + 4, 4);
+    iconFrame.fillRoundedRect(iconX - iconSize / 2 - 2, iconY - iconSize / 2, iconSize + 4, iconSize + 4, 4);
     iconFrame.lineStyle(1, config.barColor, 0.7);
-    iconFrame.strokeRoundedRect(iconX - iconSize / 2 - 2, iconY - iconSize / 2 - 2, iconSize + 4, iconSize + 4, 4);
+    iconFrame.strokeRoundedRect(iconX - iconSize / 2 - 2, iconY - iconSize / 2, iconSize + 4, iconSize + 4, 4);
     this.container.add(iconFrame);
 
     const iconImg = scene.add.image(iconX, iconY, config.bossIconKey);
     iconImg.setDisplaySize(iconSize, iconSize);
     this.container.add(iconImg);
 
-    const nameX = iconX + iconSize / 2 + 12;
-    this.nameText = scene.add.text(nameX, iconY - barH / 2 - 2, config.bossName, {
+    const nameX = iconX + iconSize / 2 + 10;
+    const nameY = pad + 5;
+    this.nameText = scene.add.text(nameX, nameY, config.bossName, {
       fontFamily: "Arial, sans-serif",
       fontSize: "11px",
       color: "#ffffff",
       fontStyle: "bold",
-    }).setOrigin(0, 1);
+    }).setOrigin(0, 0);
     this.container.add(this.nameText);
 
     const barX = nameX;
-    const barY = iconY - barH / 2 + 2;
+    const barY = nameY + 16;
     const barW = width - barX - 10;
 
     const barBg = scene.add.graphics();

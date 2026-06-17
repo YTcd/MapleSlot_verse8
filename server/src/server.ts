@@ -31,6 +31,30 @@ export class Server {
   }
 
   /**
+   * 신규 유저인지 확인한다. balance가 초기화된 적 없으면 true.
+   */
+  async isNewUser(): Promise<{ isNew: boolean }> {
+    const myState = await $global.getMyState();
+    return { isNew: myState.balance === undefined || myState.balance === null };
+  }
+
+  /**
+   * balance를 INITIAL_BALANCE로 리셋한다 (개발/테스트용).
+   */
+  async resetBalance(): Promise<{ balance: number }> {
+    await $global.updateMyState({ balance: INITIAL_BALANCE });
+    return { balance: INITIAL_BALANCE };
+  }
+
+  /**
+   * balance를 완전히 삭제하여 신규 유저 상태로 되돌린다.
+   */
+  async clearBalance(): Promise<{ cleared: boolean }> {
+    await $global.updateMyState({ balance: undefined });
+    return { cleared: true };
+  }
+
+  /**
    * balance를 변경하고 변경 사유를 기록한다.
    * @param balance - 변경할 balance 값
    * @param reason - 변경 사유 (예: "slot_win", "slot_bet", "daily_reward")

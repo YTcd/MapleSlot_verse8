@@ -9,9 +9,9 @@ export const SYMBOL_WILD = 5;
 export const SYMBOL_SCATTER = 6;
 
 export const CASCADE_PAY_TABLE: Record<number, number[]> = {
-  3: [2, 3, 5, 8, 12, 20, 0],
-  4: [10, 15, 25, 40, 60, 100, 0],
-  5: [50, 75, 125, 200, 300, 500, 0],
+  3: [3, 5, 7, 10, 15, 25, 0],
+  4: [14, 23, 37, 60, 90, 150, 0],
+  5: [75, 113, 188, 300, 450, 750, 0],
 };
 
 export const CASCADE_PAYLINES: number[][] = [

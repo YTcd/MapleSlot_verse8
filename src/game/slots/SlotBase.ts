@@ -9,7 +9,7 @@ export interface SlotWin {
 export abstract class SlotBase {
   protected scene: Phaser.Scene;
   protected state: SlotState = SlotState.IDLE;
-  protected bet: number = 100;
+  protected bet: number = 1000;
   protected lines: number = 1;
   protected balance: number = 0;
 

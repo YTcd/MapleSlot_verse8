@@ -9,6 +9,14 @@ const BTN_W = 100;
 const BTN_H = 44;
 const BTN_GAP = 12;
 
+function formatBet(value: number): string {
+  if (value >= 10000000) return (value / 1000000).toFixed(0) + "M";
+  if (value >= 1000000) return (value / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+  if (value >= 10000) return (value / 1000).toFixed(0) + "K";
+  if (value >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+  return String(value);
+}
+
 interface PanelOption {
   value: number;
   label: string;
@@ -30,6 +38,10 @@ export class SlotUI {
   private lineBtn!: Phaser.GameObjects.Rectangle;
   private lineText!: Phaser.GameObjects.Text;
   private winText!: Phaser.GameObjects.Text;
+  private tooltipContainer: Phaser.GameObjects.Container | null = null;
+  private tooltipTimer: Phaser.Time.TimerEvent | null = null;
+  private playBtnCenterX = 0;
+  private playBtnCenterY = 0;
 
   private panelOpen: "bet" | "line" | null = null;
   private panelContainer: Phaser.GameObjects.Container | null = null;
@@ -108,7 +120,7 @@ export class SlotUI {
     this.betBtn = this.makeButton(btnStartX + BTN_W + BTN_GAP, this.y + (BAR_HEIGHT - BTN_H) / 2, BTN_W, BTN_H, 0x3a5a8a);
     this.container.add(this.betBtn);
     this.betText = this.scene.add
-      .text(btnStartX + BTN_W + BTN_GAP + BTN_W / 2, this.y + BAR_HEIGHT / 2, "Bet: 100", {
+      .text(btnStartX + BTN_W + BTN_GAP + BTN_W / 2, this.y + BAR_HEIGHT / 2, "Bet: 1K", {
         fontFamily: "Arial, sans-serif",
         fontSize: "14px",
         color: "#ffffff",
@@ -123,6 +135,8 @@ export class SlotUI {
     const rightX = this.x + this.width - BTN_W * 2 - BTN_GAP * 2 - 12;
     this.playBtn = this.makeButton(rightX, this.y + (BAR_HEIGHT - BTN_H) / 2, BTN_W, BTN_H, 0x338833);
     this.container.add(this.playBtn);
+    this.playBtnCenterX = rightX + BTN_W / 2;
+    this.playBtnCenterY = this.y + BAR_HEIGHT / 2;
     this.playText = this.scene.add
       .text(rightX + BTN_W / 2, this.y + BAR_HEIGHT / 2, "PLAY", {
         fontFamily: "Arial, sans-serif",
@@ -178,7 +192,7 @@ export class SlotUI {
 
     const options: PanelOption[] =
       type === "bet"
-        ? BET_OPTIONS.map((v) => ({ value: v, label: String(v) }))
+        ? BET_OPTIONS.map((v) => ({ value: v, label: formatBet(v) }))
         : LINE_OPTIONS.map((v) => ({ value: v, label: String(v) }));
 
     const panelW = 100;
@@ -227,7 +241,7 @@ export class SlotUI {
   }
 
   updateBetDisplay(value: number) {
-    this.betText.setText(`Bet: ${value}`);
+    this.betText.setText(`Bet: ${formatBet(value)}`);
     this.onBetChange(value);
   }
   updateLineDisplay(value: number) {
@@ -277,7 +291,56 @@ export class SlotUI {
     }
   }
 
+  showTooltip(message: string) {
+    this.hideTooltip();
+
+    const tipW = 220;
+    const tipH = 48;
+    const tailH = 8;
+    const tailW = 12;
+    const tipX = this.playBtnCenterX;
+    const tipY = this.y - tipH - 6;
+
+    this.tooltipContainer = this.scene.add.container(0, 0);
+
+    const bg = this.scene.add.graphics();
+    bg.fillStyle(0x333344, 0.95);
+    bg.fillRoundedRect(tipX - tipW / 2, tipY, tipW, tipH, 6);
+    bg.lineStyle(2, 0x8888cc, 0.8);
+    bg.strokeRoundedRect(tipX - tipW / 2, tipY, tipW, tipH, 6);
+    bg.fillTriangle(
+      tipX, tipY + tipH + tailH,
+      tipX - tailW / 2, tipY + tipH,
+      tipX + tailW / 2, tipY + tipH,
+    );
+    this.tooltipContainer.add(bg);
+
+    const text = this.scene.add.text(tipX, tipY + tipH / 2, message, {
+      fontFamily: "Arial, sans-serif",
+      fontSize: "11px",
+      color: "#ff8888",
+      align: "center",
+    }).setOrigin(0.5);
+    this.tooltipContainer.add(text);
+
+    bg.setInteractive(
+      new Phaser.Geom.Rectangle(tipX - tipW / 2, tipY, tipW, tipH + tailH),
+      Phaser.Geom.Rectangle.Contains,
+    );
+    bg.on("pointerdown", () => this.hideTooltip());
+
+    this.tooltipTimer = this.scene.time.delayedCall(5000, () => this.hideTooltip());
+  }
+
+  hideTooltip() {
+    this.tooltipTimer?.destroy();
+    this.tooltipTimer = null;
+    this.tooltipContainer?.destroy();
+    this.tooltipContainer = null;
+  }
+
   destroy() {
+    this.hideTooltip();
     this.closePanel();
     this.container.destroy();
   }

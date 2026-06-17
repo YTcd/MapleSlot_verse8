@@ -22,6 +22,8 @@ const BAR_HEIGHT = 72;
 const BGM_URL = "https://resource-static.msu.io/data/Sound/Bgm00/GoPicnic.mp3";
 const WIN_SFX_URL = "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc45c686f3ecf63d-1781021996644/static-assets/audio-a093ae4e-d8a9-493d-bf1c-3659ee66ff28.ogg";
 const BOSS_URL = "https://resource-static.msu.io/data/Mob/9303082/stand/0.png";
+const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/9303082/attack1/3.png";
+const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070001/info/icon.png";
 
 export class SceneHenesys extends BaseScene {
   private slotMachine!: SlotMachine;
@@ -33,6 +35,10 @@ export class SceneHenesys extends BaseScene {
   private attackQueue = 0;
   private isAttacking = false;
   private shootToggle = false;
+  private bossImg!: Phaser.GameObjects.Image;
+  private bossHPBar!: BossHPBar;
+  private bossHP = 50_000_000;
+  private bossMaxHP = 50_000_000;
 
   constructor() {
     super({ key: "SceneHenesys" });
@@ -47,6 +53,8 @@ export class SceneHenesys extends BaseScene {
     }
 
     this.load.image("boss_balrog", BOSS_URL);
+    this.load.image("boss_balrog_hit", BOSS_HIT_URL);
+    this.load.image("knife_wolbi", KNIFE_URL);
     this.load.audio("bgm_gopicnic", BGM_URL);
     this.load.audio("sfx_win", WIN_SFX_URL);
     this.load.once("complete", () => { this.audioLoaded = true; });
@@ -58,23 +66,24 @@ export class SceneHenesys extends BaseScene {
     this.cameras.main.setBackgroundColor("#1a3a5c");
 
     const topBar = this.createTopBar();
+    const barH = height * 0.1;
 
     const title = this.add
-      .text(width / 2, height * 0.08, "Henesys", {
+      .text(width / 2, barH / 2, "Henesys", {
         fontFamily: '"Gowun Batang", "Noto Serif KR", serif',
-        fontSize: "40px",
+        fontSize: "24px",
         color: "#a0d8f0",
         fontStyle: "bold",
         stroke: "#0a2a3c",
-        strokeThickness: 4,
+        strokeThickness: 3,
       })
       .setOrigin(0.5)
       .setDepth(1);
 
     const gridX = (width - GRID_WIDTH) / 2;
-    const titleBottom = height * 0.08 + 40;
-    const hpBarH = 36;
-    const hpBarY = titleBottom + 6;
+    const titleBottom = barH + 8;
+    const hpBarH = 46;
+    const hpBarY = titleBottom + 14;
     const contentTop = hpBarY + hpBarH + 4;
     const availableH = height - BAR_HEIGHT - contentTop;
     const charH = availableH * 0.20;
@@ -94,6 +103,8 @@ export class SceneHenesys extends BaseScene {
       onLineChange: (value) => this.slotMachine.setLines(value),
     });
 
+    this.slotUI.updateLineDisplay(25);
+
     this.slotMachine.setOnBalanceChange((newBalance) => {
       this.setTopBarNumber(newBalance);
       this.persistBalance(newBalance);
@@ -110,6 +121,7 @@ export class SceneHenesys extends BaseScene {
         this.playWinSound();
         this.winPresentation.start(win.lineWins);
         this.queueAttack();
+        this.throwKnife(win.totalWin);
       }
     });
 
@@ -131,7 +143,7 @@ export class SceneHenesys extends BaseScene {
     const displayH = Math.min(charH * 0.85, 100);
 
     const hpBarW = GRID_WIDTH * 1.3;
-    const bossHPBar = new BossHPBar(this, width / 2, hpBarY, hpBarW, {
+    this.bossHPBar = new BossHPBar(this, width / 2, hpBarY, hpBarW, {
       bossName: "Balrog",
       bossIconKey: "boss_balrog",
       maxHP: 50000000,
@@ -154,13 +166,13 @@ export class SceneHenesys extends BaseScene {
     });
     this.player.stand();
 
-    const bossImg = this.add.image(gridX + GRID_WIDTH - charPad, displayAreaMidY, "boss_balrog");
-    bossImg.setDisplaySize(displayH, displayH);
-    bossImg.setOrigin(1, 0.5);
+    this.bossImg = this.add.image(gridX + GRID_WIDTH - charPad, displayAreaMidY, "boss_balrog");
+    this.bossImg.setDisplaySize(displayH, displayH);
+    this.bossImg.setOrigin(1, 0.5);
 
     this.time.delayedCall(200, () => this.startBgm());
 
-    return [...topBar, title, bossHPBar.getContainer(), this.player, bossImg, gridBorder];
+    return [...topBar, title, this.bossHPBar.getContainer(), this.player, this.bossImg, gridBorder];
   }
 
   private startBgm() {
@@ -204,7 +216,12 @@ export class SceneHenesys extends BaseScene {
 
   private handlePlay() {
     this.winPresentation.stop();
-    this.slotMachine.play();
+    if (!this.slotMachine.play()) {
+      const needed = this.slotMachine.currentBet * this.slotMachine.currentLines;
+      this.slotUI.showTooltip(
+        `잔액 부족\n필요: ${needed.toLocaleString("en-US")} | 보유: ${this.slotMachine.currentBalance.toLocaleString("en-US")}`,
+      );
+    }
   }
 
   private handleAuto() {
@@ -233,6 +250,38 @@ export class SceneHenesys extends BaseScene {
       this.player.stand();
       this.isAttacking = false;
       if (this.attackQueue > 0) this.playNextAttack();
+    });
+  }
+
+  private throwKnife(damage: number) {
+    const px = this.player.x + 40;
+    const py = this.player.y - 20;
+    const bx = this.bossImg.x - 30;
+    const by = this.bossImg.y;
+
+    const knife = this.add.image(px, py, "knife_wolbi").setDepth(10);
+
+    this.tweens.add({
+      targets: knife,
+      x: bx,
+      y: by,
+      angle: 720,
+      duration: 350,
+      ease: "Sine.easeIn",
+      onUpdate: () => {
+        const progress = (knife.x - px) / (bx - px);
+        knife.setScale(1 - progress * 0.5);
+      },
+      onComplete: () => {
+        knife.destroy();
+        this.bossImg.setTexture("boss_balrog_hit");
+        this.time.delayedCall(200, () => {
+          this.bossImg.setTexture("boss_balrog");
+        });
+
+        this.bossHP = Math.max(0, this.bossHP - damage);
+        this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
+      },
     });
   }
 

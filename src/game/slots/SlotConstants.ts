@@ -21,17 +21,17 @@ export const REELS: Int8Array[] = [
  * [matchCount_3, matchCount_4, matchCount_5] → array of [symbol0, ..., symbol6]
  */
 export const PAY_TABLE: Record<number, number[]> = {
-  3: [4.5, 6, 7.5, 9, 12, 18, 30],
-  4: [30, 45, 60, 90, 150, 300, 600],
-  5: [225, 375, 600, 1200, 1800, 3750, 7500],
+  3: [6, 9, 11, 13, 17, 26, 43],
+  4: [43, 65, 86, 130, 215, 430, 860],
+  5: [320, 540, 860, 1720, 2580, 5380, 10760],
 };
 
 /** Total number of distinct symbols on reel strips */
 export const SYMBOL_COUNT = 7;
 
 /** Default configuration */
-export const DEFAULT_BET = 100;
-export const BET_OPTIONS = [1, 2, 5, 10, 20, 50, 100];
+export const DEFAULT_BET = 1000;
+export const BET_OPTIONS = [1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 10000000];
 export const LINE_OPTIONS = [1, 5, 9, 15, 25];
 
 /** Slot grid layout */

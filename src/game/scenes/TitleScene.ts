@@ -1,10 +1,17 @@
 import Phaser from "phaser";
 import { BaseScene } from "./BaseScene";
 import { goToScene } from "../utils/SceneTransition";
+import { isNewUser, resetBalance, clearUserState } from "../utils/ServerBridge";
 
 const CDN = "https://resource-static.msu.io/data/";
 
+(window as any).__resetBalance = resetBalance;
+(window as any).__clearUserState = clearUserState;
+(window as any).__isNewUser = isNewUser;
+
 export class TitleScene extends BaseScene {
+  private isNew = false;
+
   constructor() {
     super({ key: "TitleScene" });
   }
@@ -17,6 +24,10 @@ export class TitleScene extends BaseScene {
 
   protected buildScene(): Phaser.GameObjects.GameObject[] {
     const { width, height } = this.cameras.main;
+
+    isNewUser().then((result) => {
+      this.isNew = result;
+    });
 
     this.cameras.main.setBackgroundColor("#0d1321");
 
@@ -65,8 +76,31 @@ export class TitleScene extends BaseScene {
 
     btnBg.on("pointerover", () => { btnBg.setFillStyle(0x5a8fc5, 0.85); });
     btnBg.on("pointerout", () => { btnBg.setFillStyle(0x4a6fa5, 0.85); });
-    btnBg.on("pointerdown", () => { goToScene(this, "TownSelectScene"); });
+    btnBg.on("pointerdown", () => { goToScene(this, "TownSelectScene", { isNewUser: this.isNew }); });
 
-    return [bgMountain, bgMid, bgGround, titleText, btnBg, btnText];
+    const delBtnW = 140;
+    const delBtnH = 32;
+    const delBtnX = 80;
+    const delBtnY = height - 30;
+
+    const delBg = this.add.rectangle(delBtnX, delBtnY, delBtnW, delBtnH, 0x662222, 0.7);
+    delBg.setStrokeStyle(1, 0x994444);
+    delBg.setInteractive({ useHandCursor: true });
+    delBg.on("pointerover", () => { delBg.setFillStyle(0x883333, 0.8); });
+    delBg.on("pointerout", () => { delBg.setFillStyle(0x662222, 0.7); });
+    delBg.on("pointerdown", () => {
+      delBg.disableInteractive();
+      clearUserState().then(() => {
+        alert("유저 데이터가 삭제되었습니다. 새로고침 후 신규 유저로 접속됩니다.");
+      });
+    });
+
+    const delText = this.add.text(delBtnX, delBtnY, "유저 데이터 삭제", {
+      fontFamily: "Arial, sans-serif",
+      fontSize: "11px",
+      color: "#cc8888",
+    }).setOrigin(0.5);
+
+    return [bgMountain, bgMid, bgGround, titleText, btnBg, btnText, delBg, delText];
   }
 }

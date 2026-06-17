@@ -52,6 +52,7 @@ export abstract class BaseScene extends Phaser.Scene {
 
   protected createTopBar(
     backScene: string = "TownSelectScene",
+    hideBack: boolean = false,
   ): Phaser.GameObjects.GameObject[] {
     const { width, height } = this.cameras.main;
     const barH = height * 0.1;
@@ -59,25 +60,31 @@ export abstract class BaseScene extends Phaser.Scene {
     const barBg = this.add.rectangle(width / 2, barH / 2, width, barH, 0x1a1a2e, 0.9);
     barBg.setOrigin(0.5, 0.5);
 
-    const btnW = 80;
-    const btnH = 32;
+    const children: Phaser.GameObjects.GameObject[] = [barBg];
 
-    const backBtn = this.add.rectangle(60, barH / 2, btnW, btnH, 0x4a6fa5, 0.85);
-    backBtn.setStrokeStyle(1, 0x88bbee);
-    backBtn.setInteractive({ useHandCursor: true });
+    if (!hideBack) {
+      const btnW = 80;
+      const btnH = 32;
 
-    const backText = this.add
-      .text(60, barH / 2, "< Back", {
-        fontFamily: "Arial, sans-serif",
-        fontSize: "16px",
-        color: "#ffffff",
-        fontStyle: "bold",
-      })
-      .setOrigin(0.5);
+      const backBtn = this.add.rectangle(60, barH / 2, btnW, btnH, 0x4a6fa5, 0.85);
+      backBtn.setStrokeStyle(1, 0x88bbee);
+      backBtn.setInteractive({ useHandCursor: true });
 
-    backBtn.on("pointerover", () => { backBtn.setFillStyle(0x5a8fc5, 0.85); });
-    backBtn.on("pointerout", () => { backBtn.setFillStyle(0x4a6fa5, 0.85); });
-    backBtn.on("pointerdown", () => { goToScene(this, backScene); });
+      const backText = this.add
+        .text(60, barH / 2, "< Back", {
+          fontFamily: "Arial, sans-serif",
+          fontSize: "16px",
+          color: "#ffffff",
+          fontStyle: "bold",
+        })
+        .setOrigin(0.5);
+
+      backBtn.on("pointerover", () => { backBtn.setFillStyle(0x5a8fc5, 0.85); });
+      backBtn.on("pointerout", () => { backBtn.setFillStyle(0x4a6fa5, 0.85); });
+      backBtn.on("pointerdown", () => { goToScene(this, backScene); });
+
+      children.push(backBtn, backText);
+    }
 
     const numBgW = 220;
     const numBgH = 30;
@@ -108,7 +115,8 @@ export abstract class BaseScene extends Phaser.Scene {
 
     this.topBarNumberText = numText;
 
-    return [barBg, backBtn, backText, gfx, coinIcon, numText];
+    children.push(gfx, coinIcon, numText);
+    return children;
   }
 
   protected fadeIn(children: Phaser.GameObjects.GameObject[]) {

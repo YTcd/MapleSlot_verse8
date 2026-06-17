@@ -50,23 +50,24 @@ export class SceneSleepywood extends BaseScene {
     this.cameras.main.setBackgroundColor("#2d5a1e");
 
     const topBar = this.createTopBar();
+    const barH = height * 0.1;
 
     const title = this.add
-      .text(width / 2, height * 0.08, "Sleepywood", {
+      .text(width / 2, barH / 2, "Sleepywood", {
         fontFamily: '"Gowun Batang", "Noto Serif KR", serif',
-        fontSize: "40px",
+        fontSize: "24px",
         color: "#f5e6c8",
         fontStyle: "bold",
         stroke: "#2a1a0a",
-        strokeThickness: 5,
+        strokeThickness: 3,
       })
       .setOrigin(0.5)
       .setDepth(1);
 
     const gridX = (width - GRID_WIDTH) / 2;
-    const titleBottom = height * 0.08 + 40;
-    const hpBarH = 36;
-    const hpBarY = titleBottom + 6;
+    const titleBottom = barH + 8;
+    const hpBarH = 46;
+    const hpBarY = titleBottom + 14;
     const contentTop = hpBarY + hpBarH + 4;
     const availableH = height - BAR_HEIGHT - contentTop;
     const charH = availableH * 0.20;
@@ -160,7 +161,12 @@ export class SceneSleepywood extends BaseScene {
   }
 
   private handlePlay() {
-    this.slotMachine.play();
+    if (!this.slotMachine.play()) {
+      const needed = this.slotMachine.currentBet * this.slotMachine.currentLines;
+      this.slotUI.showTooltip(
+        `잔액 부족\n필요: ${needed.toLocaleString("en-US")} | 보유: ${this.slotMachine.currentBalance.toLocaleString("en-US")}`,
+      );
+    }
   }
 
   private handleAuto() {
