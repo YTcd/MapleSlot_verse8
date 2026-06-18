@@ -20,7 +20,9 @@ const CELL = 100;
 const GRID_WIDTH = CASCADE_REEL_COUNT * CELL;
 const GRID_HEIGHT = CASCADE_VISIBLE_ROWS * CELL;
 const BAR_HEIGHT = 72;
-const BOSS_URL = "https://resource-static.msu.io/data/Mob/9303082/stand/0.png";
+const BOSS_URL = "https://resource-static.msu.io/data/Mob/9300203/stand/{frame}.png";
+const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/9300203/hit1/0.png";
+const BOSS_STAND_FRAMES = 2;
 
 export class SceneSleepywood extends BaseScene {
   private slotMachine!: CascadeSlotMachine;
@@ -29,6 +31,7 @@ export class SceneSleepywood extends BaseScene {
   private attackQueue = 0;
   private isAttacking = false;
   private shootToggle = false;
+  private bossImg!: Phaser.GameObjects.Sprite;
 
   constructor() {
     super({ key: "SceneSleepywood" });
@@ -41,7 +44,10 @@ export class SceneSleepywood extends BaseScene {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
-    this.load.image("boss_balrog", BOSS_URL);
+    for (let f = 0; f < BOSS_STAND_FRAMES; f++) {
+      this.load.image(`boss_stand_${f}`, BOSS_URL.replace("{frame}", String(f)));
+    }
+    this.load.image("boss_hit", BOSS_HIT_URL);
   }
 
   protected buildScene(): Phaser.GameObjects.GameObject[] {
@@ -107,6 +113,12 @@ export class SceneSleepywood extends BaseScene {
 
     this.slotMachine.setOnAutoEnd(() => {
       this.slotUI.setAutoMode(false);
+      const needed = this.slotMachine.currentBet * this.slotMachine.currentLines;
+      if (this.slotMachine.currentBalance < needed) {
+        this.slotUI.showTooltip(
+          `잔액 부족으로 Auto 중단\n필요: ${needed.toLocaleString("en-US")} | 보유: ${this.slotMachine.currentBalance.toLocaleString("en-US")}`,
+        );
+      }
     });
 
     const gridBorder = this.add.graphics();
@@ -120,12 +132,21 @@ export class SceneSleepywood extends BaseScene {
 
     const hpBarW = GRID_WIDTH * 1.3;
     const bossHPBar = new BossHPBar(this, width / 2, hpBarY, hpBarW, {
-      bossName: "Balrog",
-      bossIconKey: "boss_balrog",
+      bossName: "Jr.Balrog",
+      bossIconKey: "boss_stand_0",
       maxHP: 50000000,
       currentHP: 50000000,
       barColor: 0xcc3333,
     });
+
+    if (!this.anims.exists("jrbalrog_stand")) {
+      this.anims.create({
+        key: "jrbalrog_stand",
+        frames: Array.from({ length: BOSS_STAND_FRAMES }, (_, f) => ({ key: `boss_stand_${f}` })),
+        frameRate: 1000 / 150,
+        repeat: -1,
+      });
+    }
 
     const merged = [
       ...bodyData.render_plan,
@@ -142,11 +163,12 @@ export class SceneSleepywood extends BaseScene {
     });
     this.player.stand();
 
-    const bossImg = this.add.image(gridX + GRID_WIDTH - charPad, displayAreaMidY, "boss_balrog");
-    bossImg.setDisplaySize(displayH, displayH);
-    bossImg.setOrigin(1, 0.5);
+    this.bossImg = this.add.sprite(gridX + GRID_WIDTH - charPad, displayAreaMidY, "boss_stand_0");
+    this.bossImg.setDisplaySize(displayH, displayH);
+    this.bossImg.setOrigin(1, 0.5);
+    this.bossImg.play("jrbalrog_stand");
 
-    return [...topBar, title, bossHPBar.getContainer(), this.player, bossImg, gridBorder];
+    return [...topBar, title, bossHPBar.getContainer(), this.player, this.bossImg, gridBorder];
   }
 
   private lastSyncedBalance = 0;

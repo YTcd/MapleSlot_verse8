@@ -17,6 +17,10 @@ export class BossHPBar {
   private currentHP: number;
   private maxHP: number;
   private barColor: number;
+  private barX: number;
+  private barY: number;
+  private barW: number;
+  private barH: number;
 
   constructor(scene: Phaser.Scene, x: number, y: number, width: number, config: BossHPBarConfig) {
     this.scene = scene;
@@ -65,6 +69,10 @@ export class BossHPBar {
     const barX = nameX;
     const barY = nameY + 16;
     const barW = width - barX - 10;
+    this.barX = barX;
+    this.barY = barY;
+    this.barW = barW;
+    this.barH = barH;
 
     const barBg = scene.add.graphics();
     barBg.fillStyle(0x333333, 1);
@@ -101,12 +109,7 @@ export class BossHPBar {
   setHP(current: number, max?: number) {
     this.currentHP = current;
     if (max !== undefined) this.maxHP = max;
-    const barX = 10 + 14 + 12;
-    const iconY = 16;
-    const barH = 14;
-    const barY = iconY - barH / 2 + 2;
-    const barW = (this.container.width || 400) - barX - 10;
-    this.drawBar(barX, barY, barW, barH);
+    this.drawBar(this.barX, this.barY, this.barW, this.barH);
   }
 
   getContainer(): Phaser.GameObjects.Container {

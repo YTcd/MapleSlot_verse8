@@ -53,6 +53,7 @@ export class SlotMachine {
   private lines: number = 1;
   private balance: number = 0;
   private textureKeys: string[] = [];
+  private paylines: number[][] = PAYLINES;
   private autoStopRequested: boolean = false;
   private resumeAuto: boolean = false;
 
@@ -61,15 +62,16 @@ export class SlotMachine {
   private onWin: ((win: SlotWin) => void) | null = null;
   private onAutoEnd: (() => void) | null = null;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, balance: number) {
+  constructor(scene: Phaser.Scene, x: number, y: number, balance: number, visibleRows?: number[], customPaylines?: number[][], reelYOffsets?: number[]) {
     this.scene = scene;
     this.x = x;
     this.y = y;
     this.balance = balance;
+    if (customPaylines) this.paylines = customPaylines;
 
     this.createTextures();
     createMobAnimations(this.scene);
-    this.createReels();
+    this.createReels(visibleRows, reelYOffsets);
   }
 
   private createTextures() {
@@ -150,16 +152,19 @@ export class SlotMachine {
     gfx.destroy();
   }
 
-  private createReels() {
+  private createReels(visibleRows?: number[], reelYOffsets?: number[]) {
     for (let i = 0; i < REEL_COUNT; i++) {
       const reelX = this.x + i * CELL + SYMBOL_SIZE / 2;
+      const rows = visibleRows ? visibleRows[i] : VISIBLE_ROWS;
+      const yOff = reelYOffsets ? (reelYOffsets[i] ?? 0) : 0;
       const reel = new SlotReel(
         this.scene,
         i,
         REELS[i],
         this.textureKeys,
         reelX,
-        this.y,
+        this.y + yOff,
+        rows,
       );
       this.reels.push(reel);
     }
@@ -180,6 +185,8 @@ export class SlotMachine {
   get currentLines(): number {
     return this.lines;
   }
+
+  get paylinesArray(): number[][] { return this.paylines; }
 
   setBet(value: number) {
     if (this.state !== SlotState.IDLE) return;
@@ -315,8 +322,8 @@ export class SlotMachine {
   private calculateWin(allSymbols: number[][]): SlotWin {
     const lineWins: SlotWin["lineWins"] = [];
 
-    for (let l = 0; l < Math.min(this.lines, PAYLINES.length); l++) {
-      const payline = PAYLINES[l];
+    for (let l = 0; l < Math.min(this.lines, this.paylines.length); l++) {
+      const payline = this.paylines[l];
       const rowSymbols = payline.map((rowIdx, reelIdx) => allSymbols[reelIdx]?.[rowIdx] ?? -1);
 
       const firstSym = rowSymbols[0];
@@ -352,7 +359,7 @@ export class SlotMachine {
   }
 
   getSpritesForPayline(lineIndex: number): (Phaser.GameObjects.Sprite | null)[] {
-    const payline = PAYLINES[lineIndex];
+    const payline = this.paylines[lineIndex];
     if (!payline) return [];
 
     return payline.map((rowIdx, reelIdx) =>

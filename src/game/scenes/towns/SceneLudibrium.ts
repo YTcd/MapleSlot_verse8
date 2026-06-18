@@ -21,9 +21,23 @@ const BAR_HEIGHT = 72;
 
 const BGM_URL = "https://resource-static.msu.io/data/Sound/Bgm00/GoPicnic.mp3";
 const WIN_SFX_URL = "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc45c686f3ecf63d-1781021996644/static-assets/audio-a093ae4e-d8a9-493d-bf1c-3659ee66ff28.ogg";
-const BOSS_URL = "https://resource-static.msu.io/data/Mob/9303082/stand/0.png";
-const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/9303082/attack1/3.png";
+const BOSS_URL = "https://resource-static.msu.io/data/Mob/2600631/stand/{frame}.png";
+const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/2600631/hit1/0.png";
+const BOSS_STAND_FRAMES = 6;
 const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070001/info/icon.png";
+
+const LUDI_PAYLINES = [
+  [1,1,1,1,1],
+  [0,0,0,0,0],
+  [1,1,2,2,2],
+  [0,1,0,1,0],
+  [1,0,1,0,1],
+  [0,0,1,1,1],
+  [1,1,0,0,0],
+  [0,0,2,2,1],
+  [1,1,0,1,1],
+  [0,1,1,0,0],
+];
 
 export class SceneLudibrium extends BaseScene {
   private slotMachine!: SlotMachine;
@@ -35,7 +49,7 @@ export class SceneLudibrium extends BaseScene {
   private attackQueue = 0;
   private isAttacking = false;
   private shootToggle = false;
-  private bossImg!: Phaser.GameObjects.Image;
+  private bossImg!: Phaser.GameObjects.Sprite;
   private bossHPBar!: BossHPBar;
   private bossHP = 50_000_000;
   private bossMaxHP = 50_000_000;
@@ -52,9 +66,10 @@ export class SceneLudibrium extends BaseScene {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
-    this.load.image("boss_balrog", BOSS_URL);
-    this.load.image("boss_balrog_hit", BOSS_HIT_URL);
-    this.load.image("knife_wolbi", KNIFE_URL);
+    for (let f = 0; f < BOSS_STAND_FRAMES; f++) {
+      this.load.image(`boss_stand_${f}`, BOSS_URL.replace("{frame}", String(f)));
+    }
+    this.load.image("boss_hit", BOSS_HIT_URL);
     this.load.audio("bgm_gopicnic", BGM_URL);
     this.load.audio("sfx_win", WIN_SFX_URL);
     this.load.once("complete", () => { this.audioLoaded = true; });
@@ -91,8 +106,8 @@ export class SceneLudibrium extends BaseScene {
     const topPad = Math.max(0, (availableH - totalBlockH) / 2);
     const gridY = contentTop + topPad + charH;
 
-    this.slotMachine = new SlotMachine(this, gridX, gridY, this.balance);
-    this.winPresentation = new SlotWinPresentation(this, gridX, gridY, this.slotMachine);
+    this.slotMachine = new SlotMachine(this, gridX, gridY, this.balance, [2, 2, 3, 3, 3], LUDI_PAYLINES, [CELL / 2, CELL / 2, 0, 0, 0]);
+    this.winPresentation = new SlotWinPresentation(this, gridX, gridY, this.slotMachine, [CELL / 2, CELL / 2, 0, 0, 0]);
 
     const barY = height - BAR_HEIGHT;
     this.slotUI = new SlotUI(this, 0, barY, width, {
@@ -103,7 +118,9 @@ export class SceneLudibrium extends BaseScene {
       onLineChange: (value) => this.slotMachine.setLines(value),
     });
 
-    this.slotUI.updateLineDisplay(25);
+    this.slotMachine.setLines(LUDI_PAYLINES.length);
+
+    this.setupPaylinePreview(width, gridX, gridY);
 
     this.slotMachine.setOnBalanceChange((newBalance) => {
       this.setTopBarNumber(newBalance);
@@ -127,29 +144,39 @@ export class SceneLudibrium extends BaseScene {
 
     this.slotMachine.setOnAutoEnd(() => {
       this.slotUI.setAutoMode(false);
+      const needed = this.slotMachine.currentBet * this.slotMachine.currentLines;
+      if (this.slotMachine.currentBalance < needed) {
+        this.slotUI.showTooltip(
+          `잔액 부족으로 Auto 중단\n필요: ${needed.toLocaleString("en-US")} | 보유: ${this.slotMachine.currentBalance.toLocaleString("en-US")}`,
+        );
+      }
     });
 
     this.winPresentation.onButtonsReady = () => {
       this.slotMachine.setPresentationDone();
     };
 
-    const gridBorder = this.add.graphics();
-    gridBorder.lineStyle(3, 0x4488cc, 0.6);
-    gridBorder.strokeRect(gridX - 4, gridY - 4, GRID_WIDTH + 8, GRID_HEIGHT + 8);
-    gridBorder.setDepth(0);
-
     const charPad = 24;
     const displayAreaMidY = contentTop + topPad + charH / 2;
-    const displayH = Math.min(charH * 0.85, 100);
+    const displayH = Math.min(charH, 220);
 
     const hpBarW = GRID_WIDTH * 1.3;
     this.bossHPBar = new BossHPBar(this, width / 2, hpBarY, hpBarW, {
-      bossName: "Balrog",
-      bossIconKey: "boss_balrog",
+      bossName: "Papulatus",
+      bossIconKey: "boss_stand_0",
       maxHP: 50000000,
       currentHP: 50000000,
       barColor: 0xcc3333,
     });
+
+    if (!this.anims.exists("papulatus_stand")) {
+      this.anims.create({
+        key: "papulatus_stand",
+        frames: Array.from({ length: BOSS_STAND_FRAMES }, (_, f) => ({ key: `boss_stand_${f}` })),
+        frameRate: 10,
+        repeat: -1,
+      });
+    }
 
     const merged = [
       ...bodyData.render_plan,
@@ -166,13 +193,14 @@ export class SceneLudibrium extends BaseScene {
     });
     this.player.stand();
 
-    this.bossImg = this.add.image(gridX + GRID_WIDTH - charPad, displayAreaMidY, "boss_balrog");
+    this.bossImg = this.add.sprite(gridX + GRID_WIDTH - charPad, displayAreaMidY, "boss_stand_0");
     this.bossImg.setDisplaySize(displayH, displayH);
     this.bossImg.setOrigin(1, 0.5);
+    this.bossImg.play("papulatus_stand");
 
     this.time.delayedCall(200, () => this.startBgm());
 
-    return [...topBar, title, this.bossHPBar.getContainer(), this.player, this.bossImg, gridBorder];
+    return [...topBar, title, this.bossHPBar.getContainer(), this.player, this.bossImg];
   }
 
   private startBgm() {
@@ -190,12 +218,12 @@ export class SceneLudibrium extends BaseScene {
     if (!this.audioLoaded) return;
     try {
       if (this.bgMusic?.isPlaying) {
-        this.bgMusic.pause();
+        this.bgMusic.setVolume(0.21);
       }
       this.sound.play("sfx_win", { volume: 0.6 });
       this.time.delayedCall(3000, () => {
-        if (this.bgMusic && !this.bgMusic.isPlaying) {
-          this.bgMusic.resume();
+        if (this.bgMusic?.isPlaying) {
+          this.bgMusic.setVolume(0.35);
         }
       });
     } catch {
@@ -274,15 +302,63 @@ export class SceneLudibrium extends BaseScene {
       },
       onComplete: () => {
         knife.destroy();
-        this.bossImg.setTexture("boss_balrog_hit");
+        this.bossImg.setTexture("boss_hit");
         this.time.delayedCall(200, () => {
-          this.bossImg.setTexture("boss_balrog");
+          this.bossImg.play("papulatus_stand");
         });
 
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
       },
     });
+  }
+
+  private setupPaylinePreview(width: number, gridX: number, gridY: number) {
+    const CELL = SYMBOL_SIZE + SYMBOL_GAP;
+    const paylineGfx = this.add.graphics().setDepth(5).setVisible(false);
+    const reelOffsets = [CELL / 2, CELL / 2, 0, 0, 0];
+
+    const LINE_COLORS = [
+      0xff4444, 0x44ff44, 0x4444ff, 0xffff44, 0xff44ff,
+      0x44ffff, 0xff8844, 0x88ff44, 0x4488ff, 0xff4488,
+    ];
+
+    const drawPaylines = () => {
+      paylineGfx.clear();
+      for (let l = 0; l < LUDI_PAYLINES.length; l++) {
+        const payline = LUDI_PAYLINES[l];
+        const color = LINE_COLORS[l % LINE_COLORS.length];
+        for (let r = 0; r < LUDI_PAYLINES[0].length; r++) {
+          const row = payline[r];
+          const rx = gridX + r * CELL + 2;
+          const ry = gridY + reelOffsets[r] + row * CELL + 2;
+          paylineGfx.lineStyle(2, color, 0.6);
+          paylineGfx.strokeRect(rx, ry, SYMBOL_SIZE - 4, SYMBOL_SIZE - 4);
+        }
+        paylineGfx.lineStyle(3, color, 0.5);
+        paylineGfx.beginPath();
+        for (let r = 0; r < LUDI_PAYLINES[0].length; r++) {
+          const row = payline[r];
+          const cx = gridX + r * CELL + SYMBOL_SIZE / 2;
+          const cy = gridY + reelOffsets[r] + row * CELL + SYMBOL_SIZE / 2;
+          if (r === 0) paylineGfx.moveTo(cx, cy);
+          else paylineGfx.lineTo(cx, cy);
+        }
+        paylineGfx.strokePath();
+      }
+    };
+
+    let showLines = false;
+    this.slotUI.overrideLinesButton(() => {
+      showLines = !showLines;
+      if (showLines) {
+        drawPaylines();
+        paylineGfx.setVisible(true);
+      } else {
+        paylineGfx.clear();
+        paylineGfx.setVisible(false);
+      }
+    }, `Lines: ${LUDI_PAYLINES.length}`);
   }
 
   shutdown() {

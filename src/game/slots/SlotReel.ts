@@ -9,7 +9,6 @@ import {
 } from "./SlotConstants";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
-const POOL_SIZE = VISIBLE_ROWS + POOL_PADDING * 2;
 
 interface PoolItem {
   sprite: Phaser.GameObjects.Sprite;
@@ -20,13 +19,14 @@ export class SlotReel {
   readonly strip: Int8Array;
   readonly x: number;
   readonly y: number;
+  readonly visibleRows: number;
 
   private scene: Phaser.Scene;
   private items: PoolItem[] = [];
   private container: Phaser.GameObjects.Container;
   private stripPos: number = 0;
   private spinning: boolean = false;
-  private rowSprites: (Phaser.GameObjects.Sprite | null)[] = [null, null, null];
+  private rowSprites: (Phaser.GameObjects.Sprite | null)[] = [];
 
   constructor(
     scene: Phaser.Scene,
@@ -35,13 +35,16 @@ export class SlotReel {
     textureKeys: string[],
     x: number,
     y: number,
+    visibleRows: number = VISIBLE_ROWS,
   ) {
     this.scene = scene;
     this.reelIndex = reelIndex;
     this.strip = strip;
     this.x = x;
     this.y = y;
+    this.visibleRows = visibleRows;
 
+    this.rowSprites = new Array(visibleRows).fill(null);
     this.container = scene.add.container(x, 0);
     this.buildPool(textureKeys);
     this.applyMask();
@@ -49,7 +52,8 @@ export class SlotReel {
   }
 
   private buildPool(textureKeys: string[]) {
-    for (let i = 0; i < POOL_SIZE; i++) {
+    const poolSize = this.visibleRows + POOL_PADDING * 2;
+    for (let i = 0; i < poolSize; i++) {
       const symIdx = ((i - POOL_PADDING) % this.strip.length + this.strip.length) % this.strip.length;
       const sym = this.strip[symIdx];
       const texKey = textureKeys[sym];
@@ -69,20 +73,21 @@ export class SlotReel {
       this.x - SYMBOL_SIZE / 2,
       this.y,
       SYMBOL_SIZE,
-      VISIBLE_ROWS * CELL - SYMBOL_GAP,
+      this.visibleRows * CELL - SYMBOL_GAP,
     );
     const mask = maskGfx.createGeometryMask();
     this.container.setMask(mask);
   }
 
   private positionItems() {
+    const poolSize = this.visibleRows + POOL_PADDING * 2;
     const stripLen = this.strip.length;
     const baseRow = Math.floor(this.stripPos);
     const frac = this.stripPos - baseRow;
 
-    this.rowSprites = [null, null, null];
+    this.rowSprites = new Array(this.visibleRows).fill(null);
 
-    for (let i = 0; i < POOL_SIZE; i++) {
+    for (let i = 0; i < poolSize; i++) {
       const virtualRow = baseRow + i - POOL_PADDING;
       const symIdx = ((virtualRow % stripLen) + stripLen) % stripLen;
       const sym = this.strip[symIdx];
@@ -95,9 +100,9 @@ export class SlotReel {
       const displayRow = i - POOL_PADDING - frac;
       item.sprite.y = this.y + displayRow * CELL + CELL / 2;
 
-      if (displayRow >= -0.5 && displayRow < VISIBLE_ROWS - 0.5) {
+      if (displayRow >= -0.5 && displayRow < this.visibleRows - 0.5) {
         const roundedRow = Math.round(displayRow);
-        if (roundedRow >= 0 && roundedRow < VISIBLE_ROWS) {
+        if (roundedRow >= 0 && roundedRow < this.visibleRows) {
           this.rowSprites[roundedRow] = item.sprite;
         }
       }
@@ -142,7 +147,7 @@ export class SlotReel {
     const stripLen = this.strip.length;
     const baseRow = Math.floor(this.stripPos);
     const symbols: number[] = [];
-    for (let row = 0; row < VISIBLE_ROWS; row++) {
+    for (let row = 0; row < this.visibleRows; row++) {
       const idx = ((baseRow + row) % stripLen + stripLen) % stripLen;
       symbols.push(this.strip[idx]);
     }
@@ -150,7 +155,7 @@ export class SlotReel {
   }
 
   getSpriteAtRow(rowIndex: number): Phaser.GameObjects.Sprite | null {
-    if (rowIndex < 0 || rowIndex >= VISIBLE_ROWS) return null;
+    if (rowIndex < 0 || rowIndex >= this.visibleRows) return null;
     return this.rowSprites[rowIndex];
   }
 

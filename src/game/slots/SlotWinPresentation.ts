@@ -3,7 +3,6 @@ import {
   REEL_COUNT,
   SYMBOL_SIZE,
   SYMBOL_GAP,
-  PAYLINES,
   LINE_COLORS,
 } from "./SlotConstants";
 import type { SlotMachine, SlotWin } from "./SlotMachine";
@@ -23,6 +22,7 @@ export class SlotWinPresentation {
   private gridX: number;
   private gridY: number;
   private slotMachine: SlotMachine;
+  private reelYOffsets: number[];
 
   private overlayGfx: Phaser.GameObjects.Graphics;
   private timers: Phaser.Time.TimerEvent[] = [];
@@ -31,11 +31,12 @@ export class SlotWinPresentation {
 
   onButtonsReady: (() => void) | null = null;
 
-  constructor(scene: Phaser.Scene, gridX: number, gridY: number, slotMachine: SlotMachine) {
+  constructor(scene: Phaser.Scene, gridX: number, gridY: number, slotMachine: SlotMachine, reelYOffsets?: number[]) {
     this.scene = scene;
     this.gridX = gridX;
     this.gridY = gridY;
     this.slotMachine = slotMachine;
+    this.reelYOffsets = reelYOffsets ?? [0, 0, 0, 0, 0];
 
     this.overlayGfx = scene.add.graphics();
     this.overlayGfx.setDepth(10);
@@ -96,7 +97,7 @@ export class SlotWinPresentation {
   }
 
   private drawLine(lineIndex: number, matchCount: number) {
-    const payline = PAYLINES[lineIndex];
+    const payline = this.slotMachine.paylinesArray[lineIndex];
     if (!payline) return;
 
     const color = LINE_COLORS[lineIndex % LINE_COLORS.length];
@@ -104,15 +105,16 @@ export class SlotWinPresentation {
 
     for (let reel = 0; reel < REEL_COUNT; reel++) {
       const row = payline[reel];
+      const yOff = this.reelYOffsets[reel] ?? 0;
       const cx = this.gridX + reel * CELL + SYMBOL_SIZE / 2;
-      const cy = this.gridY + row * CELL + SYMBOL_SIZE / 2;
+      const cy = this.gridY + yOff + row * CELL + SYMBOL_SIZE / 2;
       points.push({ reelIndex: reel, rowIndex: row, x: cx, y: cy });
 
       if (reel < matchCount) {
         this.overlayGfx.lineStyle(3, color, 0.8);
         this.overlayGfx.strokeRect(
           this.gridX + reel * CELL + 2,
-          this.gridY + row * CELL + 2,
+          this.gridY + yOff + row * CELL + 2,
           SYMBOL_SIZE - 4,
           SYMBOL_SIZE - 4,
         );
@@ -132,7 +134,7 @@ export class SlotWinPresentation {
     const animKey = getAnimKey(symbol);
     if (!this.scene.anims.exists(animKey)) return;
 
-    const payline = PAYLINES[lineIndex];
+    const payline = this.slotMachine.paylinesArray[lineIndex];
     if (!payline) return;
 
     for (let reel = 0; reel < matchCount; reel++) {

@@ -176,6 +176,12 @@ export class SlotUI {
     });
   }
 
+  overrideLinesButton(handler: () => void, label: string) {
+    this.lineText.setText(label);
+    this.lineBtn.removeAllListeners("pointerdown");
+    this.lineBtn.on("pointerdown", handler);
+  }
+
   private makeButton(x: number, y: number, w: number, h: number, color: number): Phaser.GameObjects.Rectangle {
     const rect = this.scene.add.rectangle(x + w / 2, y + h / 2, w, h, color, 0.85);
     rect.setStrokeStyle(2, 0x88aacc);

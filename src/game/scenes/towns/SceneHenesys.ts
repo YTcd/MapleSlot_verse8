@@ -21,8 +21,9 @@ const BAR_HEIGHT = 72;
 
 const BGM_URL = "https://resource-static.msu.io/data/Sound/Bgm00/GoPicnic.mp3";
 const WIN_SFX_URL = "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc45c686f3ecf63d-1781021996644/static-assets/audio-a093ae4e-d8a9-493d-bf1c-3659ee66ff28.ogg";
-const BOSS_URL = "https://resource-static.msu.io/data/Mob/9303082/stand/0.png";
-const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/9303082/attack1/3.png";
+const BOSS_URL = "https://resource-static.msu.io/data/Mob/9300191/move/{frame}.png";
+const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/9300191/hit1/0.png";
+const BOSS_MOVE_FRAMES = 5;
 const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070001/info/icon.png";
 
 export class SceneHenesys extends BaseScene {
@@ -35,7 +36,7 @@ export class SceneHenesys extends BaseScene {
   private attackQueue = 0;
   private isAttacking = false;
   private shootToggle = false;
-  private bossImg!: Phaser.GameObjects.Image;
+  private bossImg!: Phaser.GameObjects.Sprite;
   private bossHPBar!: BossHPBar;
   private bossHP = 50_000_000;
   private bossMaxHP = 50_000_000;
@@ -52,8 +53,10 @@ export class SceneHenesys extends BaseScene {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
-    this.load.image("boss_balrog", BOSS_URL);
-    this.load.image("boss_balrog_hit", BOSS_HIT_URL);
+    for (let f = 0; f < BOSS_MOVE_FRAMES; f++) {
+      this.load.image(`boss_move_${f}`, BOSS_URL.replace("{frame}", String(f)));
+    }
+    this.load.image("boss_hit", BOSS_HIT_URL);
     this.load.image("knife_wolbi", KNIFE_URL);
     this.load.audio("bgm_gopicnic", BGM_URL);
     this.load.audio("sfx_win", WIN_SFX_URL);
@@ -127,6 +130,12 @@ export class SceneHenesys extends BaseScene {
 
     this.slotMachine.setOnAutoEnd(() => {
       this.slotUI.setAutoMode(false);
+      const needed = this.slotMachine.currentBet * this.slotMachine.currentLines;
+      if (this.slotMachine.currentBalance < needed) {
+        this.slotUI.showTooltip(
+          `잔액 부족으로 Auto 중단\n필요: ${needed.toLocaleString("en-US")} | 보유: ${this.slotMachine.currentBalance.toLocaleString("en-US")}`,
+        );
+      }
     });
 
     this.winPresentation.onButtonsReady = () => {
@@ -144,12 +153,21 @@ export class SceneHenesys extends BaseScene {
 
     const hpBarW = GRID_WIDTH * 1.3;
     this.bossHPBar = new BossHPBar(this, width / 2, hpBarY, hpBarW, {
-      bossName: "Balrog",
-      bossIconKey: "boss_balrog",
+      bossName: "MushMom",
+      bossIconKey: "boss_move_0",
       maxHP: 50000000,
       currentHP: 50000000,
       barColor: 0xcc3333,
     });
+
+    if (!this.anims.exists("mushmom_move")) {
+      this.anims.create({
+        key: "mushmom_move",
+        frames: Array.from({ length: BOSS_MOVE_FRAMES }, (_, f) => ({ key: `boss_move_${f}` })),
+        frameRate: 1000 / 220,
+        repeat: -1,
+      });
+    }
 
     const merged = [
       ...bodyData.render_plan,
@@ -166,9 +184,10 @@ export class SceneHenesys extends BaseScene {
     });
     this.player.stand();
 
-    this.bossImg = this.add.image(gridX + GRID_WIDTH - charPad, displayAreaMidY, "boss_balrog");
+    this.bossImg = this.add.sprite(gridX + GRID_WIDTH - charPad, displayAreaMidY, "boss_move_0");
     this.bossImg.setDisplaySize(displayH, displayH);
     this.bossImg.setOrigin(1, 0.5);
+    this.bossImg.play("mushmom_move");
 
     this.time.delayedCall(200, () => this.startBgm());
 
@@ -190,12 +209,12 @@ export class SceneHenesys extends BaseScene {
     if (!this.audioLoaded) return;
     try {
       if (this.bgMusic?.isPlaying) {
-        this.bgMusic.pause();
+        this.bgMusic.setVolume(0.21);
       }
       this.sound.play("sfx_win", { volume: 0.6 });
       this.time.delayedCall(3000, () => {
-        if (this.bgMusic && !this.bgMusic.isPlaying) {
-          this.bgMusic.resume();
+        if (this.bgMusic?.isPlaying) {
+          this.bgMusic.setVolume(0.35);
         }
       });
     } catch {
@@ -274,9 +293,9 @@ export class SceneHenesys extends BaseScene {
       },
       onComplete: () => {
         knife.destroy();
-        this.bossImg.setTexture("boss_balrog_hit");
+        this.bossImg.setTexture("boss_hit");
         this.time.delayedCall(200, () => {
-          this.bossImg.setTexture("boss_balrog");
+          this.bossImg.play("mushmom_move");
         });
 
         this.bossHP = Math.max(0, this.bossHP - damage);
