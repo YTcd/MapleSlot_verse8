@@ -112,6 +112,7 @@ export abstract class SlotBase {
   }
 
   protected doAutoSpin() {
+    this.resumeAuto = true;
     const cost = this.bet * this.lines;
     if (this.balance < cost) {
       this.autoStopRequested = false;
