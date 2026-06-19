@@ -51,8 +51,8 @@ export class SceneLudibrium extends BaseScene {
   private shootToggle = false;
   private bossImg!: Phaser.GameObjects.Sprite;
   private bossHPBar!: BossHPBar;
-  private bossHP = 50_000_000;
-  private bossMaxHP = 50_000_000;
+  private bossHP = 30_000_000;
+  private bossMaxHP = 30_000_000;
 
   constructor() {
     super({ key: "SceneLudibrium" });
@@ -165,14 +165,15 @@ export class SceneLudibrium extends BaseScene {
     this.bossHPBar = new BossHPBar(this, width / 2, hpBarY, hpBarW, {
       bossName: "Papulatus",
       bossIconKey: "boss_stand_0",
-      maxHP: 50000000,
-      currentHP: 50000000,
+      maxHP: 30000000,
+      currentHP: 30000000,
       barColor: 0xcc3333,
     });
 
     fetchBossHP("Papulatus").then((hp) => {
-      this.bossHP = hp;
-      this.bossHPBar.setHP(hp);
+      this.bossHP = Math.min(hp, this.bossMaxHP);
+      this.bossHPBar.setHP(this.bossHP);
+      if (hp > this.bossMaxHP) saveBossHP("Papulatus", this.bossHP);
     });
 
     if (!this.anims.exists("papulatus_stand")) {
@@ -223,14 +224,10 @@ export class SceneLudibrium extends BaseScene {
   private playWinSound() {
     if (!this.audioLoaded) return;
     try {
-      if (this.bgMusic?.isPlaying) {
-        this.bgMusic.setVolume(0.21);
-      }
+      if (this.bgMusic?.isPlaying) this.bgMusic!.setVolume(0.21);
       this.sound.play("sfx_win", { volume: 0.6 });
       this.time.delayedCall(3000, () => {
-        if (this.bgMusic?.isPlaying) {
-          this.bgMusic.setVolume(0.35);
-        }
+        if (this.bgMusic?.isPlaying) this.bgMusic!.setVolume(0.35);
       });
     } catch {
       // audio unavailable

@@ -62,12 +62,12 @@ export class Server {
     const bosses = myState.bosses || {};
     if (bosses[bossName] === undefined || bosses[bossName] === null) {
       const defaults: Record<string, number> = {
-        MushMom: 50_000_000,
-        JrBalrog: 50_000_000,
-        Papulatus: 50_000_000,
-        Balrog: 50_000_000,
+        MushMom: 30_000_000,
+        JrBalrog: 30_000_000,
+        Papulatus: 30_000_000,
+        Balrog: 30_000_000,
       };
-      return { bossName, hp: defaults[bossName] ?? 50_000_000 };
+      return { bossName, hp: defaults[bossName] ?? 30_000_000 };
     }
     return { bossName, hp: bosses[bossName] };
   }

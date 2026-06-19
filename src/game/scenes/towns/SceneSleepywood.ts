@@ -32,7 +32,7 @@ export class SceneSleepywood extends BaseScene {
   private isAttacking = false;
   private shootToggle = false;
   private bossImg!: Phaser.GameObjects.Sprite;
-  private bossHP = 50_000_000;
+  private bossHP = 30_000_000;
 
   constructor() {
     super({ key: "SceneSleepywood" });
@@ -136,8 +136,8 @@ export class SceneSleepywood extends BaseScene {
     const bossHPBar = new BossHPBar(this, width / 2, hpBarY, hpBarW, {
       bossName: "Jr.Balrog",
       bossIconKey: "boss_stand_0",
-      maxHP: 50000000,
-      currentHP: 50000000,
+      maxHP: 30000000,
+      currentHP: 30000000,
       barColor: 0xcc3333,
     });
 

@@ -107,8 +107,8 @@ export class BossHPBar {
   }
 
   setHP(current: number, max?: number) {
-    this.currentHP = current;
     if (max !== undefined) this.maxHP = max;
+    this.currentHP = Math.max(0, Math.min(current, this.maxHP));
     this.drawBar(this.barX, this.barY, this.barW, this.barH);
   }
 
