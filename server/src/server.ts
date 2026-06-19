@@ -55,6 +55,36 @@ export class Server {
   }
 
   /**
+   * 특정 보스의 HP를 조회한다.
+   */
+  async getBossHP(bossName: string): Promise<{ bossName: string; hp: number }> {
+    const myState = await $global.getMyState();
+    const bosses = myState.bosses || {};
+    if (bosses[bossName] === undefined || bosses[bossName] === null) {
+      const defaults: Record<string, number> = {
+        MushMom: 50_000_000,
+        JrBalrog: 50_000_000,
+        Papulatus: 50_000_000,
+        Balrog: 50_000_000,
+      };
+      return { bossName, hp: defaults[bossName] ?? 50_000_000 };
+    }
+    return { bossName, hp: bosses[bossName] };
+  }
+
+  /**
+   * 특정 보스의 HP를 저장한다.
+   */
+  async updateBossHP(bossName: string, hp: number): Promise<{ bossName: string; hp: number }> {
+    if (typeof hp !== 'number' || hp < 0) hp = 0;
+    const myState = await $global.getMyState();
+    const bosses = myState.bosses || {};
+    bosses[bossName] = hp;
+    await $global.updateMyState({ bosses });
+    return { bossName, hp };
+  }
+
+  /**
    * balance를 변경하고 변경 사유를 기록한다.
    * @param balance - 변경할 balance 값
    * @param reason - 변경 사유 (예: "slot_win", "slot_bet", "daily_reward")

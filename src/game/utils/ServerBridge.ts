@@ -52,3 +52,16 @@ export async function clearUserState(): Promise<void> {
   if (!gs) throw new Error("Server not connected");
   await gs.remoteFunction("clearBalance");
 }
+
+export async function fetchBossHP(bossName: string): Promise<number> {
+  const gs = await getGS();
+  if (!gs) return 50_000_000;
+  const result: { bossName: string; hp: number } = await gs.remoteFunction("getBossHP", [bossName]);
+  return result.hp;
+}
+
+export async function saveBossHP(bossName: string, hp: number): Promise<void> {
+  const gs = await getGS();
+  if (!gs) return;
+  await gs.remoteFunction("updateBossHP", [bossName, hp]);
+}

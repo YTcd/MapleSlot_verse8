@@ -3,7 +3,7 @@ import { BaseScene } from "../BaseScene";
 import { CascadeSlotMachine } from "../../slots/CascadeSlotMachine";
 import { SlotUI } from "../../slots/SlotUI";
 import { SlotState } from "../../slots/SlotConstants";
-import { updateBalanceOnServer } from "../../utils/ServerBridge";
+import { updateBalanceOnServer, fetchBossHP } from "../../utils/ServerBridge";
 import {
   CASCADE_REEL_COUNT,
   CASCADE_VISIBLE_ROWS,
@@ -32,6 +32,7 @@ export class SceneSleepywood extends BaseScene {
   private isAttacking = false;
   private shootToggle = false;
   private bossImg!: Phaser.GameObjects.Sprite;
+  private bossHP = 50_000_000;
 
   constructor() {
     super({ key: "SceneSleepywood" });
@@ -102,6 +103,7 @@ export class SceneSleepywood extends BaseScene {
     this.slotMachine.setOnStateChange((state) => {
       const isIdle = state === SlotState.IDLE;
       this.slotUI.setButtonsEnabled(isIdle);
+      this.setBackButtonEnabled(isIdle);
     });
 
     this.slotMachine.setOnWin((win) => {
@@ -137,6 +139,10 @@ export class SceneSleepywood extends BaseScene {
       maxHP: 50000000,
       currentHP: 50000000,
       barColor: 0xcc3333,
+    });
+
+    fetchBossHP("JrBalrog").then((hp) => {
+      this.bossHP = hp;
     });
 
     if (!this.anims.exists("jrbalrog_stand")) {

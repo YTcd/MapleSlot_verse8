@@ -11,6 +11,7 @@ const COIN_TIERS = [
 export abstract class BaseScene extends Phaser.Scene {
   private topBarNumberText?: Phaser.GameObjects.Text;
   private topBarCoinIcon?: Phaser.GameObjects.Image;
+  private backBtnRef?: Phaser.GameObjects.Rectangle;
   protected balance: number = 0;
 
   preload() {}
@@ -23,11 +24,25 @@ export abstract class BaseScene extends Phaser.Scene {
 
   create() {
     this.input.enabled = true;
+    this.events.once("shutdown", this.shutdown, this);
     const children = this.buildScene();
     this.fadeIn(children);
   }
 
   update() {}
+
+  protected setBackButtonEnabled(enabled: boolean) {
+    if (!this.backBtnRef) return;
+    if (enabled) {
+      this.backBtnRef.setAlpha(1);
+      this.backBtnRef.setInteractive({ useHandCursor: true });
+    } else {
+      this.backBtnRef.setAlpha(0.3);
+      this.backBtnRef.disableInteractive();
+    }
+  }
+
+  shutdown() {}
 
   protected abstract buildScene(): Phaser.GameObjects.GameObject[];
 
@@ -83,6 +98,7 @@ export abstract class BaseScene extends Phaser.Scene {
       backBtn.on("pointerout", () => { backBtn.setFillStyle(0x4a6fa5, 0.85); });
       backBtn.on("pointerdown", () => { goToScene(this, backScene); });
 
+      this.backBtnRef = backBtn;
       children.push(backBtn, backText);
     }
 

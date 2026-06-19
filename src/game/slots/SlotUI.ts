@@ -46,6 +46,8 @@ export class SlotUI {
   private panelOpen: "bet" | "line" | null = null;
   private panelContainer: Phaser.GameObjects.Container | null = null;
 
+  private betOptions: number[];
+
   private onPlay: () => void;
   private onAuto: () => void;
   private onStopAuto: () => void;
@@ -64,11 +66,13 @@ export class SlotUI {
       onBetChange: (value: number) => void;
       onLineChange: (value: number) => void;
     },
+    betOptions?: number[],
   ) {
     this.scene = scene;
     this.x = x;
     this.y = y;
     this.width = width;
+    this.betOptions = betOptions ?? BET_OPTIONS;
     this.onPlay = callbacks.onPlay;
     this.onAuto = callbacks.onAuto;
     this.onStopAuto = callbacks.onStopAuto;
@@ -120,7 +124,7 @@ export class SlotUI {
     this.betBtn = this.makeButton(btnStartX + BTN_W + BTN_GAP, this.y + (BAR_HEIGHT - BTN_H) / 2, BTN_W, BTN_H, 0x3a5a8a);
     this.container.add(this.betBtn);
     this.betText = this.scene.add
-      .text(btnStartX + BTN_W + BTN_GAP + BTN_W / 2, this.y + BAR_HEIGHT / 2, "Bet: 1K", {
+      .text(btnStartX + BTN_W + BTN_GAP + BTN_W / 2, this.y + BAR_HEIGHT / 2, `Bet: ${formatBet(this.betOptions[0])}`, {
         fontFamily: "Arial, sans-serif",
         fontSize: "14px",
         color: "#ffffff",
@@ -198,7 +202,7 @@ export class SlotUI {
 
     const options: PanelOption[] =
       type === "bet"
-        ? BET_OPTIONS.map((v) => ({ value: v, label: formatBet(v) }))
+        ? this.betOptions.map((v) => ({ value: v, label: formatBet(v) }))
         : LINE_OPTIONS.map((v) => ({ value: v, label: String(v) }));
 
     const panelW = 100;

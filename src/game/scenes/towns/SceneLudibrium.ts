@@ -5,7 +5,7 @@ import { SlotUI } from "../../slots/SlotUI";
 import { SlotWinPresentation } from "../../slots/SlotWinPresentation";
 import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/SlotConstants";
 import { preloadMobTextures } from "../../slots/SlotSymbolData";
-import { updateBalanceOnServer } from "../../utils/ServerBridge";
+import { updateBalanceOnServer, fetchBossHP, saveBossHP } from "../../utils/ServerBridge";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
@@ -130,6 +130,7 @@ export class SceneLudibrium extends BaseScene {
     this.slotMachine.setOnStateChange((state) => {
       const isIdle = state === SlotState.IDLE;
       this.slotUI.setButtonsEnabled(isIdle);
+      this.setBackButtonEnabled(isIdle);
     });
 
     this.slotMachine.setOnWin((win) => {
@@ -167,6 +168,11 @@ export class SceneLudibrium extends BaseScene {
       maxHP: 50000000,
       currentHP: 50000000,
       barColor: 0xcc3333,
+    });
+
+    fetchBossHP("Papulatus").then((hp) => {
+      this.bossHP = hp;
+      this.bossHPBar.setHP(hp);
     });
 
     if (!this.anims.exists("papulatus_stand")) {
@@ -309,6 +315,7 @@ export class SceneLudibrium extends BaseScene {
 
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
+        saveBossHP("Papulatus", this.bossHP);
       },
     });
   }

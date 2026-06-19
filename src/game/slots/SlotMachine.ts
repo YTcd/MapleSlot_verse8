@@ -369,7 +369,7 @@ export class SlotMachine {
 
   stopAllSymbolAnimations() {
     for (const reel of this.reels) {
-      reel.stopAllAnimations();
+      try { reel.stopAllAnimations(); } catch { /* ignore */ }
     }
   }
 

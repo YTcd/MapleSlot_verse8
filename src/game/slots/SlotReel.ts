@@ -161,7 +161,7 @@ export class SlotReel {
 
   stopAllAnimations() {
     for (const item of this.items) {
-      item.sprite.stop();
+      try { item.sprite?.stop(); } catch { /* ignore */ }
     }
   }
 
