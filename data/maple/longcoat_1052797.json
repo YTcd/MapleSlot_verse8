@@ -1,38 +1,74 @@
 {
-  "id": "1472263",
-  "type": "weapon",
+  "id": "1052797",
+  "type": "longcoat",
   "cdnBase": "https://resource-static.msu.io/data",
   "availableStates": [
     "alert",
     "fly",
     "heal",
     "jump",
+    "ladder",
     "prone",
     "proneStab",
+    "rope",
+    "shoot1",
+    "shoot2",
+    "shootF",
+    "sit",
     "stabO1",
     "stabO2",
     "stabOF",
+    "stabT1",
+    "stabT2",
+    "stabTF",
     "stand1",
+    "stand2",
     "swingO1",
     "swingO2",
     "swingO3",
     "swingOF",
-    "walk1"
+    "swingP1",
+    "swingP2",
+    "swingPF",
+    "swingT1",
+    "swingT2",
+    "swingT3",
+    "swingTF",
+    "walk1",
+    "walk2"
   ],
   "render_plan": [
     {
       "state": "stand1",
       "frame": "0",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/walk1/0/weapon.png",
+      "part": "mail",
+      "path": "Character/Longcoat/01052797/stand1/0/mail.png",
       "origin": {
-        "x": 17,
-        "y": 14
+        "x": 4,
+        "y": 10
       },
-      "texture_key": "maple_weapon_stand1_0_weapon",
-      "z": "weaponOverGlove",
+      "texture_key": "maple_longcoat_stand1_0_mail",
+      "z": "mailChest",
       "sockets": {
-        "hand": {
+        "navel": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "0",
+      "part": "mailArm",
+      "path": "Character/Longcoat/01052797/stand1/0/mailArm.png",
+      "origin": {
+        "x": -8,
+        "y": 9
+      },
+      "texture_key": "maple_longcoat_stand1_0_mailArm",
+      "z": "mailArm",
+      "sockets": {
+        "navel": {
           "x": 0,
           "y": 0
         }
@@ -41,16 +77,34 @@
     {
       "state": "stand1",
       "frame": "1",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/walk1/0/weapon.png",
+      "part": "mail",
+      "path": "Character/Longcoat/01052797/stand1/1/mail.png",
       "origin": {
-        "x": 17,
-        "y": 14
+        "x": 6,
+        "y": 11
       },
-      "texture_key": "maple_weapon_stand1_1_weapon",
-      "z": "weaponOverGlove",
+      "texture_key": "maple_longcoat_stand1_1_mail",
+      "z": "mailChest",
       "sockets": {
-        "hand": {
+        "navel": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "1",
+      "part": "mailArm",
+      "path": "Character/Longcoat/01052797/stand1/1/mailArm.png",
+      "origin": {
+        "x": -8,
+        "y": 10
+      },
+      "texture_key": "maple_longcoat_stand1_1_mailArm",
+      "z": "mailArm",
+      "sockets": {
+        "navel": {
           "x": 0,
           "y": 0
         }
@@ -59,124 +113,34 @@
     {
       "state": "stand1",
       "frame": "2",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/walk1/0/weapon.png",
+      "part": "mail",
+      "path": "Character/Longcoat/01052797/stand1/2/mail.png",
       "origin": {
-        "x": 17,
-        "y": 14
+        "x": 7,
+        "y": 10
       },
-      "texture_key": "maple_weapon_stand1_2_weapon",
-      "z": "weaponOverGlove",
+      "texture_key": "maple_longcoat_stand1_2_mail",
+      "z": "mailChest",
       "sockets": {
-        "hand": {
+        "navel": {
           "x": 0,
           "y": 0
         }
       }
     },
     {
-      "state": "stabO1",
-      "frame": "0",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/walk1/0/weapon.png",
+      "state": "stand1",
+      "frame": "2",
+      "part": "mailArm",
+      "path": "Character/Longcoat/01052797/stand1/2/mailArm.png",
       "origin": {
-        "x": 13,
-        "y": 13
-      },
-      "texture_key": "maple_weapon_stabO1_0_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "stabO1",
-      "frame": "1",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/stabO1/1/weapon.png",
-      "origin": {
-        "x": 9,
+        "x": -7,
         "y": 9
       },
-      "texture_key": "maple_weapon_stabO1_1_weapon",
-      "z": "weaponOverGlove",
+      "texture_key": "maple_longcoat_stand1_2_mailArm",
+      "z": "mailArm",
       "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "0",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/stabO2/0/weapon.png",
-      "origin": {
-        "x": 14,
-        "y": 5
-      },
-      "texture_key": "maple_weapon_stabO2_0_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "1",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/stabO1/1/weapon.png",
-      "origin": {
-        "x": 11,
-        "y": 9
-      },
-      "texture_key": "maple_weapon_stabO2_1_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "swingO1",
-      "frame": "0",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/swingO1/1/weapon.png",
-      "origin": {
-        "x": 11,
-        "y": 15
-      },
-      "texture_key": "maple_weapon_swingO1_0_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "swingO1",
-      "frame": "1",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/swingO1/2/weapon.png",
-      "origin": {
-        "x": 16,
-        "y": 11
-      },
-      "texture_key": "maple_weapon_swingO1_1_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
+        "navel": {
           "x": 0,
           "y": 0
         }
@@ -339,23 +303,22 @@
     "mobEquipFront"
   ],
   "info": {
-    "afterImage": "swordOL",
-    "attack": 7,
-    "attackSpeed": 4,
-    "bossReward": 1,
-    "equipTradeBlock": 1,
-    "exGrade": 1,
+    "cash": 0,
     "exItem": 1,
-    "incPAD": 70,
-    "islot": "Wp",
-    "price": 1,
+    "incDEX": 5,
+    "incLUK": 8,
+    "incPDD": 160,
+    "islot": "MaPn",
+    "mintable": 1,
+    "price": 45000,
+    "reqDEX": 0,
+    "reqINT": 0,
     "reqJob": 8,
-    "reqLevel": 120,
-    "setItemID": 543,
-    "sfx": "tGlove",
-    "stand": 1,
-    "tuc": 8,
-    "vslot": "Wp",
-    "walk": 1
+    "reqLUK": 320,
+    "reqLevel": 130,
+    "reqSTR": 0,
+    "setItemID": 445,
+    "tuc": 10,
+    "vslot": "MaPn"
   }
 }

@@ -1,13 +1,14 @@
 import Phaser from "phaser";
 import { BaseScene } from "./BaseScene";
 import { goToScene } from "../utils/SceneTransition";
-import { isNewUser, resetBalance, clearUserState } from "../utils/ServerBridge";
+import { isNewUser, resetBalance, clearUserState, resetAllBosses } from "../utils/ServerBridge";
 
 const CDN = "https://resource-static.msu.io/data/";
 
 (window as any).__resetBalance = resetBalance;
 (window as any).__clearUserState = clearUserState;
 (window as any).__isNewUser = isNewUser;
+(window as any).__resetAllBosses = resetAllBosses;
 
 export class TitleScene extends BaseScene {
   private isNew = false;

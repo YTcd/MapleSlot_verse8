@@ -154,3 +154,11 @@ Henesys slot machine town scene with:
 - `data/maple/face_20000.json`: Face render plan (1 entry, default expression)
 - `data/maple/hair_30000.json`: Hair render plan (30 entries, stand1/stabO1/stabO2/shoot1/shoot2)
 - `data/maple/weapon_1472263.json`: Maple Treasure Thief Claw render plan (7 entries, stand1/stabO1/stabO2/shoot1/shoot2)
+- `data/maple/cap_1002083.json`: Black Bandana render plan (stand1, 3 entries, reqLevel 10, vslot=CpH1H5)
+- `data/maple/coat_1041057.json`: Dark Sneak render plan (stand1, 6 entries, reqLevel 25 thief)
+- `data/maple/pants_1060033.json`: Black Pao Bottom render plan (stand1, 3 entries, reqLevel 20 thief)
+- `data/maple/shoes_1072018.json`: Blue Sneakers render plan (stand1, 3 entries, reqLevel 31)
+
+- `data/maple/cap_1004227.json`: Muspell Thief Hat render plan (stand1, 6 entries, reqLevel 130, vslot=CpH1H5)
+- `data/maple/longcoat_1052797.json`: Muspell Thief Suit render plan (stand1, 6 entries, reqLevel 130, vslot=MaPn) — longcoat overrides coat+pants
+- `data/maple/shoes_1072965.json`: Muspell Thief Shoes render plan (stand1, 3 entries, reqLevel 130)

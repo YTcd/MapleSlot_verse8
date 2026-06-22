@@ -1,5 +1,5 @@
 {
-  "id": "1472263",
+  "id": "1472000",
   "type": "weapon",
   "cdnBase": "https://resource-static.msu.io/data",
   "availableStates": [
@@ -24,17 +24,17 @@
       "state": "stand1",
       "frame": "0",
       "part": "weapon",
-      "path": "Character/Weapon/01472263/walk1/0/weapon.png",
+      "path": "Character/Weapon/01472000/walk1/0/weapon.png",
       "origin": {
-        "x": 17,
-        "y": 14
+        "x": 25,
+        "y": 7
       },
       "texture_key": "maple_weapon_stand1_0_weapon",
       "z": "weaponOverGlove",
       "sockets": {
         "hand": {
-          "x": 0,
-          "y": 0
+          "x": -20,
+          "y": -2
         }
       }
     },
@@ -42,17 +42,17 @@
       "state": "stand1",
       "frame": "1",
       "part": "weapon",
-      "path": "Character/Weapon/01472263/walk1/0/weapon.png",
+      "path": "Character/Weapon/01472000/walk1/0/weapon.png",
       "origin": {
-        "x": 17,
-        "y": 14
+        "x": 25,
+        "y": 7
       },
       "texture_key": "maple_weapon_stand1_1_weapon",
       "z": "weaponOverGlove",
       "sockets": {
         "hand": {
-          "x": 0,
-          "y": 0
+          "x": -20,
+          "y": -2
         }
       }
     },
@@ -60,125 +60,17 @@
       "state": "stand1",
       "frame": "2",
       "part": "weapon",
-      "path": "Character/Weapon/01472263/walk1/0/weapon.png",
+      "path": "Character/Weapon/01472000/walk1/0/weapon.png",
       "origin": {
-        "x": 17,
-        "y": 14
+        "x": 25,
+        "y": 7
       },
       "texture_key": "maple_weapon_stand1_2_weapon",
       "z": "weaponOverGlove",
       "sockets": {
         "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "stabO1",
-      "frame": "0",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/walk1/0/weapon.png",
-      "origin": {
-        "x": 13,
-        "y": 13
-      },
-      "texture_key": "maple_weapon_stabO1_0_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "stabO1",
-      "frame": "1",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/stabO1/1/weapon.png",
-      "origin": {
-        "x": 9,
-        "y": 9
-      },
-      "texture_key": "maple_weapon_stabO1_1_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "0",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/stabO2/0/weapon.png",
-      "origin": {
-        "x": 14,
-        "y": 5
-      },
-      "texture_key": "maple_weapon_stabO2_0_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "1",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/stabO1/1/weapon.png",
-      "origin": {
-        "x": 11,
-        "y": 9
-      },
-      "texture_key": "maple_weapon_stabO2_1_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "swingO1",
-      "frame": "0",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/swingO1/1/weapon.png",
-      "origin": {
-        "x": 11,
-        "y": 15
-      },
-      "texture_key": "maple_weapon_swingO1_0_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "swingO1",
-      "frame": "1",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/swingO1/2/weapon.png",
-      "origin": {
-        "x": 16,
-        "y": 11
-      },
-      "texture_key": "maple_weapon_swingO1_1_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
+          "x": -20,
+          "y": -2
         }
       }
     }
@@ -341,20 +233,20 @@
   "info": {
     "afterImage": "swordOL",
     "attack": 7,
-    "attackSpeed": 4,
-    "bossReward": 1,
-    "equipTradeBlock": 1,
-    "exGrade": 1,
-    "exItem": 1,
-    "incPAD": 70,
+    "attackSpeed": 6,
+    "cash": 0,
+    "incPAD": 10,
     "islot": "Wp",
-    "price": 1,
+    "price": 300,
+    "reqDEX": 0,
+    "reqINT": 0,
     "reqJob": 8,
-    "reqLevel": 120,
-    "setItemID": 543,
+    "reqLUK": 0,
+    "reqLevel": 10,
+    "reqSTR": 0,
     "sfx": "tGlove",
     "stand": 1,
-    "tuc": 8,
+    "tuc": 7,
     "vslot": "Wp",
     "walk": 1
   }

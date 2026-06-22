@@ -55,6 +55,52 @@ export class Server {
   }
 
   /**
+   * 모든 보스의 생존 여부와 HP를 조회한다.
+   */
+  async getBossesAlive(): Promise<Record<string, { hp: number; alive: boolean }>> {
+    const myState = await $global.getMyState();
+    const bosses = myState.bosses || {};
+    const defaults: Record<string, number> = {
+      MushMom: 30_000_000,
+      JrBalrog: 30_000_000,
+      Papulatus: 30_000_000,
+    };
+    const result: Record<string, { hp: number; alive: boolean }> = {};
+    for (const [name, defaultHP] of Object.entries(defaults)) {
+      result[name] = {
+        hp: bosses[name] ?? defaultHP,
+        alive: (bosses[name] ?? defaultHP) > 0,
+      };
+    }
+    return result;
+  }
+
+  /**
+   * 특정 보스를 사망 처리한다.
+   */
+  async markBossDead(bossName: string): Promise<{ bossName: string; dead: boolean }> {
+    const myState = await $global.getMyState();
+    const bosses = myState.bosses || {};
+    bosses[bossName] = 0;
+    await $global.updateMyState({ bosses });
+    return { bossName, dead: true };
+  }
+
+  /**
+   * 모든 보스를 부활시키고 HP를 초기화한다 (테스트용).
+   */
+  async resetAllBosses(): Promise<{ reset: boolean }> {
+    await $global.updateMyState({
+      bosses: {
+        MushMom: 30_000_000,
+        JrBalrog: 30_000_000,
+        Papulatus: 30_000_000,
+      },
+    });
+    return { reset: true };
+  }
+
+  /**
    * 특정 보스의 HP를 조회한다.
    */
   async getBossHP(bossName: string): Promise<{ bossName: string; hp: number }> {

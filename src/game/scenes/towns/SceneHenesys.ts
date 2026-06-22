@@ -5,14 +5,18 @@ import { SlotUI } from "../../slots/SlotUI";
 import { SlotWinPresentation } from "../../slots/SlotWinPresentation";
 import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/SlotConstants";
 import { preloadMobTextures } from "../../slots/SlotSymbolData";
-import { updateBalanceOnServer, fetchBossHP, saveBossHP } from "../../utils/ServerBridge";
+import { updateBalanceOnServer, fetchBossHP, saveBossHP, markBossDead } from "../../utils/ServerBridge";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
 import headData from "../../../../data/maple/head_12000.json";
 import faceData from "../../../../data/maple/face_20000.json";
 import hairData from "../../../../data/maple/hair_30000.json";
-import weaponData from "../../../../data/maple/weapon_1472263.json";
+import weaponData from "../../../../data/maple/weapon_1472000.json";
+import capData from "../../../../data/maple/cap_1002083.json";
+import coatData from "../../../../data/maple/coat_1041057.json";
+import pantsData from "../../../../data/maple/pants_1060033.json";
+import shoesData from "../../../../data/maple/shoes_1072018.json";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
 const GRID_WIDTH = REEL_COUNT * CELL - SYMBOL_GAP;
@@ -23,7 +27,9 @@ const BGM_URL = "https://resource-static.msu.io/data/Sound/Bgm00/GoPicnic.mp3";
 const WIN_SFX_URL = "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc45c686f3ecf63d-1781021996644/static-assets/audio-a093ae4e-d8a9-493d-bf1c-3659ee66ff28.ogg";
 const BOSS_URL = "https://resource-static.msu.io/data/Mob/9300191/move/{frame}.png";
 const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/9300191/hit1/0.png";
+const BOSS_DIE_URL = "https://resource-static.msu.io/data/Mob/9300191/die1/{frame}.png";
 const BOSS_MOVE_FRAMES = 5;
+const BOSS_DIE_FRAMES = 6;
 const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070001/info/icon.png";
 
 export class SceneHenesys extends BaseScene {
@@ -35,7 +41,7 @@ export class SceneHenesys extends BaseScene {
   private player!: MapleSprite;
   private attackQueue = 0;
   private isAttacking = false;
-  private shootToggle = false;
+  private attackToggle = 0;
   private bossImg!: Phaser.GameObjects.Sprite;
   private bossHPBar!: BossHPBar;
   private bossHP = 30_000_000;
@@ -49,12 +55,15 @@ export class SceneHenesys extends BaseScene {
     this.preloadTopBarIcons();
     preloadMobTextures(this);
 
-    for (const d of [bodyData, headData, faceData, hairData, weaponData]) {
+    for (const d of [bodyData, headData, faceData, hairData, weaponData, capData, coatData, pantsData, shoesData]) {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
     for (let f = 0; f < BOSS_MOVE_FRAMES; f++) {
       this.load.image(`boss_move_${f}`, BOSS_URL.replace("{frame}", String(f)));
+    }
+    for (let f = 0; f < BOSS_DIE_FRAMES; f++) {
+      this.load.image(`boss_die_${f}`, BOSS_DIE_URL.replace("{frame}", String(f)));
     }
     this.load.image("boss_hit", BOSS_HIT_URL);
     this.load.image("knife_wolbi", KNIFE_URL);
@@ -175,17 +184,30 @@ export class SceneHenesys extends BaseScene {
         repeat: -1,
       });
     }
+    if (!this.anims.exists("mushmom_die")) {
+      this.anims.create({
+        key: "mushmom_die",
+        frames: Array.from({ length: BOSS_DIE_FRAMES }, (_, f) => ({ key: `boss_die_${f}` })),
+        frameRate: 1000 / 183,
+        repeat: 0,
+      });
+    }
 
     const merged = [
       ...bodyData.render_plan,
       ...headData.render_plan,
       ...faceData.render_plan,
       ...hairData.render_plan,
+      ...capData.render_plan,
+      ...coatData.render_plan,
+      ...pantsData.render_plan,
+      ...shoesData.render_plan,
       ...weaponData.render_plan,
     ];
     this.player = new MapleSprite(this, gridX + charPad, displayAreaMidY, merged, {
       zmap: bodyData.zmap,
       weapon: weaponData.info,
+      cap: capData.info,
       race: "human",
       facing: "right",
     });
@@ -197,6 +219,7 @@ export class SceneHenesys extends BaseScene {
     this.bossImg.play("mushmom_move");
 
     this.time.delayedCall(200, () => this.startBgm());
+    this.time.delayedCall(500, () => this.checkAndShowAllClear());
 
     return [...topBar, title, this.bossHPBar.getContainer(), this.player, this.bossImg, gridBorder];
   }
@@ -266,8 +289,10 @@ export class SceneHenesys extends BaseScene {
     if (this.attackQueue <= 0) return;
     this.attackQueue--;
     this.isAttacking = true;
-    this.shootToggle = !this.shootToggle;
-    this.player.attack(this.shootToggle ? 1 : 0);
+    const actions = ["swingO1", "stabO1", "stabO2"];
+    const action = actions[this.attackToggle % actions.length];
+    this.attackToggle++;
+    this.player.setAction(action);
     this.time.delayedCall(600, () => {
       this.player.stand();
       this.isAttacking = false;
@@ -296,14 +321,29 @@ export class SceneHenesys extends BaseScene {
       },
       onComplete: () => {
         knife.destroy();
-        this.bossImg.setTexture("boss_hit");
-        this.time.delayedCall(200, () => {
-          this.bossImg.play("mushmom_move");
-        });
-
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
         saveBossHP("MushMom", this.bossHP);
+
+        if (this.bossHP <= 0) {
+          this.bossImg.setTexture("boss_hit");
+          markBossDead("MushMom");
+          this.time.delayedCall(200, () => {
+            this.bossImg.play("mushmom_die");
+            this.tweens.add({
+              targets: this.bossImg,
+              alpha: 0,
+              duration: 1000,
+              delay: 900,
+            });
+          });
+          this.time.delayedCall(1500, () => this.checkAndShowAllClear());
+        } else {
+          this.bossImg.setTexture("boss_hit");
+          this.time.delayedCall(200, () => {
+            this.bossImg.play("mushmom_move");
+          });
+        }
       },
     });
   }
