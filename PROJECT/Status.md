@@ -1,5 +1,10 @@
 # Status — 2d-phaser-basic
 
+## Recently Completed
+
+- **Ludibrium scene upgrade**: Switched to `LUDIBRIUM_MOB_SYMBOLS` (7 toy-themed Ludibrium mobs: Brown Teddy, Pink Teddy, Tick-Tock, Master Chronos, Toy Horse, Robo, Papulatus). BGM changed to `Bgm06:FantasticThinking`. 10 custom paylines preserved.
+- **Sleepywood scene upgrade**: Switched from `CascadeSlotMachine` to `SlotMachine` with 7 Sleepywood-themed mob sprites. BGM: `Bgm00:SleepyWood`. Boss combat with HP save/load.
+
 ## Implemented
 
 - React 18 shell (`main.tsx` → `App.tsx` → `GameComponent`) mounting a full-viewport Phaser canvas

@@ -131,7 +131,7 @@ export class SlotWinPresentation {
   }
 
   animateMatchedSymbols(lineIndex: number, matchCount: number, symbol: number) {
-    const animKey = getAnimKey(symbol);
+    const animKey = getAnimKey(symbol, this.slotMachine.texturePrefix);
     if (!this.scene.anims.exists(animKey)) return;
 
     const payline = this.slotMachine.paylinesArray[lineIndex];

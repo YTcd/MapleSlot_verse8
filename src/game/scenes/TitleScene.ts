@@ -1,14 +1,16 @@
 import Phaser from "phaser";
 import { BaseScene } from "./BaseScene";
 import { goToScene } from "../utils/SceneTransition";
-import { isNewUser, resetBalance, clearUserState, resetAllBosses } from "../utils/ServerBridge";
+import { isNewUser, resetBalance, clearUserState } from "../utils/ServerBridge";
+import Assets from "../../assets.json";
 
-const CDN = "https://resource-static.msu.io/data/";
+const BG_URL = Assets.ui.titleBg.url;
+const LOGO_URL = Assets.ui.titleLogo.url;
+const BTN_BG_URL = Assets.ui.btnBg.url;
 
 (window as any).__resetBalance = resetBalance;
 (window as any).__clearUserState = clearUserState;
 (window as any).__isNewUser = isNewUser;
-(window as any).__resetAllBosses = resetAllBosses;
 
 export class TitleScene extends BaseScene {
   private isNew = false;
@@ -18,9 +20,9 @@ export class TitleScene extends BaseScene {
   }
 
   preload() {
-    this.load.image("perion_mountain", CDN + "Map/Back/dryRock/back/26.png");
-    this.load.image("perion_mid", CDN + "Map/Back/dryRock/back/1.png");
-    this.load.image("perion_ground", CDN + "Map/Back/dryRock/back/0.png");
+    this.load.image("title_bg", BG_URL);
+    this.load.image("title_logo", LOGO_URL);
+    this.load.image("btn_bg", BTN_BG_URL);
   }
 
   protected buildScene(): Phaser.GameObjects.GameObject[] {
@@ -30,54 +32,57 @@ export class TitleScene extends BaseScene {
       this.isNew = result;
     });
 
-    this.cameras.main.setBackgroundColor("#0d1321");
+    const bg = this.add
+      .image(width / 2, height / 2, "title_bg")
+      .setOrigin(0.5)
+      .setDisplaySize(width, height);
 
-    const groundH = 128;
-    const midH = 441;
-    const mountainH = 280;
-    const mountainW = 348;
+    const logoScale = width * 0.44 / 1024;
+    const logoImg = this.add
+      .image(width / 2, height * 0.35, "title_logo")
+      .setOrigin(0.5)
+      .setScale(logoScale);
 
-    const bgMountain = this.add
-      .image(0, 0, "perion_mountain")
-      .setOrigin(0, 0)
-      .setDisplaySize(mountainW * 2, mountainH * 2)
-      .setAlpha(0.7);
+    const btnW = 280;
+    const btnH = 70;
+    const btnX = width / 2;
+    const btnY = height * 0.58;
 
-    const bgMid = this.add
-      .tileSprite(0, height - midH - groundH / 2, width, midH, "perion_mid")
-      .setOrigin(0, 0);
+    const btnBg = this.add
+      .image(btnX, btnY, "btn_bg")
+      .setOrigin(0.5)
+      .setDisplaySize(btnW, btnH);
 
-    const bgGround = this.add
-      .tileSprite(0, height - groundH, width, groundH, "perion_ground")
-      .setOrigin(0, 0);
-
-    const titleText = this.add
-      .text(width / 2, height * 0.2, "MapleSlot", {
-        fontFamily: "Arial, sans-serif",
-        fontSize: "48px",
-        color: "#f0d060",
-        fontStyle: "bold",
-        stroke: "#3a2010",
-        strokeThickness: 4,
-      })
-      .setOrigin(0.5);
-
-    const btnBg = this.add.rectangle(width / 2, height * 0.55, 240, 64, 0x4a6fa5, 0.85);
-    btnBg.setStrokeStyle(2, 0x88bbee);
-    btnBg.setInteractive({ useHandCursor: true });
+    const btnHitArea = this.add.rectangle(btnX, btnY, btnW, btnH, 0x000000, 0.001);
+    btnHitArea.setInteractive({ useHandCursor: true });
 
     const btnText = this.add
-      .text(width / 2, height * 0.55, "게임시작", {
-        fontFamily: "Arial, sans-serif",
-        fontSize: "28px",
-        color: "#ffffff",
+      .text(btnX, btnY, "Game Start", {
+        fontFamily: "Georgia, serif",
+        fontSize: "26px",
+        color: "#fff8e0",
         fontStyle: "bold",
+        stroke: "#3a2010",
+        strokeThickness: 3,
+        shadow: {
+          offsetX: 1,
+          offsetY: 2,
+          color: "#1a0a00",
+          blur: 3,
+          fill: true,
+        },
       })
       .setOrigin(0.5);
 
-    btnBg.on("pointerover", () => { btnBg.setFillStyle(0x5a8fc5, 0.85); });
-    btnBg.on("pointerout", () => { btnBg.setFillStyle(0x4a6fa5, 0.85); });
-    btnBg.on("pointerdown", () => { goToScene(this, "TownSelectScene", { isNewUser: this.isNew }); });
+    btnHitArea.on("pointerover", () => {
+      btnBg.setDisplaySize(btnW * 1.05, btnH * 1.05);
+      btnText.setScale(1.05);
+    });
+    btnHitArea.on("pointerout", () => {
+      btnBg.setDisplaySize(btnW, btnH);
+      btnText.setScale(1);
+    });
+    btnHitArea.on("pointerdown", () => { goToScene(this, "TownSelectScene", { isNewUser: this.isNew }); });
 
     const delBtnW = 140;
     const delBtnH = 32;
@@ -92,16 +97,16 @@ export class TitleScene extends BaseScene {
     delBg.on("pointerdown", () => {
       delBg.disableInteractive();
       clearUserState().then(() => {
-        alert("유저 데이터가 삭제되었습니다. 새로고침 후 신규 유저로 접속됩니다.");
+        alert("User data deleted. Refresh to start as a new user.");
       });
     });
 
-    const delText = this.add.text(delBtnX, delBtnY, "유저 데이터 삭제", {
+    const delText = this.add.text(delBtnX, delBtnY, "User Del", {
       fontFamily: "Arial, sans-serif",
       fontSize: "11px",
       color: "#cc8888",
     }).setOrigin(0.5);
 
-    return [bgMountain, bgMid, bgGround, titleText, btnBg, btnText, delBg, delText];
+    return [bg, logoImg, btnBg, btnHitArea, btnText, delBg, delText];
   }
 }

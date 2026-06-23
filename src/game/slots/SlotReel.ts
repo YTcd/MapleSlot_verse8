@@ -27,6 +27,7 @@ export class SlotReel {
   private stripPos: number = 0;
   private spinning: boolean = false;
   private rowSprites: (Phaser.GameObjects.Sprite | null)[] = [];
+  private textureKeys: string[] = [];
 
   constructor(
     scene: Phaser.Scene,
@@ -40,6 +41,7 @@ export class SlotReel {
     this.scene = scene;
     this.reelIndex = reelIndex;
     this.strip = strip;
+    this.textureKeys = textureKeys;
     this.x = x;
     this.y = y;
     this.visibleRows = visibleRows;
@@ -94,7 +96,7 @@ export class SlotReel {
 
       const item = this.items[i];
       item.sprite.stop();
-      item.sprite.setTexture("slot_" + sym);
+      item.sprite.setTexture(this.textureKeys[sym]);
       item.sprite.setVisible(true);
 
       const displayRow = i - POOL_PADDING - frac;

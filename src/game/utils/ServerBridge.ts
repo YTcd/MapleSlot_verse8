@@ -65,22 +65,3 @@ export async function saveBossHP(bossName: string, hp: number): Promise<void> {
   if (!gs) return;
   await gs.remoteFunction("updateBossHP", [bossName, hp]);
 }
-
-export async function markBossDead(bossName: string): Promise<void> {
-  const gs = await getGS();
-  if (!gs) return;
-  await gs.remoteFunction("markBossDead", [bossName]);
-}
-
-export async function checkAllCleared(): Promise<boolean> {
-  const gs = await getGS();
-  if (!gs) return false;
-  const bosses: Record<string, { hp: number; alive: boolean }> = await gs.remoteFunction("getBossesAlive");
-  return Object.values(bosses).every(b => !b.alive);
-}
-
-export async function resetAllBosses(): Promise<void> {
-  const gs = await getGS();
-  if (!gs) return;
-  await gs.remoteFunction("resetAllBosses");
-}

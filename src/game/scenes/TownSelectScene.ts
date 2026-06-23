@@ -2,11 +2,12 @@ import Phaser from "phaser";
 import { BaseScene } from "./BaseScene";
 import { goToScene } from "../utils/SceneTransition";
 import { resetBalance } from "../utils/ServerBridge";
+import Assets from "../../assets.json";
 
 const TOWN_SCENES = [
-  { name: "Henesys", key: "SceneHenesys" },
-  { name: "Sleepywood", key: "SceneSleepywood" },
-  { name: "Ludibrium", key: "SceneLudibrium" },
+  { name: "Henesys", key: "SceneHenesys", asset: "town_henesys" },
+  { name: "Sleepywood", key: "SceneSleepywood", asset: "town_sleepywood" },
+  { name: "Ludibrium", key: "SceneLudibrium", asset: "town_ludibrium" },
 ];
 
 const INITIAL_BALANCE = 300_000_000;
@@ -28,6 +29,9 @@ export class TownSelectScene extends BaseScene {
 
   preload() {
     this.preloadTopBarIcons();
+    this.load.image("town_henesys", Assets.ui.townHenesys.url);
+    this.load.image("town_sleepywood", Assets.ui.townSleepywood.url);
+    this.load.image("town_ludibrium", Assets.ui.townLudibrium.url);
   }
 
   protected buildScene(): Phaser.GameObjects.GameObject[] {
@@ -38,20 +42,26 @@ export class TownSelectScene extends BaseScene {
     const topBar = this.createTopBar(undefined, true);
 
     const title = this.add
-      .text(width / 2, height * 0.2, "Select Town", {
-        fontFamily: "Arial, sans-serif",
-        fontSize: "40px",
-        color: "#f0d060",
+      .text(width / 2, height * 0.12, "Select Town", {
+        fontFamily: "Georgia, serif",
+        fontSize: "42px",
+        color: "#fce38a",
         fontStyle: "bold",
-        stroke: "#3a2010",
-        strokeThickness: 4,
+        stroke: "#4a2510",
+        strokeThickness: 5,
+        shadow: {
+          offsetX: 2,
+          offsetY: 3,
+          color: "#1a0a00",
+          blur: 4,
+          fill: true,
+        },
       })
       .setOrigin(0.5);
 
-    const btnW = 140;
-    const btnH = 56;
-    const areaWidth = width * 0.6;
-    const gap = (areaWidth - TOWN_SCENES.length * btnW) / (TOWN_SCENES.length - 1);
+    const btnW = Math.min(195, width * 0.28);
+    const btnH = btnW * 1.35;
+    const gap = 24;
     const totalW = TOWN_SCENES.length * btnW + (TOWN_SCENES.length - 1) * gap;
     const startX = (width - totalW) / 2 + btnW / 2;
     const btnY = height * 0.55;
@@ -61,24 +71,23 @@ export class TownSelectScene extends BaseScene {
     TOWN_SCENES.forEach((town, i) => {
       const x = startX + i * (btnW + gap);
 
-      const btnBg = this.add.rectangle(x, btnY, btnW, btnH, 0x4a6fa5, 0.85);
-      btnBg.setStrokeStyle(2, 0x88bbee);
-      btnBg.setInteractive({ useHandCursor: true });
+      const btnImg = this.add
+        .image(x, btnY, town.asset)
+        .setOrigin(0.5)
+        .setDisplaySize(btnW, btnH);
 
-      const btnText = this.add
-        .text(x, btnY, town.name, {
-          fontFamily: "Arial, sans-serif",
-          fontSize: "16px",
-          color: "#ffffff",
-          fontStyle: "bold",
-        })
-        .setOrigin(0.5);
+      const hitArea = this.add.rectangle(x, btnY, btnW, btnH, 0x000000, 0.001);
+      hitArea.setInteractive({ useHandCursor: true });
 
-      btnBg.on("pointerover", () => { btnBg.setFillStyle(0x5a8fc5, 0.85); });
-      btnBg.on("pointerout", () => { btnBg.setFillStyle(0x4a6fa5, 0.85); });
-      btnBg.on("pointerdown", () => { goToScene(this, town.key); });
+      hitArea.on("pointerover", () => {
+        btnImg.setDisplaySize(btnW * 1.08, btnH * 1.08);
+      });
+      hitArea.on("pointerout", () => {
+        btnImg.setDisplaySize(btnW, btnH);
+      });
+      hitArea.on("pointerdown", () => { goToScene(this, town.key); });
 
-      children.push(btnBg, btnText);
+      children.push(btnImg, hitArea);
     });
 
     if (this.isNewUser) {

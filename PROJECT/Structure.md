@@ -88,8 +88,10 @@ Standard Vite + React + TypeScript + Tailwind toolchain configuration.
 ## `src/game/slots/SlotSymbolData.ts`
 
 Slot symbol → MapleStory mob mapping. Defines mob CDN paths, frame data, and provides:
+- `MobSymbolDef` interface: Exported type for symbol definitions used by SlotMachine
 - `preloadMobTextures(scene)`: Preloads raw mob sprite PNGs via `scene.load.image()` using raw frame keys (`slot_mob_raw_X_f_Y`)
-- `createMobAnimations(scene)`: Creates Phaser animations from bordered composite frame textures
+- `createMobAnimations(scene)`: Creates Phaser animations from bordered composite frame textures (uses default `MOB_SYMBOLS`)
+- `createMobAnimationsFor(scene, symbols)`: Generic version accepting custom symbol array (used by Sleepywood)
 - `getSlotTextureKey(idx)` / `getAnimKey(idx)` / `getFrameKey(idx, frame)` / `getRawFrameKey(idx, frame)`: Key helpers
 
 Symbol mapping (each has a colored border matching the mob theme):
@@ -103,11 +105,48 @@ Symbol mapping (each has a colored border matching the mob theme):
 | 5 | 100004 | Orange Mushroom | 2 | Orange #ff8844 |
 | 6 | 2220100 | Blue Mushroom | 2 | Blue #4488dd |
 
+## `src/game/slots/SleepywoodSymbolData.ts`
+
+Sleepywood-specific mob symbol definitions. Exports the same interface shape as `SlotSymbolData`:
+- `SLEEPYWOOD_MOB_SYMBOLS`: Array of 7 `MobSymbolDef` entries for Sleepywood dungeon mobs
+- `preloadMobTextures(scene)`: Preloads Sleepywood mob PNGs
+- All key helper functions (`getSlotTextureKey`, `getAnimKey`, `getFrameKey`, `getRawFrameKey`, `getBorderColor`)
+
+Symbol mapping:
+| Symbol | Mob ID | Name | CDN Path | Frames | Border |
+|--------|--------|------|----------|--------|--------|
+| 0 | 2600224 | Drake | Mob/5130100/stand/0.png | 1 | Dark Red #aa3333 |
+| 1 | 6230100 | Wild Kargo | Mob/6230100/stand/0.png | 1 | Orange-Brown #cc6633 |
+| 2 | 7130100 | Tauromacis | Mob/7130100/stand/0-2.png | 3 | Forest Green #448844 |
+| 3 | 6130100 | Red Drake | Mob/6130100/stand/0.png | 1 | Red #cc4444 |
+| 4 | 6230600 | Ice Drake | Mob/6230600/stand/0-1.png | 2 | Ice Blue #44aacc |
+| 5 | 2230101 | Zombie Mushroom | Mob/2230101/stand/0,move/2.png | 2 | Purple #7733aa |
+| 6 | 8130100 | Jr. Balrog | Mob/8130100/stand/0-1.png | 2 | Fire Orange #ff5500 |
+
+## `src/game/slots/LudibriumSymbolData.ts`
+
+Ludibrium-specific mob symbol definitions. Exports the same interface shape as `SlotSymbolData`:
+- `LUDIBRIUM_MOB_SYMBOLS`: Array of 7 `MobSymbolDef` entries for Ludibrium toy-themed mobs
+- `preloadMobTextures(scene)`: Preloads Ludibrium mob PNGs
+- All key helper functions (`getSlotTextureKey`, `getAnimKey`, `getFrameKey`, `getRawFrameKey`, `getBorderColor`)
+
+Symbol mapping:
+| Symbol | Mob ID | Name | CDN Path | Frames | Border |
+|--------|--------|------|----------|--------|--------|
+| 0 | 3000005 | Brown Teddy | Mob/3000005/stand/0-1.png | 2 | Brown #8B6914 |
+| 1 | 3110101 | Pink Teddy | Mob/3110101/stand/0-1.png | 2 | Pink #ff88aa |
+| 2 | 4230113 | Tick-Tock | Mob/4230113/stand/0-2.png | 3 | Gold #ddaa44 |
+| 3 | 4230115 | Master Chronos | Mob/4230115/stand/0-1.png | 2 | Purple #8844aa |
+| 4 | 3230305 | Toy Horse | Mob/3230305/stand/0-1.png | 2 | Orange #dd8844 |
+| 5 | 4230111 | Robo | Mob/4230111/stand/0-1.png | 2 | Blue-Gray #8888cc |
+| 6 | 2600631 | Papulatus | Mob/2600631/stand/0-1.png | 2 | Red #dd3333 |
+
 ## `src/game/slots/SlotMachine.ts`
 
-Updated to use MapleStory mob sprites:
-- `createTextures()`: Generates bordered composite textures for ALL animation frames (not just frame 0) using `RenderTexture`, so animation preserves border and size
-- `createMobAnimations()`: Called during construction to create Phaser animations from bordered composite frames
+Main slot machine class. Updated to support custom symbol sets:
+- Constructor accepts optional `customSymbols?: MobSymbolDef[]` (7th parameter) — when provided, uses those symbols instead of the default `MOB_SYMBOLS`
+- `createTextures()`: Uses `this.symbols` array to generate bordered composite textures for all animation frames
+- `createMobAnimationsFor()`: Called with custom symbols when provided, otherwise uses default `createMobAnimations()`
 - `getSpritesForPayline(lineIndex)`: Returns sprite references for win animation
 - `stopAllSymbolAnimations()`: Stops all playing animations on reels
 
@@ -126,6 +165,29 @@ Updated constructor to accept `SlotMachine` reference. `animateMatchedSymbols()`
 2. Plays mob stand animation on matching sprites
 3. After timeout, clears overlay, stops animations, advances phase
 
+## `src/game/scenes/towns/SceneSleepywood.ts`
+
+Sleepywood slot machine town scene with:
+- **Slot Machine**: Uses `SlotMachine` with `SLEEPYWOOD_MOB_SYMBOLS` (7 dungeon mobs: Drake, Wild Kargo, Tauromacis, Red Drake, Ice Drake, Zombie Mushroom, Jr. Balrog)
+- **BGM**: `Bgm00:SleepyWood` (looping), paused during win presentation
+- **Win SFX**: Celebration chime fanfare (3s)
+- **Boss**: Jr. Balrog (mob ID 8130100, 2 stand frames) with HP bar and hit animation
+- **Player**: MapleSprite with spear weapon, attacks boss on slot wins
+- **throwKnife()**: Projectile animation from player to boss on win
+- **HP save/load**: `fetchBossHP("JrBalrog")` / `saveBossHP("JrBalrog", hp)` with 1,000,000 max HP
+
+## `src/game/scenes/towns/SceneLudibrium.ts`
+
+Ludibrium slot machine town scene with:
+- **Slot Machine**: Uses `SlotMachine` with `LUDIBRIUM_MOB_SYMBOLS` (7 toy-themed mobs: Brown Teddy, Pink Teddy, Tick-Tock, Master Chronos, Toy Horse, Robo, Papulatus)
+- **Custom Paylines**: 10 LUDI_PAYLINES with payline preview toggle (Lines button)
+- **BGM**: `Bgm06:FantasticThinking` (looping), paused during win presentation
+- **Win SFX**: Celebration chime fanfare (3s)
+- **Boss**: Papulatus (mob ID 2600631, 6 stand frames) with HP bar and hit animation
+- **Player**: MapleSprite with spear weapon, attacks boss on slot wins
+- **throwKnife()**: Projectile animation from player to boss on win
+- **HP save/load**: `fetchBossHP("Papulatus")` / `saveBossHP("Papulatus", hp)` with 30,000,000 max HP
+
 ## `src/game/scenes/towns/SceneHenesys.ts`
 
 Henesys slot machine town scene with:
@@ -139,7 +201,9 @@ Henesys slot machine town scene with:
 
 - `src/assets.json` → `background.perion`: Perion `dryRock` background set
 - `src/assets.json` → `background.henesys`: Henesys `grassySoil_new` background set from map `323090120`
-- `src/assets.json` → `audio.bgm`: `Bgm00:GoPicnic` background music
+- `src/assets.json` → `audio.bgm`: `Bgm00:GoPicnic` background music (Henesys)
+- `src/assets.json` → `audio.bgmSleepywood`: `Bgm00:SleepyWood` background music (Sleepywood)
+- `src/assets.json` → `audio.bgmLudibrium`: `Bgm06:FantasticThinking` background music (Ludibrium)
 - `src/assets.json` → `audio.sfxWin`: Celebration win sound effect
 - `data/maple/mob_9833419.json`: Mush render plan (2 stand frames)
 - `data/maple/mob_100000.json`: Snail render plan (1 stand frame)
@@ -154,11 +218,3 @@ Henesys slot machine town scene with:
 - `data/maple/face_20000.json`: Face render plan (1 entry, default expression)
 - `data/maple/hair_30000.json`: Hair render plan (30 entries, stand1/stabO1/stabO2/shoot1/shoot2)
 - `data/maple/weapon_1472263.json`: Maple Treasure Thief Claw render plan (7 entries, stand1/stabO1/stabO2/shoot1/shoot2)
-- `data/maple/cap_1002083.json`: Black Bandana render plan (stand1, 3 entries, reqLevel 10, vslot=CpH1H5)
-- `data/maple/coat_1041057.json`: Dark Sneak render plan (stand1, 6 entries, reqLevel 25 thief)
-- `data/maple/pants_1060033.json`: Black Pao Bottom render plan (stand1, 3 entries, reqLevel 20 thief)
-- `data/maple/shoes_1072018.json`: Blue Sneakers render plan (stand1, 3 entries, reqLevel 31)
-
-- `data/maple/cap_1004227.json`: Muspell Thief Hat render plan (stand1, 6 entries, reqLevel 130, vslot=CpH1H5)
-- `data/maple/longcoat_1052797.json`: Muspell Thief Suit render plan (stand1, 6 entries, reqLevel 130, vslot=MaPn) — longcoat overrides coat+pants
-- `data/maple/shoes_1072965.json`: Muspell Thief Shoes render plan (stand1, 3 entries, reqLevel 130)

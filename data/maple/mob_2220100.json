@@ -1,96 +1,38 @@
 {
-  "id": "1060099",
-  "type": "pants",
+  "id": "2220100",
+  "type": "mob",
   "cdnBase": "https://resource-static.msu.io/data",
   "availableStates": [
-    "alert",
-    "fly",
-    "heal",
+    "die1",
+    "hit1",
     "jump",
-    "ladder",
-    "prone",
-    "proneStab",
-    "rope",
-    "shoot1",
-    "shoot2",
-    "shootF",
-    "sit",
-    "stabO1",
-    "stabO2",
-    "stabOF",
-    "stabT1",
-    "stabT2",
-    "stabTF",
-    "stand1",
-    "stand2",
-    "swingO1",
-    "swingO2",
-    "swingO3",
-    "swingOF",
-    "swingP1",
-    "swingP2",
-    "swingPF",
-    "swingT1",
-    "swingT2",
-    "swingT3",
-    "swingTF",
-    "walk1",
-    "walk2"
+    "move",
+    "stand"
   ],
   "render_plan": [
     {
-      "state": "stand1",
+      "state": "stand",
       "frame": "0",
-      "part": "pants",
-      "path": "Character/Pants/01060099/stand1/0/pants.png",
+      "part": "mob",
+      "path": "Mob/2220100/stand/0.png",
       "origin": {
-        "x": 9,
-        "y": 6
+        "x": 27,
+        "y": 58
       },
-      "texture_key": "maple_pants_stand1_0_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -6,
-          "y": -7
-        }
-      }
+      "texture_key": "maple_mob_stand_0_mob",
+      "delay": 180
     },
     {
-      "state": "stand1",
+      "state": "stand",
       "frame": "1",
-      "part": "pants",
-      "path": "Character/Pants/01060099/stand1/1/pants.png",
+      "part": "mob",
+      "path": "Mob/2220100/move/2.png",
       "origin": {
-        "x": 9,
-        "y": 6
+        "x": 27,
+        "y": 55
       },
-      "texture_key": "maple_pants_stand1_1_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -5,
-          "y": -6
-        }
-      }
-    },
-    {
-      "state": "stand1",
-      "frame": "2",
-      "part": "pants",
-      "path": "Character/Pants/01060099/stand1/2/pants.png",
-      "origin": {
-        "x": 9,
-        "y": 6
-      },
-      "texture_key": "maple_pants_stand1_2_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -4,
-          "y": -7
-        }
-      }
+      "texture_key": "maple_mob_stand_1_mob",
+      "delay": 180
     }
   ],
   "zmap": [
@@ -249,21 +191,24 @@
     "mobEquipFront"
   ],
   "info": {
-    "cash": 0,
-    "exItem": 1,
-    "incDEX": 1,
-    "incLUK": 3,
-    "incPDD": 51,
-    "islot": "Pn",
-    "price": 14000,
-    "reqDEX": 0,
-    "reqINT": 0,
-    "reqJob": 8,
-    "reqLUK": 220,
-    "reqLevel": 80,
-    "reqSTR": 0,
-    "setItemID": 365,
-    "tuc": 7,
-    "vslot": "Pn"
+    "MADamage": 55,
+    "MDDamage": 60,
+    "MDRate": 10,
+    "PADamage": 58,
+    "PDDamage": 10,
+    "PDRate": 10,
+    "acc": 23,
+    "bodyAttack": 1,
+    "category": 2,
+    "eva": 1,
+    "exp": 24,
+    "fs": "10",
+    "level": 14,
+    "maxHP": 225,
+    "maxMP": 20,
+    "mobType": "1N",
+    "pushed": 20,
+    "speed": 5,
+    "summonType": 1
   }
 }

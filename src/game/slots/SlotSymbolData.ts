@@ -8,7 +8,7 @@ interface RenderPlanEntry {
   delay: number;
 }
 
-interface MobSymbolDef {
+export interface MobSymbolDef {
   mobId: string;
   symbolIndex: number;
   cdnBase: string;
@@ -84,32 +84,36 @@ export const MOB_SYMBOLS: MobSymbolDef[] = [
   },
 ];
 
-export function getSlotTextureKey(symbolIndex: number): string {
-  return `slot_${symbolIndex}`;
+export function getSlotTextureKey(symbolIndex: number, prefix = ""): string {
+  return `${prefix}slot_${symbolIndex}`;
 }
 
-export function getAnimKey(symbolIndex: number): string {
-  return `slot_anim_${symbolIndex}`;
+export function getAnimKey(symbolIndex: number, prefix = ""): string {
+  return `${prefix}slot_anim_${symbolIndex}`;
 }
 
-export function getFrameKey(symbolIndex: number, frameIndex: number): string {
-  return `slot_mob_${symbolIndex}_f_${frameIndex}`;
+export function getFrameKey(symbolIndex: number, frameIndex: number, prefix = ""): string {
+  return `${prefix}slot_mob_${symbolIndex}_f_${frameIndex}`;
 }
 
-export function getRawFrameKey(symbolIndex: number, frameIndex: number): string {
-  return `slot_mob_raw_${symbolIndex}_f_${frameIndex}`;
+export function getRawFrameKey(symbolIndex: number, frameIndex: number, prefix = ""): string {
+  return `${prefix}slot_mob_raw_${symbolIndex}_f_${frameIndex}`;
 }
 
 export function getBorderColor(symbolIndex: number): number {
   return MOB_SYMBOLS[symbolIndex]?.borderColor ?? 0x888888;
 }
 
-export function preloadMobTextures(scene: Phaser.Scene): void {
-  for (const mob of MOB_SYMBOLS) {
+export function preloadMobTextures(scene: Phaser.Scene, prefix = ""): void {
+  preloadMobTexturesFor(scene, MOB_SYMBOLS, prefix);
+}
+
+export function preloadMobTexturesFor(scene: Phaser.Scene, symbols: MobSymbolDef[], prefix = ""): void {
+  for (const mob of symbols) {
     for (let f = 0; f < mob.renderPlan.length; f++) {
       const frame = mob.renderPlan[f];
       const url = `${mob.cdnBase}/${frame.path}`;
-      const rawKey = getRawFrameKey(mob.symbolIndex, f);
+      const rawKey = getRawFrameKey(mob.symbolIndex, f, prefix);
       if (!scene.textures.exists(rawKey)) {
         scene.load.image(rawKey, url);
       }
@@ -117,13 +121,17 @@ export function preloadMobTextures(scene: Phaser.Scene): void {
   }
 }
 
-export function createMobAnimations(scene: Phaser.Scene): void {
-  for (const mob of MOB_SYMBOLS) {
-    const animKey = getAnimKey(mob.symbolIndex);
+export function createMobAnimations(scene: Phaser.Scene, prefix = ""): void {
+  createMobAnimationsFor(scene, MOB_SYMBOLS, prefix);
+}
+
+export function createMobAnimationsFor(scene: Phaser.Scene, symbols: MobSymbolDef[], prefix = ""): void {
+  for (const mob of symbols) {
+    const animKey = getAnimKey(mob.symbolIndex, prefix);
     if (scene.anims.exists(animKey)) continue;
 
     const frames = mob.renderPlan.map((_, f) => ({
-      key: getFrameKey(mob.symbolIndex, f),
+      key: getFrameKey(mob.symbolIndex, f, prefix),
     }));
     const totalDelay = mob.renderPlan.reduce((sum, f) => sum + (f.delay || 200), 0);
     const avgDelay = totalDelay / mob.renderPlan.length;

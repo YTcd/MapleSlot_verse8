@@ -2736,6 +2736,314 @@
   ],
   "render_plan": [
     {
+      "state": "stand1",
+      "frame": "0",
+      "part": "arm",
+      "path": "Character/00002000/stand1/0/arm.png",
+      "origin": {
+        "x": 5,
+        "y": 9
+      },
+      "texture_key": "maple_body_stand1_0_arm",
+      "z": "arm",
+      "sockets": {
+        "hand": {
+          "x": -1,
+          "y": 5
+        },
+        "navel": {
+          "x": -13,
+          "y": -1
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "0",
+      "part": "body",
+      "path": "Character/00002000/stand1/0/body.png",
+      "origin": {
+        "x": 16,
+        "y": 31
+      },
+      "texture_key": "maple_body_stand1_0_body",
+      "z": "body",
+      "sockets": {
+        "navel": {
+          "x": -8,
+          "y": -21
+        },
+        "neck": {
+          "x": -4,
+          "y": -32
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "1",
+      "part": "arm",
+      "path": "Character/00002000/stand1/1/arm.png",
+      "origin": {
+        "x": 5,
+        "y": 9
+      },
+      "texture_key": "maple_body_stand1_1_arm",
+      "z": "arm",
+      "sockets": {
+        "hand": {
+          "x": -1,
+          "y": 5
+        },
+        "navel": {
+          "x": -13,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "1",
+      "part": "body",
+      "path": "Character/00002000/stand1/1/body.png",
+      "origin": {
+        "x": 17,
+        "y": 31
+      },
+      "texture_key": "maple_body_stand1_1_body",
+      "z": "body",
+      "sockets": {
+        "navel": {
+          "x": -7,
+          "y": -20
+        },
+        "neck": {
+          "x": -4,
+          "y": -32
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "2",
+      "part": "arm",
+      "path": "Character/00002000/stand1/2/arm.png",
+      "origin": {
+        "x": 6,
+        "y": 9
+      },
+      "texture_key": "maple_body_stand1_2_arm",
+      "z": "arm",
+      "sockets": {
+        "hand": {
+          "x": -1,
+          "y": 5
+        },
+        "navel": {
+          "x": -13,
+          "y": -1
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "2",
+      "part": "body",
+      "path": "Character/00002000/stand1/2/body.png",
+      "origin": {
+        "x": 18,
+        "y": 31
+      },
+      "texture_key": "maple_body_stand1_2_body",
+      "z": "body",
+      "sockets": {
+        "navel": {
+          "x": -6,
+          "y": -21
+        },
+        "neck": {
+          "x": -4,
+          "y": -32
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "0",
+      "part": "arm",
+      "path": "Character/00002000/stabO1/0/arm.png",
+      "origin": {
+        "x": 7,
+        "y": 7
+      },
+      "texture_key": "maple_body_stabO1_0_arm",
+      "z": "arm",
+      "sockets": {
+        "hand": {
+          "x": 2,
+          "y": 7
+        },
+        "navel": {
+          "x": -12,
+          "y": 4
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "0",
+      "part": "body",
+      "path": "Character/00002000/stabO1/0/body.png",
+      "origin": {
+        "x": 30,
+        "y": 29
+      },
+      "texture_key": "maple_body_stabO1_0_body",
+      "z": "body",
+      "sockets": {
+        "navel": {
+          "x": -5,
+          "y": -17
+        },
+        "neck": {
+          "x": -4,
+          "y": -29
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "1",
+      "part": "arm",
+      "path": "Character/00002000/stabO1/1/arm.png",
+      "origin": {
+        "x": 7,
+        "y": 7
+      },
+      "texture_key": "maple_body_stabO1_1_arm",
+      "z": "armOverHair",
+      "sockets": {
+        "hand": {
+          "x": -3,
+          "y": -2
+        },
+        "navel": {
+          "x": 23,
+          "y": 5
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "1",
+      "part": "body",
+      "path": "Character/00002000/stabO1/1/body.png",
+      "origin": {
+        "x": 25,
+        "y": 27
+      },
+      "texture_key": "maple_body_stabO1_1_body",
+      "z": "body",
+      "sockets": {
+        "navel": {
+          "x": -14,
+          "y": -15
+        },
+        "neck": {
+          "x": -23,
+          "y": -26
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "0",
+      "part": "arm",
+      "path": "Character/00002000/stabO2/0/arm.png",
+      "origin": {
+        "x": 7,
+        "y": 7
+      },
+      "texture_key": "maple_body_stabO2_0_arm",
+      "z": "armOverHair",
+      "sockets": {
+        "hand": {
+          "x": -2,
+          "y": -3
+        },
+        "navel": {
+          "x": -13,
+          "y": 9
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "0",
+      "part": "body",
+      "path": "Character/00002000/stabO2/0/body.png",
+      "origin": {
+        "x": 30,
+        "y": 33
+      },
+      "texture_key": "maple_body_stabO2_0_body",
+      "z": "body",
+      "sockets": {
+        "navel": {
+          "x": -5,
+          "y": -20
+        },
+        "neck": {
+          "x": -4,
+          "y": -32
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "1",
+      "part": "arm",
+      "path": "Character/00002000/stabO2/1/arm.png",
+      "origin": {
+        "x": 7,
+        "y": 7
+      },
+      "texture_key": "maple_body_stabO2_1_arm",
+      "z": "armOverHair",
+      "sockets": {
+        "hand": {
+          "x": -3,
+          "y": -3
+        },
+        "navel": {
+          "x": 20,
+          "y": 4
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "1",
+      "part": "body",
+      "path": "Character/00002000/stabO2/1/body.png",
+      "origin": {
+        "x": 26,
+        "y": 27
+      },
+      "texture_key": "maple_body_stabO2_1_body",
+      "z": "body",
+      "sockets": {
+        "navel": {
+          "x": -16,
+          "y": -16
+        },
+        "neck": {
+          "x": -26,
+          "y": -25
+        }
+      }
+    },
+    {
       "state": "shoot1",
       "frame": "0",
       "part": "arm",
@@ -3084,446 +3392,6 @@
         "neck": {
           "x": -4,
           "y": -31
-        }
-      }
-    },
-    {
-      "state": "stand1",
-      "frame": "0",
-      "part": "arm",
-      "path": "Character/00002000/stand1/0/arm.png",
-      "origin": {
-        "x": 5,
-        "y": 9
-      },
-      "texture_key": "maple_body_stand1_0_arm",
-      "z": "arm",
-      "sockets": {
-        "hand": {
-          "x": -1,
-          "y": 5
-        },
-        "navel": {
-          "x": -13,
-          "y": -1
-        }
-      }
-    },
-    {
-      "state": "stand1",
-      "frame": "0",
-      "part": "body",
-      "path": "Character/00002000/stand1/0/body.png",
-      "origin": {
-        "x": 16,
-        "y": 31
-      },
-      "texture_key": "maple_body_stand1_0_body",
-      "z": "body",
-      "sockets": {
-        "navel": {
-          "x": -8,
-          "y": -21
-        },
-        "neck": {
-          "x": -4,
-          "y": -32
-        }
-      }
-    },
-    {
-      "state": "stand1",
-      "frame": "1",
-      "part": "arm",
-      "path": "Character/00002000/stand1/1/arm.png",
-      "origin": {
-        "x": 5,
-        "y": 9
-      },
-      "texture_key": "maple_body_stand1_1_arm",
-      "z": "arm",
-      "sockets": {
-        "hand": {
-          "x": -1,
-          "y": 5
-        },
-        "navel": {
-          "x": -13,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "stand1",
-      "frame": "1",
-      "part": "body",
-      "path": "Character/00002000/stand1/1/body.png",
-      "origin": {
-        "x": 17,
-        "y": 31
-      },
-      "texture_key": "maple_body_stand1_1_body",
-      "z": "body",
-      "sockets": {
-        "navel": {
-          "x": -7,
-          "y": -20
-        },
-        "neck": {
-          "x": -4,
-          "y": -32
-        }
-      }
-    },
-    {
-      "state": "stand1",
-      "frame": "2",
-      "part": "arm",
-      "path": "Character/00002000/stand1/2/arm.png",
-      "origin": {
-        "x": 6,
-        "y": 9
-      },
-      "texture_key": "maple_body_stand1_2_arm",
-      "z": "arm",
-      "sockets": {
-        "hand": {
-          "x": -1,
-          "y": 5
-        },
-        "navel": {
-          "x": -13,
-          "y": -1
-        }
-      }
-    },
-    {
-      "state": "stand1",
-      "frame": "2",
-      "part": "body",
-      "path": "Character/00002000/stand1/2/body.png",
-      "origin": {
-        "x": 18,
-        "y": 31
-      },
-      "texture_key": "maple_body_stand1_2_body",
-      "z": "body",
-      "sockets": {
-        "navel": {
-          "x": -6,
-          "y": -21
-        },
-        "neck": {
-          "x": -4,
-          "y": -32
-        }
-      }
-    },
-    {
-      "state": "stabO1",
-      "frame": "0",
-      "part": "arm",
-      "path": "Character/00002000/stabO1/0/arm.png",
-      "origin": {
-        "x": 7,
-        "y": 7
-      },
-      "texture_key": "maple_body_stabO1_0_arm",
-      "z": "arm",
-      "sockets": {
-        "hand": {
-          "x": 2,
-          "y": 7
-        },
-        "navel": {
-          "x": -12,
-          "y": 4
-        }
-      }
-    },
-    {
-      "state": "stabO1",
-      "frame": "0",
-      "part": "body",
-      "path": "Character/00002000/stabO1/0/body.png",
-      "origin": {
-        "x": 30,
-        "y": 29
-      },
-      "texture_key": "maple_body_stabO1_0_body",
-      "z": "body",
-      "sockets": {
-        "navel": {
-          "x": -5,
-          "y": -17
-        },
-        "neck": {
-          "x": -4,
-          "y": -29
-        }
-      }
-    },
-    {
-      "state": "stabO1",
-      "frame": "1",
-      "part": "arm",
-      "path": "Character/00002000/stabO1/1/arm.png",
-      "origin": {
-        "x": 7,
-        "y": 7
-      },
-      "texture_key": "maple_body_stabO1_1_arm",
-      "z": "armOverHair",
-      "sockets": {
-        "hand": {
-          "x": -3,
-          "y": -2
-        },
-        "navel": {
-          "x": 23,
-          "y": 5
-        }
-      }
-    },
-    {
-      "state": "stabO1",
-      "frame": "1",
-      "part": "body",
-      "path": "Character/00002000/stabO1/1/body.png",
-      "origin": {
-        "x": 25,
-        "y": 27
-      },
-      "texture_key": "maple_body_stabO1_1_body",
-      "z": "body",
-      "sockets": {
-        "navel": {
-          "x": -14,
-          "y": -15
-        },
-        "neck": {
-          "x": -23,
-          "y": -26
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "0",
-      "part": "arm",
-      "path": "Character/00002000/stabO2/0/arm.png",
-      "origin": {
-        "x": 7,
-        "y": 7
-      },
-      "texture_key": "maple_body_stabO2_0_arm",
-      "z": "armOverHair",
-      "sockets": {
-        "hand": {
-          "x": -2,
-          "y": -3
-        },
-        "navel": {
-          "x": -13,
-          "y": 9
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "0",
-      "part": "body",
-      "path": "Character/00002000/stabO2/0/body.png",
-      "origin": {
-        "x": 30,
-        "y": 33
-      },
-      "texture_key": "maple_body_stabO2_0_body",
-      "z": "body",
-      "sockets": {
-        "navel": {
-          "x": -5,
-          "y": -20
-        },
-        "neck": {
-          "x": -4,
-          "y": -32
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "1",
-      "part": "arm",
-      "path": "Character/00002000/stabO2/1/arm.png",
-      "origin": {
-        "x": 7,
-        "y": 7
-      },
-      "texture_key": "maple_body_stabO2_1_arm",
-      "z": "armOverHair",
-      "sockets": {
-        "hand": {
-          "x": -3,
-          "y": -3
-        },
-        "navel": {
-          "x": 20,
-          "y": 4
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "1",
-      "part": "body",
-      "path": "Character/00002000/stabO2/1/body.png",
-      "origin": {
-        "x": 26,
-        "y": 27
-      },
-      "texture_key": "maple_body_stabO2_1_body",
-      "z": "body",
-      "sockets": {
-        "navel": {
-          "x": -16,
-          "y": -16
-        },
-        "neck": {
-          "x": -26,
-          "y": -25
-        }
-      }
-    },
-    {
-      "state": "swingO1",
-      "frame": "0",
-      "part": "arm",
-      "path": "Character/00002000/swingO1/0/arm.png",
-      "origin": {
-        "x": 7,
-        "y": 7
-      },
-      "texture_key": "maple_body_swingO1_0_arm",
-      "z": "arm",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 2
-        },
-        "navel": {
-          "x": 5,
-          "y": 2
-        }
-      }
-    },
-    {
-      "state": "swingO1",
-      "frame": "0",
-      "part": "body",
-      "path": "Character/00002000/swingO1/0/body.png",
-      "origin": {
-        "x": 11,
-        "y": 27
-      },
-      "texture_key": "maple_body_swingO1_0_body",
-      "z": "body",
-      "sockets": {
-        "navel": {
-          "x": -1,
-          "y": -16
-        },
-        "neck": {
-          "x": -9,
-          "y": -26
-        }
-      }
-    },
-    {
-      "state": "swingO1",
-      "frame": "1",
-      "part": "arm",
-      "path": "Character/00002000/swingO1/1/arm.png",
-      "origin": {
-        "x": 7,
-        "y": 7
-      },
-      "texture_key": "maple_body_swingO1_1_arm",
-      "z": "armOverHair",
-      "sockets": {
-        "hand": {
-          "x": -3,
-          "y": 5
-        },
-        "navel": {
-          "x": 5,
-          "y": 4
-        }
-      }
-    },
-    {
-      "state": "swingO1",
-      "frame": "1",
-      "part": "body",
-      "path": "Character/00002000/swingO1/1/body.png",
-      "origin": {
-        "x": 11,
-        "y": 31
-      },
-      "texture_key": "maple_body_swingO1_1_body",
-      "z": "body",
-      "sockets": {
-        "navel": {
-          "x": -8,
-          "y": -20
-        },
-        "neck": {
-          "x": -10,
-          "y": -31
-        }
-      }
-    },
-    {
-      "state": "swingO1",
-      "frame": "2",
-      "part": "arm",
-      "path": "Character/00002000/swingO1/2/arm.png",
-      "origin": {
-        "x": 6,
-        "y": 7
-      },
-      "texture_key": "maple_body_swingO1_2_arm",
-      "z": "armOverHair",
-      "sockets": {
-        "hand": {
-          "x": 11,
-          "y": -1
-        },
-        "navel": {
-          "x": -8,
-          "y": 18
-        }
-      }
-    },
-    {
-      "state": "swingO1",
-      "frame": "2",
-      "part": "body",
-      "path": "Character/00002000/swingO1/2/body.png",
-      "origin": {
-        "x": 38,
-        "y": 27
-      },
-      "texture_key": "maple_body_swingO1_2_body",
-      "z": "body",
-      "sockets": {
-        "navel": {
-          "x": -29,
-          "y": -17
-        },
-        "neck": {
-          "x": -37,
-          "y": -25
         }
       }
     }

@@ -4,8 +4,9 @@ import { SlotMachine } from "../../slots/SlotMachine";
 import { SlotUI } from "../../slots/SlotUI";
 import { SlotWinPresentation } from "../../slots/SlotWinPresentation";
 import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/SlotConstants";
-import { preloadMobTextures } from "../../slots/SlotSymbolData";
-import { updateBalanceOnServer, fetchBossHP, saveBossHP, markBossDead } from "../../utils/ServerBridge";
+import { preloadMobTexturesFor } from "../../slots/SlotSymbolData";
+import { LUDIBRIUM_MOB_SYMBOLS } from "../../slots/LudibriumSymbolData";
+import { updateBalanceOnServer, fetchBossHP, saveBossHP } from "../../utils/ServerBridge";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
@@ -13,22 +14,17 @@ import headData from "../../../../data/maple/head_12000.json";
 import faceData from "../../../../data/maple/face_20000.json";
 import hairData from "../../../../data/maple/hair_30000.json";
 import weaponData from "../../../../data/maple/weapon_1472263.json";
-import capData from "../../../../data/maple/cap_1004227.json";
-import longcoatData from "../../../../data/maple/longcoat_1052797.json";
-import shoesData from "../../../../data/maple/shoes_1072965.json";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
 const GRID_WIDTH = REEL_COUNT * CELL - SYMBOL_GAP;
 const GRID_HEIGHT = 3 * CELL - SYMBOL_GAP;
 const BAR_HEIGHT = 72;
 
-const BGM_URL = "https://resource-static.msu.io/data/Sound/Bgm00/GoPicnic.mp3";
+const BGM_URL = "https://resource-static.msu.io/data/Sound/Bgm06/FantasticThinking.mp3";
 const WIN_SFX_URL = "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc45c686f3ecf63d-1781021996644/static-assets/audio-a093ae4e-d8a9-493d-bf1c-3659ee66ff28.ogg";
 const BOSS_URL = "https://resource-static.msu.io/data/Mob/2600631/stand/{frame}.png";
 const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/2600631/hit1/0.png";
-const BOSS_DIE_URL = "https://resource-static.msu.io/data/Mob/2600631/die1/{frame}.png";
 const BOSS_STAND_FRAMES = 6;
-const BOSS_DIE_FRAMES = 8;
 const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070001/info/icon.png";
 
 const LUDI_PAYLINES = [
@@ -53,7 +49,7 @@ export class SceneLudibrium extends BaseScene {
   private player!: MapleSprite;
   private attackQueue = 0;
   private isAttacking = false;
-  private attackToggle = 0;
+  private shootToggle = false;
   private bossImg!: Phaser.GameObjects.Sprite;
   private bossHPBar!: BossHPBar;
   private bossHP = 30_000_000;
@@ -65,20 +61,18 @@ export class SceneLudibrium extends BaseScene {
 
   preload() {
     this.preloadTopBarIcons();
-    preloadMobTextures(this);
+    preloadMobTexturesFor(this, LUDIBRIUM_MOB_SYMBOLS, "ludi_");
 
-    for (const d of [bodyData, headData, faceData, hairData, weaponData, capData, longcoatData, shoesData]) {
+    for (const d of [bodyData, headData, faceData, hairData, weaponData]) {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
     for (let f = 0; f < BOSS_STAND_FRAMES; f++) {
       this.load.image(`boss_stand_${f}`, BOSS_URL.replace("{frame}", String(f)));
     }
-    for (let f = 0; f < BOSS_DIE_FRAMES; f++) {
-      this.load.image(`boss_die_${f}`, BOSS_DIE_URL.replace("{frame}", String(f)));
-    }
     this.load.image("boss_hit", BOSS_HIT_URL);
-    this.load.audio("bgm_gopicnic", BGM_URL);
+    this.load.image("knife_wolbi", KNIFE_URL);
+    this.load.audio("bgm_fantasticthinking", BGM_URL);
     this.load.audio("sfx_win", WIN_SFX_URL);
     this.load.once("complete", () => { this.audioLoaded = true; });
   }
@@ -114,7 +108,7 @@ export class SceneLudibrium extends BaseScene {
     const topPad = Math.max(0, (availableH - totalBlockH) / 2);
     const gridY = contentTop + topPad + charH;
 
-    this.slotMachine = new SlotMachine(this, gridX, gridY, this.balance, [2, 2, 3, 3, 3], LUDI_PAYLINES, [CELL / 2, CELL / 2, 0, 0, 0]);
+    this.slotMachine = new SlotMachine(this, gridX, gridY, this.balance, [2, 2, 3, 3, 3], LUDI_PAYLINES, [CELL / 2, CELL / 2, 0, 0, 0], LUDIBRIUM_MOB_SYMBOLS, "ludi_");
     this.winPresentation = new SlotWinPresentation(this, gridX, gridY, this.slotMachine, [CELL / 2, CELL / 2, 0, 0, 0]);
 
     const barY = height - BAR_HEIGHT;
@@ -192,29 +186,17 @@ export class SceneLudibrium extends BaseScene {
         repeat: -1,
       });
     }
-    if (!this.anims.exists("papulatus_die")) {
-      this.anims.create({
-        key: "papulatus_die",
-        frames: Array.from({ length: BOSS_DIE_FRAMES }, (_, f) => ({ key: `boss_die_${f}` })),
-        frameRate: 1000 / 141,
-        repeat: 0,
-      });
-    }
 
     const merged = [
       ...bodyData.render_plan,
       ...headData.render_plan,
       ...faceData.render_plan,
       ...hairData.render_plan,
-      ...capData.render_plan,
-      ...longcoatData.render_plan,
-      ...shoesData.render_plan,
       ...weaponData.render_plan,
     ];
     this.player = new MapleSprite(this, gridX + charPad, displayAreaMidY, merged, {
       zmap: bodyData.zmap,
       weapon: weaponData.info,
-      cap: capData.info,
       race: "human",
       facing: "right",
     });
@@ -226,7 +208,6 @@ export class SceneLudibrium extends BaseScene {
     this.bossImg.play("papulatus_stand");
 
     this.time.delayedCall(200, () => this.startBgm());
-    this.time.delayedCall(500, () => this.checkAndShowAllClear());
 
     return [...topBar, title, this.bossHPBar.getContainer(), this.player, this.bossImg];
   }
@@ -235,7 +216,7 @@ export class SceneLudibrium extends BaseScene {
     if (this.bgMusic) return;
     if (!this.audioLoaded) return;
     try {
-      this.bgMusic = this.sound.add("bgm_gopicnic", { loop: true, volume: 0.35 });
+      this.bgMusic = this.sound.add("bgm_fantasticthinking", { loop: true, volume: 0.35 });
       this.bgMusic.play();
     } catch {
       // audio unavailable
@@ -296,10 +277,8 @@ export class SceneLudibrium extends BaseScene {
     if (this.attackQueue <= 0) return;
     this.attackQueue--;
     this.isAttacking = true;
-    const actions = ["swingO1", "stabO1", "stabO2"];
-    const action = actions[this.attackToggle % actions.length];
-    this.attackToggle++;
-    this.player.setAction(action);
+    this.shootToggle = !this.shootToggle;
+    this.player.attack(this.shootToggle ? 1 : 0);
     this.time.delayedCall(600, () => {
       this.player.stand();
       this.isAttacking = false;
@@ -328,29 +307,14 @@ export class SceneLudibrium extends BaseScene {
       },
       onComplete: () => {
         knife.destroy();
+        this.bossImg.setTexture("boss_hit");
+        this.time.delayedCall(200, () => {
+          this.bossImg.play("papulatus_stand");
+        });
+
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
         saveBossHP("Papulatus", this.bossHP);
-
-        if (this.bossHP <= 0) {
-          this.bossImg.setTexture("boss_hit");
-          markBossDead("Papulatus");
-          this.time.delayedCall(200, () => {
-            this.bossImg.play("papulatus_die");
-            this.tweens.add({
-              targets: this.bossImg,
-              alpha: 0,
-              duration: 1000,
-              delay: 900,
-            });
-          });
-          this.time.delayedCall(1500, () => this.checkAndShowAllClear());
-        } else {
-          this.bossImg.setTexture("boss_hit");
-          this.time.delayedCall(200, () => {
-            this.bossImg.play("papulatus_stand");
-          });
-        }
       },
     });
   }

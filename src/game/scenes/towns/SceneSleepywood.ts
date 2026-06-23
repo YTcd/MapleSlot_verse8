@@ -1,13 +1,12 @@
 import Phaser from "phaser";
 import { BaseScene } from "../BaseScene";
-import { CascadeSlotMachine } from "../../slots/CascadeSlotMachine";
+import { SlotMachine } from "../../slots/SlotMachine";
 import { SlotUI } from "../../slots/SlotUI";
-import { SlotState } from "../../slots/SlotConstants";
-import { updateBalanceOnServer, fetchBossHP, saveBossHP, markBossDead } from "../../utils/ServerBridge";
-import {
-  CASCADE_REEL_COUNT,
-  CASCADE_VISIBLE_ROWS,
-} from "../../slots/CascadeSlotConstants";
+import { SlotWinPresentation } from "../../slots/SlotWinPresentation";
+import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/SlotConstants";
+import { preloadMobTexturesFor } from "../../slots/SlotSymbolData";
+import { SLEEPYWOOD_MOB_SYMBOLS } from "../../slots/SleepywoodSymbolData";
+import { updateBalanceOnServer, fetchBossHP, saveBossHP } from "../../utils/ServerBridge";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
@@ -15,33 +14,33 @@ import headData from "../../../../data/maple/head_12000.json";
 import faceData from "../../../../data/maple/face_20000.json";
 import hairData from "../../../../data/maple/hair_30000.json";
 import weaponData from "../../../../data/maple/weapon_1472263.json";
-import capData from "../../../../data/maple/cap_1002330.json";
-import coatData from "../../../../data/maple/coat_1040110.json";
-import pantsData from "../../../../data/maple/pants_1060099.json";
-import shoesData from "../../../../data/maple/shoes_1072174.json";
 
-const CELL = 100;
-const GRID_WIDTH = CASCADE_REEL_COUNT * CELL;
-const GRID_HEIGHT = CASCADE_VISIBLE_ROWS * CELL;
+const CELL = SYMBOL_SIZE + SYMBOL_GAP;
+const GRID_WIDTH = REEL_COUNT * CELL - SYMBOL_GAP;
+const GRID_HEIGHT = 3 * CELL - SYMBOL_GAP;
 const BAR_HEIGHT = 72;
-const BOSS_URL = "https://resource-static.msu.io/data/Mob/9300203/stand/{frame}.png";
-const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/9300203/hit1/0.png";
-const BOSS_DIE_URL = "https://resource-static.msu.io/data/Mob/9300203/die1/{frame}.png";
+
+const BGM_URL = "https://resource-static.msu.io/data/Sound/Bgm00/SleepyWood.mp3";
+const WIN_SFX_URL = "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc45c686f3ecf63d-1781021996644/static-assets/audio-a093ae4e-d8a9-493d-bf1c-3659ee66ff28.ogg";
+const BOSS_URL = "https://resource-static.msu.io/data/Mob/8130100/stand/{frame}.png";
+const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/8130100/hit1/0.png";
 const BOSS_STAND_FRAMES = 2;
-const BOSS_DIE_FRAMES = 3;
 const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070001/info/icon.png";
 
 export class SceneSleepywood extends BaseScene {
-  private slotMachine!: CascadeSlotMachine;
+  private slotMachine!: SlotMachine;
   private slotUI!: SlotUI;
+  private winPresentation!: SlotWinPresentation;
+  private bgMusic: Phaser.Sound.BaseSound | null = null;
+  private audioLoaded: boolean = false;
   private player!: MapleSprite;
   private attackQueue = 0;
   private isAttacking = false;
-  private attackToggle = 0;
+  private shootToggle = false;
   private bossImg!: Phaser.GameObjects.Sprite;
   private bossHPBar!: BossHPBar;
-  private bossHP = 30_000_000;
-  private bossMaxHP = 30_000_000;
+  private bossHP = 1_000_000;
+  private bossMaxHP = 1_000_000;
 
   constructor() {
     super({ key: "SceneSleepywood" });
@@ -49,19 +48,20 @@ export class SceneSleepywood extends BaseScene {
 
   preload() {
     this.preloadTopBarIcons();
+    preloadMobTexturesFor(this, SLEEPYWOOD_MOB_SYMBOLS, "sw_");
 
-    for (const d of [bodyData, headData, faceData, hairData, weaponData, capData, coatData, pantsData, shoesData]) {
+    for (const d of [bodyData, headData, faceData, hairData, weaponData]) {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
     for (let f = 0; f < BOSS_STAND_FRAMES; f++) {
       this.load.image(`boss_stand_${f}`, BOSS_URL.replace("{frame}", String(f)));
     }
-    for (let f = 0; f < BOSS_DIE_FRAMES; f++) {
-      this.load.image(`boss_die_${f}`, BOSS_DIE_URL.replace("{frame}", String(f)));
-    }
     this.load.image("boss_hit", BOSS_HIT_URL);
     this.load.image("knife_wolbi", KNIFE_URL);
+    this.load.audio("bgm_sleepywood", BGM_URL);
+    this.load.audio("sfx_win", WIN_SFX_URL);
+    this.load.once("complete", () => { this.audioLoaded = true; });
   }
 
   protected buildScene(): Phaser.GameObjects.GameObject[] {
@@ -95,7 +95,8 @@ export class SceneSleepywood extends BaseScene {
     const topPad = Math.max(0, (availableH - totalBlockH) / 2);
     const gridY = contentTop + topPad + charH;
 
-    this.slotMachine = new CascadeSlotMachine(this, gridX, gridY, this.balance);
+    this.slotMachine = new SlotMachine(this, gridX, gridY, this.balance, undefined, undefined, undefined, SLEEPYWOOD_MOB_SYMBOLS, "sw_");
+    this.winPresentation = new SlotWinPresentation(this, gridX, gridY, this.slotMachine);
 
     const barY = height - BAR_HEIGHT;
     this.slotUI = new SlotUI(this, 0, barY, width, {
@@ -104,7 +105,7 @@ export class SceneSleepywood extends BaseScene {
       onStopAuto: () => this.handleStopAuto(),
       onBetChange: (value) => this.slotMachine.setBet(value),
       onLineChange: (value) => this.slotMachine.setLines(value),
-    });
+    }, [3000, 5000, 10000]);
 
     this.slotUI.updateLineDisplay(25);
 
@@ -122,6 +123,8 @@ export class SceneSleepywood extends BaseScene {
     this.slotMachine.setOnWin((win) => {
       if (win.totalWin > 0) {
         this.slotUI.showWin(win.totalWin);
+        this.playWinSound();
+        this.winPresentation.start(win.lineWins);
         this.queueAttack();
         this.throwKnife(win.totalWin);
       }
@@ -137,6 +140,10 @@ export class SceneSleepywood extends BaseScene {
       }
     });
 
+    this.winPresentation.onButtonsReady = () => {
+      this.slotMachine.setPresentationDone();
+    };
+
     const gridBorder = this.add.graphics();
     gridBorder.lineStyle(3, 0x4488cc, 0.6);
     gridBorder.strokeRect(gridX - 4, gridY - 4, GRID_WIDTH + 8, GRID_HEIGHT + 8);
@@ -148,10 +155,10 @@ export class SceneSleepywood extends BaseScene {
 
     const hpBarW = GRID_WIDTH * 1.3;
     this.bossHPBar = new BossHPBar(this, width / 2, hpBarY, hpBarW, {
-      bossName: "Jr.Balrog",
+      bossName: "Jr. Balrog",
       bossIconKey: "boss_stand_0",
-      maxHP: 30000000,
-      currentHP: 30000000,
+      maxHP: 1000000,
+      currentHP: 1000000,
       barColor: 0xcc3333,
     });
 
@@ -169,30 +176,17 @@ export class SceneSleepywood extends BaseScene {
         repeat: -1,
       });
     }
-    if (!this.anims.exists("jrbalrog_die")) {
-      this.anims.create({
-        key: "jrbalrog_die",
-        frames: Array.from({ length: BOSS_DIE_FRAMES }, (_, f) => ({ key: `boss_die_${f}` })),
-        frameRate: 1000 / 233,
-        repeat: 0,
-      });
-    }
 
     const merged = [
       ...bodyData.render_plan,
       ...headData.render_plan,
       ...faceData.render_plan,
       ...hairData.render_plan,
-      ...capData.render_plan,
-      ...coatData.render_plan,
-      ...pantsData.render_plan,
-      ...shoesData.render_plan,
       ...weaponData.render_plan,
     ];
     this.player = new MapleSprite(this, gridX + charPad, displayAreaMidY, merged, {
       zmap: bodyData.zmap,
       weapon: weaponData.info,
-      cap: capData.info,
       race: "human",
       facing: "right",
     });
@@ -203,9 +197,33 @@ export class SceneSleepywood extends BaseScene {
     this.bossImg.setOrigin(1, 0.5);
     this.bossImg.play("jrbalrog_stand");
 
-    this.time.delayedCall(500, () => this.checkAndShowAllClear());
+    this.time.delayedCall(200, () => this.startBgm());
 
     return [...topBar, title, this.bossHPBar.getContainer(), this.player, this.bossImg, gridBorder];
+  }
+
+  private startBgm() {
+    if (this.bgMusic) return;
+    if (!this.audioLoaded) return;
+    try {
+      this.bgMusic = this.sound.add("bgm_sleepywood", { loop: true, volume: 0.35 });
+      this.bgMusic.play();
+    } catch {
+      // audio unavailable
+    }
+  }
+
+  private playWinSound() {
+    if (!this.audioLoaded) return;
+    try {
+      if (this.bgMusic?.isPlaying) this.bgMusic!.setVolume(0.21);
+      this.sound.play("sfx_win", { volume: 0.6 });
+      this.time.delayedCall(3000, () => {
+        if (this.bgMusic?.isPlaying) this.bgMusic!.setVolume(0.35);
+      });
+    } catch {
+      // audio unavailable
+    }
   }
 
   private lastSyncedBalance = 0;
@@ -220,6 +238,7 @@ export class SceneSleepywood extends BaseScene {
   }
 
   private handlePlay() {
+    this.winPresentation.stop();
     if (!this.slotMachine.play()) {
       const needed = this.slotMachine.currentBet * this.slotMachine.currentLines;
       this.slotUI.showTooltip(
@@ -229,6 +248,7 @@ export class SceneSleepywood extends BaseScene {
   }
 
   private handleAuto() {
+    this.winPresentation.stop();
     this.slotUI.setAutoMode(true);
     this.slotMachine.startAuto();
   }
@@ -247,10 +267,8 @@ export class SceneSleepywood extends BaseScene {
     if (this.attackQueue <= 0) return;
     this.attackQueue--;
     this.isAttacking = true;
-    const actions = ["swingO1", "stabO1", "stabO2"];
-    const action = actions[this.attackToggle % actions.length];
-    this.attackToggle++;
-    this.player.setAction(action);
+    this.shootToggle = !this.shootToggle;
+    this.player.attack(this.shootToggle ? 1 : 0);
     this.time.delayedCall(600, () => {
       this.player.stand();
       this.isAttacking = false;
@@ -279,35 +297,23 @@ export class SceneSleepywood extends BaseScene {
       },
       onComplete: () => {
         knife.destroy();
+        this.bossImg.setTexture("boss_hit");
+        this.time.delayedCall(200, () => {
+          this.bossImg.play("jrbalrog_stand");
+        });
+
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
         saveBossHP("JrBalrog", this.bossHP);
-
-        if (this.bossHP <= 0) {
-          this.bossImg.setTexture("boss_hit");
-          markBossDead("JrBalrog");
-          this.time.delayedCall(200, () => {
-            this.bossImg.play("jrbalrog_die");
-            this.tweens.add({
-              targets: this.bossImg,
-              alpha: 0,
-              duration: 600,
-              delay: 500,
-            });
-          });
-          this.time.delayedCall(1200, () => this.checkAndShowAllClear());
-        } else {
-          this.bossImg.setTexture("boss_hit");
-          this.time.delayedCall(200, () => {
-            this.bossImg.play("jrbalrog_stand");
-          });
-        }
       },
     });
   }
 
   shutdown() {
+    try { this.bgMusic?.stop(); } catch { /* ignore */ }
+    this.bgMusic = null;
     this.player?.destroy();
+    this.winPresentation?.destroy();
     this.slotMachine?.destroy();
     this.slotUI?.destroy();
   }

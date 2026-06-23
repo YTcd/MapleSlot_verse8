@@ -4,6 +4,14 @@
       "url": "https://resource-static.msu.io/data/Sound/Bgm00/GoPicnic.mp3",
       "description": "MapleStory Bgm00: GoPicnic - cheerful background music for Henesys slot machine"
     },
+    "bgmSleepywood": {
+      "url": "https://resource-static.msu.io/data/Sound/Bgm00/SleepyWood.mp3",
+      "description": "MapleStory Bgm00: SleepyWood - dark and eerie background music for Sleepywood slot machine"
+    },
+    "bgmLudibrium": {
+      "url": "https://resource-static.msu.io/data/Sound/Bgm06/FantasticThinking.mp3",
+      "description": "MapleStory Bgm06: FantasticThinking - whimsical toy-themed background music for Ludibrium slot machine"
+    },
     "sfxWin": {
       "url": "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc45c686f3ecf63d-1781021996644/static-assets/audio-a093ae4e-d8a9-493d-bf1c-3659ee66ff28.ogg",
       "description": "Arcade celebration chime fanfare for slot machine win (3 seconds)"
@@ -19,6 +27,32 @@
       "url": "https://resource-static.msu.io/data/Map/Back/grassySoil_new/back/",
       "description": "Henesys map (323090120) background set - grassySoil_new theme.",
       "metadata": { "set": "grassySoil_new", "mapId": "323090120" }
+    }
+  },
+  "ui": {
+    "titleBg": {
+      "url": "https://agent8-games.verse8.io/0xeb7a9510b2313c056fd6da11c5f8592427fc742a/chat-uploads/cde1be82-02d4-4d.png",
+      "description": "Title screen background - village, river, mushroom houses (1448×1086)"
+    },
+    "titleLogo": {
+      "url": "https://agent8-games.verse8.io/0xeb7a9510b2313c056fd6da11c5f8592427fc742a-1781613439236/static-assets/variation-logo-1782223463383-0.png",
+      "description": "SLOT MACHINE STORY title logo - MapleStory-style text with mushroom, vines, leaves, lever (1024×1024 transparent PNG)"
+    },
+    "btnBg": {
+      "url": "https://agent8-games.verse8.io/0xeb7a9510b2313c056fd6da11c5f8592427fc742a-1781613439236/static-assets/ui_icon-1782223450069.png",
+      "description": "MapleStory-style game button background - golden-brown wood gradient with glossy bevel (816×816)"
+    },
+    "townHenesys": {
+      "url": "https://agent8-games.verse8.io/0xeb7a9510b2313c056fd6da11c5f8592427fc742a-1781613439236/static-assets/variation-logo-1782223986777-0.png",
+      "description": "Henesys town selection button - wooden border, mushroom, forest, leaves (1024×1024 transparent)"
+    },
+    "townSleepywood": {
+      "url": "https://agent8-games.verse8.io/0xeb7a9510b2313c056fd6da11c5f8592427fc742a-1781613439236/static-assets/variation-logo-1782224001131-0.png",
+      "description": "Sleepywood town selection button - dark metallic border, skull, gargoyle (1024×1024 transparent)"
+    },
+    "townLudibrium": {
+      "url": "https://agent8-games.verse8.io/0xeb7a9510b2313c056fd6da11c5f8592427fc742a-1781613439236/static-assets/variation-logo-1782223992596-0.png",
+      "description": "Ludibrium town selection button - bronze gears, clock robot, steampunk (1024×1024 transparent)"
     }
   }
 }

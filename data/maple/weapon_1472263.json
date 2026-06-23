@@ -145,42 +145,6 @@
           "y": 0
         }
       }
-    },
-    {
-      "state": "swingO1",
-      "frame": "0",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/swingO1/1/weapon.png",
-      "origin": {
-        "x": 11,
-        "y": 15
-      },
-      "texture_key": "maple_weapon_swingO1_0_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "swingO1",
-      "frame": "1",
-      "part": "weapon",
-      "path": "Character/Weapon/01472263/swingO1/2/weapon.png",
-      "origin": {
-        "x": 16,
-        "y": 11
-      },
-      "texture_key": "maple_weapon_swingO1_1_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "hand": {
-          "x": 0,
-          "y": 0
-        }
-      }
     }
   ],
   "zmap": [

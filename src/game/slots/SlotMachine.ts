@@ -11,14 +11,15 @@ import {
   SYMBOL_GAP,
   SYMBOL_COUNT,
 } from "./SlotConstants";
+import type { MobSymbolDef } from "./SlotSymbolData";
 import {
   MOB_SYMBOLS,
   createMobAnimations,
+  createMobAnimationsFor,
   getSlotTextureKey,
   getAnimKey,
   getFrameKey,
   getRawFrameKey,
-  getBorderColor,
 } from "./SlotSymbolData";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
@@ -56,42 +57,51 @@ export class SlotMachine {
   private paylines: number[][] = PAYLINES;
   private autoStopRequested: boolean = false;
   private resumeAuto: boolean = false;
+  private symbols: MobSymbolDef[];
+  private texturePrefix: string;
 
   private onBalanceChange: ((balance: number) => void) | null = null;
   private onStateChange: ((state: SlotState) => void) | null = null;
   private onWin: ((win: SlotWin) => void) | null = null;
   private onAutoEnd: (() => void) | null = null;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, balance: number, visibleRows?: number[], customPaylines?: number[][], reelYOffsets?: number[]) {
+  constructor(scene: Phaser.Scene, x: number, y: number, balance: number, visibleRows?: number[], customPaylines?: number[][], reelYOffsets?: number[], customSymbols?: MobSymbolDef[], texturePrefix?: string) {
     this.scene = scene;
     this.x = x;
     this.y = y;
     this.balance = balance;
+    this.symbols = customSymbols ?? MOB_SYMBOLS;
+    this.texturePrefix = texturePrefix ?? "";
     if (customPaylines) this.paylines = customPaylines;
 
     this.createTextures();
-    createMobAnimations(this.scene);
+    if (customSymbols) {
+      createMobAnimationsFor(this.scene, customSymbols, this.texturePrefix);
+    } else {
+      createMobAnimations(this.scene, this.texturePrefix);
+    }
     this.createReels(visibleRows, reelYOffsets);
   }
 
   private createTextures() {
+    const p = this.texturePrefix;
     for (let i = 0; i < SYMBOL_COUNT; i++) {
-      const slotKey = getSlotTextureKey(i);
+      const slotKey = getSlotTextureKey(i, p);
       if (this.scene.textures.exists(slotKey)) {
         this.textureKeys.push(slotKey);
         continue;
       }
 
-      const mob = MOB_SYMBOLS[i];
+      const mob = this.symbols[i];
       for (let f = 0; f < mob.frameCount; f++) {
-        const rawKey = getRawFrameKey(i, f);
-        const compKey = getFrameKey(i, f);
+        const rawKey = getRawFrameKey(i, f, p);
+        const compKey = getFrameKey(i, f, p);
         if (!this.scene.textures.exists(compKey)) {
           this.drawCompositeTexture(i, f, rawKey, compKey);
         }
       }
 
-      const firstCompKey = getFrameKey(i, 0);
+      const firstCompKey = getFrameKey(i, 0, p);
       if (this.scene.textures.exists(firstCompKey)) {
         const src = this.scene.textures.get(firstCompKey).getSourceImage();
         this.scene.textures.addImage(slotKey, src);
@@ -103,7 +113,7 @@ export class SlotMachine {
   }
 
   private drawCompositeTexture(symIdx: number, _frameIdx: number, rawKey: string, outKey: string) {
-    const borderColor = getBorderColor(symIdx);
+    const borderColor = this.symbols[symIdx]?.borderColor ?? 0x888888;
     const borderW = 4;
     const pad = 3;
     const innerSize = SYMBOL_SIZE - (borderW + pad) * 2;
@@ -141,8 +151,9 @@ export class SlotMachine {
   }
 
   private drawFallbackTexture(symIdx: number) {
-    const key = getSlotTextureKey(symIdx);
-    const borderColor = getBorderColor(symIdx);
+    const p = this.texturePrefix;
+    const key = getSlotTextureKey(symIdx, p);
+    const borderColor = this.symbols[symIdx]?.borderColor ?? 0x888888;
     const gfx = this.scene.make.graphics({ x: 0, y: 0 });
     gfx.fillStyle(0x111122, 1);
     gfx.fillRoundedRect(2, 2, SYMBOL_SIZE - 4, SYMBOL_SIZE - 4, 8);
@@ -187,6 +198,8 @@ export class SlotMachine {
   }
 
   get paylinesArray(): number[][] { return this.paylines; }
+
+  get texturePrefix(): string { return this.texturePrefix; }
 
   setBet(value: number) {
     if (this.state !== SlotState.IDLE) return;

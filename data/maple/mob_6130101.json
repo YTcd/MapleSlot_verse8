@@ -1,98 +1,26 @@
 {
-  "id": "1002330",
-  "type": "cap",
+  "id": "6130101",
+  "type": "mob",
   "cdnBase": "https://resource-static.msu.io/data",
   "availableStates": [
-    "alert",
-    "backDefault",
-    "default",
-    "fly",
-    "heal",
+    "attack1",
+    "die1",
+    "hit1",
     "jump",
-    "ladder",
-    "prone",
-    "proneStab",
-    "rope",
-    "shoot1",
-    "shoot2",
-    "shootF",
-    "sit",
-    "stabO1",
-    "stabO2",
-    "stabOF",
-    "stabT1",
-    "stabT2",
-    "stabTF",
-    "stand1",
-    "stand2",
-    "swingO1",
-    "swingO2",
-    "swingO3",
-    "swingOF",
-    "swingP1",
-    "swingP2",
-    "swingPF",
-    "swingT1",
-    "swingT2",
-    "swingT3",
-    "swingTF",
-    "walk1",
-    "walk2"
+    "move",
+    "stand"
   ],
   "render_plan": [
     {
-      "state": "stand1",
+      "state": "stand",
       "frame": "0",
-      "part": "default",
-      "path": "Character/Cap/01002330/default/default.png",
+      "part": "mob",
+      "path": "Mob/6130101/move/0.png",
       "origin": {
-        "x": 15,
-        "y": 25
+        "x": 59,
+        "y": 110
       },
-      "texture_key": "maple_cap_stand1_0_default",
-      "z": "cap",
-      "sockets": {
-        "brow": {
-          "x": 3,
-          "y": -7
-        }
-      }
-    },
-    {
-      "state": "stand1",
-      "frame": "1",
-      "part": "default",
-      "path": "Character/Cap/01002330/default/default.png",
-      "origin": {
-        "x": 15,
-        "y": 25
-      },
-      "texture_key": "maple_cap_stand1_1_default",
-      "z": "cap",
-      "sockets": {
-        "brow": {
-          "x": 3,
-          "y": -7
-        }
-      }
-    },
-    {
-      "state": "stand1",
-      "frame": "2",
-      "part": "default",
-      "path": "Character/Cap/01002330/default/default.png",
-      "origin": {
-        "x": 15,
-        "y": 25
-      },
-      "texture_key": "maple_cap_stand1_2_default",
-      "z": "cap",
-      "sockets": {
-        "brow": {
-          "x": 3,
-          "y": -7
-        }
-      }
+      "texture_key": "maple_mob_stand_0_mob"
     }
   ],
   "zmap": [
@@ -251,21 +179,39 @@
     "mobEquipFront"
   ],
   "info": {
-    "cash": 0,
-    "exItem": 1,
-    "incDEX": 2,
-    "incLUK": 3,
-    "incPDD": 51,
-    "islot": "Cp",
-    "price": 12000,
-    "reqDEX": 0,
-    "reqINT": 0,
-    "reqJob": 8,
-    "reqLUK": 220,
-    "reqLevel": 80,
-    "reqSTR": 0,
-    "setItemID": 365,
-    "tuc": 7,
-    "vslot": "CpH1H5"
+    "HPgaugeHide": 1,
+    "MADamage": 109,
+    "MDDamage": 320,
+    "MDRate": 25,
+    "PADamage": 123,
+    "PDDamage": 320,
+    "PDRate": 25,
+    "acc": 23,
+    "attack": {
+      "0": {
+        "action": 1,
+        "attackRatio": 100,
+        "jumpAttack": 1,
+        "type": 0
+      }
+    },
+    "bodyAttack": 1,
+    "boss": 1,
+    "category": 2,
+    "charismaEXP": 5,
+    "eva": 1,
+    "exp": 1650,
+    "fs": "10",
+    "hpRecovery": 100,
+    "hpTagBgcolor": 5,
+    "hpTagColor": 1,
+    "level": 18,
+    "maxHP": 17500,
+    "maxMP": 2000,
+    "mobType": "7N",
+    "mpRecovery": 5,
+    "pushed": 50,
+    "rareItemDropLevel": 2,
+    "speed": 5
   }
 }
