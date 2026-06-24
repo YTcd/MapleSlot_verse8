@@ -6,7 +6,7 @@ import { SlotWinPresentation } from "../../slots/SlotWinPresentation";
 import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/SlotConstants";
 import { preloadMobTexturesFor } from "../../slots/SlotSymbolData";
 import { LUDIBRIUM_MOB_SYMBOLS } from "../../slots/LudibriumSymbolData";
-import { updateBalanceOnServer, fetchBossHP, saveBossHP } from "../../utils/ServerBridge";
+import { updateBalanceOnServer, fetchBossHP, saveBossHP, markBossDead } from "../../utils/ServerBridge";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
@@ -52,8 +52,11 @@ export class SceneLudibrium extends BaseScene {
   private shootToggle = false;
   private bossImg!: Phaser.GameObjects.Sprite;
   private bossHPBar!: BossHPBar;
-  private bossHP = 30_000_000;
-  private bossMaxHP = 30_000_000;
+  private bossHP = 650_000_000;
+  private bossMaxHP = 650_000_000;
+  private bossAlive = true;
+  private paylinePreviewGfx!: Phaser.GameObjects.Graphics;
+  private paylinePreviewTimer: Phaser.Time.TimerEvent | null = null;
 
   constructor() {
     super({ key: "SceneLudibrium" });
@@ -68,9 +71,9 @@ export class SceneLudibrium extends BaseScene {
     }
 
     for (let f = 0; f < BOSS_STAND_FRAMES; f++) {
-      this.load.image(`boss_stand_${f}`, BOSS_URL.replace("{frame}", String(f)));
+      this.load.image(`ludi_boss_stand_${f}`, BOSS_URL.replace("{frame}", String(f)));
     }
-    this.load.image("boss_hit", BOSS_HIT_URL);
+    this.load.image("ludi_boss_hit", BOSS_HIT_URL);
     this.load.image("knife_wolbi", KNIFE_URL);
     this.load.audio("bgm_fantasticthinking", BGM_URL);
     this.load.audio("sfx_win", WIN_SFX_URL);
@@ -118,7 +121,7 @@ export class SceneLudibrium extends BaseScene {
       onStopAuto: () => this.handleStopAuto(),
       onBetChange: (value) => this.slotMachine.setBet(value),
       onLineChange: (value) => this.slotMachine.setLines(value),
-    });
+    }, [50000, 100000, 500000]);
 
     this.slotMachine.setLines(LUDI_PAYLINES.length);
 
@@ -138,10 +141,11 @@ export class SceneLudibrium extends BaseScene {
     this.slotMachine.setOnWin((win) => {
       if (win.totalWin > 0) {
         this.slotUI.showWin(win.totalWin);
-        this.playWinSound();
         this.winPresentation.start(win.lineWins);
-        this.queueAttack();
-        this.throwKnife(win.totalWin);
+        if (this.bossAlive) {
+          this.queueAttack();
+          this.throwKnife(win.totalWin);
+        }
       }
     });
 
@@ -166,9 +170,9 @@ export class SceneLudibrium extends BaseScene {
     const hpBarW = GRID_WIDTH * 1.3;
     this.bossHPBar = new BossHPBar(this, width / 2, hpBarY, hpBarW, {
       bossName: "Papulatus",
-      bossIconKey: "boss_stand_0",
-      maxHP: 30000000,
-      currentHP: 30000000,
+      bossIconKey: "ludi_boss_stand_0",
+      maxHP: 650000000,
+      currentHP: 650000000,
       barColor: 0xcc3333,
     });
 
@@ -176,12 +180,16 @@ export class SceneLudibrium extends BaseScene {
       this.bossHP = Math.min(hp, this.bossMaxHP);
       this.bossHPBar.setHP(this.bossHP);
       if (hp > this.bossMaxHP) saveBossHP("Papulatus", this.bossHP);
+      if (this.bossHP <= 0) {
+        this.bossAlive = false;
+        this.bossImg.play("papulatus_die");
+      }
     });
 
     if (!this.anims.exists("papulatus_stand")) {
       this.anims.create({
         key: "papulatus_stand",
-        frames: Array.from({ length: BOSS_STAND_FRAMES }, (_, f) => ({ key: `boss_stand_${f}` })),
+        frames: Array.from({ length: BOSS_STAND_FRAMES }, (_, f) => ({ key: `ludi_boss_stand_${f}` })),
         frameRate: 10,
         repeat: -1,
       });
@@ -202,7 +210,7 @@ export class SceneLudibrium extends BaseScene {
     });
     this.player.stand();
 
-    this.bossImg = this.add.sprite(gridX + GRID_WIDTH - charPad, displayAreaMidY, "boss_stand_0");
+    this.bossImg = this.add.sprite(gridX + GRID_WIDTH - charPad, displayAreaMidY, "ludi_boss_stand_0");
     this.bossImg.setDisplaySize(displayH, displayH);
     this.bossImg.setOrigin(1, 0.5);
     this.bossImg.play("papulatus_stand");
@@ -249,6 +257,10 @@ export class SceneLudibrium extends BaseScene {
 
   private handlePlay() {
     this.winPresentation.stop();
+    this.paylinePreviewTimer?.destroy();
+    this.paylinePreviewTimer = null;
+    this.paylinePreviewGfx?.clear();
+    this.paylinePreviewGfx?.setVisible(false);
     if (!this.slotMachine.play()) {
       const needed = this.slotMachine.currentBet * this.slotMachine.currentLines;
       this.slotUI.showTooltip(
@@ -307,21 +319,28 @@ export class SceneLudibrium extends BaseScene {
       },
       onComplete: () => {
         knife.destroy();
-        this.bossImg.setTexture("boss_hit");
-        this.time.delayedCall(200, () => {
-          this.bossImg.play("papulatus_stand");
-        });
-
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
         saveBossHP("Papulatus", this.bossHP);
+
+        if (this.bossHP <= 0) {
+          this.bossAlive = false;
+          this.bossImg.setTexture("ludi_boss_hit");
+          markBossDead("Papulatus");
+          this.time.delayedCall(200, () => this.bossImg.play("papulatus_die"));
+          this.time.delayedCall(1500, () => this.checkAndShowAllClear());
+        } else {
+          this.bossImg.setTexture("ludi_boss_hit");
+          this.time.delayedCall(200, () => this.bossImg.play("papulatus_stand"));
+        }
       },
     });
   }
 
   private setupPaylinePreview(width: number, gridX: number, gridY: number) {
     const CELL = SYMBOL_SIZE + SYMBOL_GAP;
-    const paylineGfx = this.add.graphics().setDepth(5).setVisible(false);
+    this.paylinePreviewGfx = this.add.graphics().setDepth(5).setVisible(false);
+    const paylineGfx = this.paylinePreviewGfx;
     const reelOffsets = [CELL / 2, CELL / 2, 0, 0, 0];
 
     const LINE_COLORS = [
@@ -334,19 +353,13 @@ export class SceneLudibrium extends BaseScene {
       for (let l = 0; l < LUDI_PAYLINES.length; l++) {
         const payline = LUDI_PAYLINES[l];
         const color = LINE_COLORS[l % LINE_COLORS.length];
-        for (let r = 0; r < LUDI_PAYLINES[0].length; r++) {
-          const row = payline[r];
-          const rx = gridX + r * CELL + 2;
-          const ry = gridY + reelOffsets[r] + row * CELL + 2;
-          paylineGfx.lineStyle(2, color, 0.6);
-          paylineGfx.strokeRect(rx, ry, SYMBOL_SIZE - 4, SYMBOL_SIZE - 4);
-        }
-        paylineGfx.lineStyle(3, color, 0.5);
+        const yOff = (l - 5) * 3;
+        paylineGfx.lineStyle(4, color, 0.6);
         paylineGfx.beginPath();
         for (let r = 0; r < LUDI_PAYLINES[0].length; r++) {
           const row = payline[r];
           const cx = gridX + r * CELL + SYMBOL_SIZE / 2;
-          const cy = gridY + reelOffsets[r] + row * CELL + SYMBOL_SIZE / 2;
+          const cy = gridY + reelOffsets[r] + row * CELL + SYMBOL_SIZE / 2 + yOff;
           if (r === 0) paylineGfx.moveTo(cx, cy);
           else paylineGfx.lineTo(cx, cy);
         }
@@ -354,16 +367,29 @@ export class SceneLudibrium extends BaseScene {
       }
     };
 
-    let showLines = false;
-    this.slotUI.overrideLinesButton(() => {
-      showLines = !showLines;
-      if (showLines) {
-        drawPaylines();
-        paylineGfx.setVisible(true);
-      } else {
+    let showTimer: Phaser.Time.TimerEvent | null = null;
+
+    const showPreview = () => {
+      this.paylinePreviewTimer?.destroy();
+      drawPaylines();
+      paylineGfx.setVisible(true);
+      this.paylinePreviewTimer = this.time.delayedCall(2000, () => {
         paylineGfx.clear();
         paylineGfx.setVisible(false);
-      }
+        this.paylinePreviewTimer = null;
+      });
+    };
+
+    const hidePreview = () => {
+      this.paylinePreviewTimer?.destroy();
+      this.paylinePreviewTimer = null;
+      paylineGfx.clear();
+      paylineGfx.setVisible(false);
+    };
+
+    this.slotUI.overrideLinesButton(() => {
+      if (paylineGfx.visible) hidePreview();
+      else showPreview();
     }, `Lines: ${LUDI_PAYLINES.length}`);
   }
 

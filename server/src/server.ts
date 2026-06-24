@@ -50,7 +50,14 @@ export class Server {
    * balance를 완전히 삭제하여 신규 유저 상태로 되돌린다.
    */
   async clearBalance(): Promise<{ cleared: boolean }> {
-    await $global.updateMyState({ balance: undefined });
+    await $global.updateMyState({
+      balance: undefined,
+      bosses: {
+        MushMom: 30_000_000,
+        JrBalrog: 150_000_000,
+        Papulatus: 650_000_000,
+      },
+    });
     return { cleared: true };
   }
 
@@ -63,8 +70,8 @@ export class Server {
     if (bosses[bossName] === undefined || bosses[bossName] === null) {
       const defaults: Record<string, number> = {
         MushMom: 30_000_000,
-        JrBalrog: 30_000_000,
-        Papulatus: 30_000_000,
+        JrBalrog: 150_000_000,
+        Papulatus: 650_000_000,
         Balrog: 30_000_000,
       };
       return { bossName, hp: defaults[bossName] ?? 30_000_000 };
@@ -82,6 +89,43 @@ export class Server {
     bosses[bossName] = hp;
     await $global.updateMyState({ bosses });
     return { bossName, hp };
+  }
+
+  async markBossDead(bossName: string): Promise<{ bossName: string; dead: boolean }> {
+    const myState = await $global.getMyState();
+    const bosses = myState.bosses || {};
+    bosses[bossName] = 0;
+    await $global.updateMyState({ bosses });
+    return { bossName, dead: true };
+  }
+
+  async getBossesAlive(): Promise<Record<string, { hp: number; alive: boolean }>> {
+    const myState = await $global.getMyState();
+    const bosses = myState.bosses || {};
+    const defaults: Record<string, number> = {
+      MushMom: 30_000_000,
+      JrBalrog: 150_000_000,
+      Papulatus: 650_000_000,
+    };
+    const result: Record<string, { hp: number; alive: boolean }> = {};
+    for (const [name, defaultHP] of Object.entries(defaults)) {
+      result[name] = {
+        hp: bosses[name] ?? defaultHP,
+        alive: (bosses[name] ?? defaultHP) > 0,
+      };
+    }
+    return result;
+  }
+
+  async resetAllBosses(): Promise<{ reset: boolean }> {
+    await $global.updateMyState({
+      bosses: {
+        MushMom: 30_000_000,
+        JrBalrog: 150_000_000,
+        Papulatus: 650_000_000,
+      },
+    });
+    return { reset: true };
   }
 
   /**

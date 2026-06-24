@@ -32,6 +32,7 @@ const SYMBOL_COLORS: Record<number, { bg: number; text: string }> = {
 
 interface GridCell {
   text: Phaser.GameObjects.Text;
+  img: Phaser.GameObjects.Image | null;
   bg: Phaser.GameObjects.Graphics;
   container: Phaser.GameObjects.Container;
 }
@@ -55,13 +56,15 @@ export class CascadeSlotMachine extends SlotBase {
   private cells: (GridCell | null)[][] = [];
   private gridContainer: Phaser.GameObjects.Container;
   private highlightGfx: Phaser.GameObjects.Graphics;
+  private symbolTextures: Record<number, string> | null = null;
   private cascadeMultiplier: number = 1;
   private freeSpinsRemaining: number = 0;
   private isFreeSpinMode: boolean = false;
-  constructor(scene: Phaser.Scene, gridX: number, gridY: number, balance: number) {
+  constructor(scene: Phaser.Scene, gridX: number, gridY: number, balance: number, symbolTextures?: Record<number, string>) {
     super(scene, balance);
     this.gridX = gridX;
     this.gridY = gridY;
+    this.symbolTextures = symbolTextures ?? null;
 
     this.highlightGfx = scene.add.graphics();
     this.highlightGfx.setDepth(5);
@@ -118,7 +121,15 @@ export class CascadeSlotMachine extends SlotBase {
     }).setOrigin(0.5);
 
     container.add([bg, text]);
-    return { text, bg, container };
+
+    let img: Phaser.GameObjects.Image | null = null;
+    if (this.symbolTextures) {
+      img = this.scene.add.image(0, 0, "").setOrigin(0.5);
+      img.setVisible(false);
+      container.add(img);
+    }
+
+    return { text, bg, container, img: img ?? null };
   }
 
   private fillInitialGrid() {
@@ -168,8 +179,18 @@ export class CascadeSlotMachine extends SlotBase {
     cell.bg.fillRoundedRect(-CELL_INNER / 2, -CELL_INNER / 2, CELL_INNER, CELL_INNER, 6);
     cell.bg.lineStyle(3, color.bg, 1);
     cell.bg.strokeRoundedRect(-CELL_INNER / 2, -CELL_INNER / 2, CELL_INNER, CELL_INNER, 6);
-    cell.text.setText(String(symbol));
-    cell.text.setColor(color.text);
+
+    if (cell.img && this.symbolTextures?.[symbol]) {
+      cell.text.setVisible(false);
+      cell.img.setTexture(this.symbolTextures[symbol]);
+      cell.img.setDisplaySize(CELL_INNER - 8, CELL_INNER - 8);
+      cell.img.setVisible(true);
+    } else {
+      if (cell.img) cell.img.setVisible(false);
+      cell.text.setVisible(true);
+      cell.text.setText(String(symbol));
+      cell.text.setColor(color.text);
+    }
     cell.container.setVisible(true);
   }
 
@@ -197,11 +218,12 @@ export class CascadeSlotMachine extends SlotBase {
     }
 
     const dropDuration = 1050;
-    const rowStagger = 260;
+    const rowStagger = 200;
+    const colStagger = 200;
 
     for (let visibleRow = CASCADE_VISIBLE_ROWS - 1; visibleRow >= 0; visibleRow--) {
-      const delay = (CASCADE_VISIBLE_ROWS - 1 - visibleRow) * rowStagger;
       for (let col = 0; col < CASCADE_REEL_COUNT; col++) {
+        const delay = (CASCADE_VISIBLE_ROWS - 1 - visibleRow) * rowStagger + col * colStagger;
         const gridRow = CASCADE_BUFFER_ROWS + visibleRow;
         const cell = this.cells[col]?.[gridRow];
         if (!cell) continue;
@@ -439,7 +461,7 @@ export class CascadeSlotMachine extends SlotBase {
 
             this.drawCell(cell, sym);
 
-            const stagger = (CASCADE_VISIBLE_ROWS - 1 - row) * 85;
+            const stagger = (CASCADE_VISIBLE_ROWS - 1 - row) * 85 + col * 200;
             this.scene.tweens.add({
               targets: cell.container,
               y: finalY,
@@ -498,12 +520,13 @@ export class CascadeSlotMachine extends SlotBase {
 
     const color = CASCADE_LINE_COLORS[lineIndex % CASCADE_LINE_COLORS.length];
     const gfx = this.highlightGfx;
+    const yOff = (lineIndex - 12) * 3;
 
     for (let r = 0; r < matchCount; r++) {
       const row = payline[r];
       const rx = this.gridX + r * CELL + 2;
       const ry = this.gridY + row * CELL + 2;
-      gfx.lineStyle(3, color, 0.8);
+      gfx.lineStyle(5, color, 0.8);
       gfx.strokeRect(rx, ry, CELL_INNER - 4, CELL_INNER - 4);
     }
 
@@ -512,11 +535,11 @@ export class CascadeSlotMachine extends SlotBase {
       const row = payline[r];
       points.push({
         x: this.gridX + r * CELL + CELL / 2,
-        y: this.gridY + row * CELL + CELL / 2,
+        y: this.gridY + row * CELL + CELL / 2 + yOff,
       });
     }
 
-    gfx.lineStyle(4, color, 0.7);
+    gfx.lineStyle(6, color, 0.7);
     gfx.beginPath();
     gfx.moveTo(points[0].x, points[0].y);
     for (let i = 1; i < points.length; i++) {

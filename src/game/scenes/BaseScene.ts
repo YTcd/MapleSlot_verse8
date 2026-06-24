@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { goToScene } from "../utils/SceneTransition";
+import { checkAllCleared } from "../utils/ServerBridge";
 
 const COIN_TIERS = [
   { max: 999, key: "coin_bronze", url: "https://resource-static.msu.io/data/Item/Consume/0243/02435104/info/icon.png" },
@@ -40,6 +41,58 @@ export abstract class BaseScene extends Phaser.Scene {
       this.backBtnRef.setAlpha(0.3);
       this.backBtnRef.disableInteractive();
     }
+  }
+
+  private checkAndShowAllClear() {
+    checkAllCleared().then((cleared) => {
+      if (cleared) this.showAllClearPopup();
+    });
+  }
+
+  private showAllClearPopup() {
+    const { width, height } = this.cameras.main;
+    const dim = this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.6);
+    dim.setDepth(200).setInteractive({ useHandCursor: false });
+    dim.on("pointerdown", () => {});
+
+    const pw = 400;
+    const ph = 200;
+    const bg = this.add.graphics();
+    bg.fillStyle(0x1a1a2e, 0.95);
+    bg.fillRoundedRect(width / 2 - pw / 2, height / 2 - ph / 2, pw, ph, 12);
+    bg.lineStyle(2, 0xf0d060, 0.9);
+    bg.strokeRoundedRect(width / 2 - pw / 2, height / 2 - ph / 2, pw, ph, 12);
+
+    const title = this.add.text(width / 2, height / 2 - 30, "All Clear!", {
+      fontFamily: "Arial, sans-serif",
+      fontSize: "36px",
+      color: "#f0d060",
+      fontStyle: "bold",
+    }).setOrigin(0.5);
+
+    const sub = this.add.text(width / 2, height / 2 + 20, "모든 보스를 처치했습니다!", {
+      fontFamily: "Arial, sans-serif",
+      fontSize: "16px",
+      color: "#cccccc",
+    }).setOrigin(0.5);
+
+    const okBtn = this.add.rectangle(width / 2, height / 2 + 60, 120, 40, 0x4a6fa5, 0.9);
+    okBtn.setStrokeStyle(2, 0x88bbee);
+    okBtn.setInteractive({ useHandCursor: true });
+    okBtn.on("pointerdown", () => {
+      dim.destroy();
+      bg.destroy();
+      title.destroy();
+      sub.destroy();
+      okBtn.destroy();
+    });
+
+    this.add.text(width / 2, height / 2 + 60, "확인", {
+      fontFamily: "Arial, sans-serif",
+      fontSize: "16px",
+      color: "#ffffff",
+      fontStyle: "bold",
+    }).setOrigin(0.5);
   }
 
   shutdown() {}

@@ -21,9 +21,9 @@ export const REELS: Int8Array[] = [
  * [matchCount_3, matchCount_4, matchCount_5] → array of [symbol0, ..., symbol6]
  */
 export const PAY_TABLE: Record<number, number[]> = {
-  3: [6, 9, 11, 13, 17, 26, 43],
-  4: [43, 65, 86, 130, 215, 430, 860],
-  5: [320, 540, 860, 1720, 2580, 5380, 10760],
+  3: [6, 10, 12, 14, 18, 28, 47],
+  4: [47, 70, 93, 141, 233, 466, 931],
+  5: [347, 585, 931, 1863, 2794, 5827, 11653],
 };
 
 /** Total number of distinct symbols on reel strips */

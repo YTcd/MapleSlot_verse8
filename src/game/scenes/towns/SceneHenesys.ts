@@ -3,9 +3,9 @@ import { BaseScene } from "../BaseScene";
 import { SlotMachine } from "../../slots/SlotMachine";
 import { SlotUI } from "../../slots/SlotUI";
 import { SlotWinPresentation } from "../../slots/SlotWinPresentation";
-import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/SlotConstants";
+import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP, PAYLINES } from "../../slots/SlotConstants";
 import { preloadMobTextures } from "../../slots/SlotSymbolData";
-import { updateBalanceOnServer, fetchBossHP, saveBossHP } from "../../utils/ServerBridge";
+import { updateBalanceOnServer, fetchBossHP, saveBossHP, markBossDead } from "../../utils/ServerBridge";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
@@ -40,6 +40,9 @@ export class SceneHenesys extends BaseScene {
   private bossHPBar!: BossHPBar;
   private bossHP = 30_000_000;
   private bossMaxHP = 30_000_000;
+  private bossAlive = true;
+  private paylinePreviewGfx!: Phaser.GameObjects.Graphics;
+  private paylinePreviewTimer: Phaser.Time.TimerEvent | null = null;
 
   constructor() {
     super({ key: "SceneHenesys" });
@@ -54,9 +57,9 @@ export class SceneHenesys extends BaseScene {
     }
 
     for (let f = 0; f < BOSS_MOVE_FRAMES; f++) {
-      this.load.image(`boss_move_${f}`, BOSS_URL.replace("{frame}", String(f)));
+      this.load.image(`henesys_boss_move_${f}`, BOSS_URL.replace("{frame}", String(f)));
     }
-    this.load.image("boss_hit", BOSS_HIT_URL);
+    this.load.image("henesys_boss_hit", BOSS_HIT_URL);
     this.load.image("knife_wolbi", KNIFE_URL);
     this.load.audio("bgm_gopicnic", BGM_URL);
     this.load.audio("sfx_win", WIN_SFX_URL);
@@ -104,9 +107,10 @@ export class SceneHenesys extends BaseScene {
       onStopAuto: () => this.handleStopAuto(),
       onBetChange: (value) => this.slotMachine.setBet(value),
       onLineChange: (value) => this.slotMachine.setLines(value),
-    }, [3000, 5000, 10000]);
+    }, [1000, 5000, 10000]);
 
-    this.slotUI.updateLineDisplay(25);
+    this.slotMachine.setLines(PAYLINES.length);
+    this.setupPaylinePreview(width, gridX, gridY);
 
     this.slotMachine.setOnBalanceChange((newBalance) => {
       this.setTopBarNumber(newBalance);
@@ -122,10 +126,11 @@ export class SceneHenesys extends BaseScene {
     this.slotMachine.setOnWin((win) => {
       if (win.totalWin > 0) {
         this.slotUI.showWin(win.totalWin);
-        this.playWinSound();
         this.winPresentation.start(win.lineWins);
-        this.queueAttack();
-        this.throwKnife(win.totalWin);
+        if (this.bossAlive) {
+          this.queueAttack();
+          this.throwKnife(win.totalWin);
+        }
       }
     });
 
@@ -155,7 +160,7 @@ export class SceneHenesys extends BaseScene {
     const hpBarW = GRID_WIDTH * 1.3;
     this.bossHPBar = new BossHPBar(this, width / 2, hpBarY, hpBarW, {
       bossName: "MushMom",
-      bossIconKey: "boss_move_0",
+      bossIconKey: "henesys_boss_move_0",
       maxHP: 30000000,
       currentHP: 30000000,
       barColor: 0xcc3333,
@@ -165,12 +170,16 @@ export class SceneHenesys extends BaseScene {
       this.bossHP = Math.min(hp, this.bossMaxHP);
       this.bossHPBar.setHP(this.bossHP);
       if (hp > this.bossMaxHP) saveBossHP("MushMom", this.bossHP);
+      if (this.bossHP <= 0) {
+        this.bossAlive = false;
+        this.bossImg.play("mushmom_die");
+      }
     });
 
     if (!this.anims.exists("mushmom_move")) {
       this.anims.create({
         key: "mushmom_move",
-        frames: Array.from({ length: BOSS_MOVE_FRAMES }, (_, f) => ({ key: `boss_move_${f}` })),
+        frames: Array.from({ length: BOSS_MOVE_FRAMES }, (_, f) => ({ key: `henesys_boss_move_${f}` })),
         frameRate: 1000 / 220,
         repeat: -1,
       });
@@ -191,7 +200,7 @@ export class SceneHenesys extends BaseScene {
     });
     this.player.stand();
 
-    this.bossImg = this.add.sprite(gridX + GRID_WIDTH - charPad, displayAreaMidY, "boss_move_0");
+    this.bossImg = this.add.sprite(gridX + GRID_WIDTH - charPad, displayAreaMidY, "henesys_boss_move_0");
     this.bossImg.setDisplaySize(displayH, displayH);
     this.bossImg.setOrigin(1, 0.5);
     this.bossImg.play("mushmom_move");
@@ -238,6 +247,10 @@ export class SceneHenesys extends BaseScene {
 
   private handlePlay() {
     this.winPresentation.stop();
+    this.paylinePreviewTimer?.destroy();
+    this.paylinePreviewTimer = null;
+    this.paylinePreviewGfx?.clear();
+    this.paylinePreviewGfx?.setVisible(false);
     if (!this.slotMachine.play()) {
       const needed = this.slotMachine.currentBet * this.slotMachine.currentLines;
       this.slotUI.showTooltip(
@@ -296,16 +309,77 @@ export class SceneHenesys extends BaseScene {
       },
       onComplete: () => {
         knife.destroy();
-        this.bossImg.setTexture("boss_hit");
-        this.time.delayedCall(200, () => {
-          this.bossImg.play("mushmom_move");
-        });
 
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
         saveBossHP("MushMom", this.bossHP);
+
+        if (this.bossHP <= 0) {
+          this.bossAlive = false;
+          this.bossImg.setTexture("henesys_boss_hit");
+          markBossDead("MushMom");
+          this.time.delayedCall(200, () => this.bossImg.play("mushmom_die"));
+          this.time.delayedCall(1500, () => this.checkAndShowAllClear());
+        } else {
+          this.bossImg.setTexture("henesys_boss_hit");
+          this.time.delayedCall(200, () => this.bossImg.play("mushmom_move"));
+        }
       },
     });
+  }
+
+  private setupPaylinePreview(width: number, gridX: number, gridY: number) {
+    const CELL = SYMBOL_SIZE + SYMBOL_GAP;
+    this.paylinePreviewGfx = this.add.graphics().setDepth(5).setVisible(false);
+    const paylineGfx = this.paylinePreviewGfx;
+    const LINE_COLORS = [
+      0xff4444, 0x44ff44, 0x4444ff, 0xffff44, 0xff44ff,
+      0x44ffff, 0xff8844, 0x88ff44, 0x4488ff, 0xff4488,
+      0x88ff88, 0x8888ff, 0xffaa44, 0xaaff44, 0x44aaff,
+      0xff44aa, 0x44ffaa, 0xaa44ff, 0xdddd44, 0x44dddd,
+      0xdd44dd, 0xff6644, 0x66ff44, 0x4466ff, 0xcc88ff,
+    ];
+
+    const drawPaylines = () => {
+      paylineGfx.clear();
+      for (let l = 0; l < PAYLINES.length; l++) {
+        const payline = PAYLINES[l];
+        const color = LINE_COLORS[l % LINE_COLORS.length];
+        const yOff = (l - 12) * 3;
+        paylineGfx.lineStyle(4, color, 0.6);
+        paylineGfx.beginPath();
+        for (let r = 0; r < PAYLINES[0].length; r++) {
+          const row = payline[r];
+          const cx = gridX + r * CELL + SYMBOL_SIZE / 2;
+          const cy = gridY + row * CELL + SYMBOL_SIZE / 2 + yOff;
+          if (r === 0) paylineGfx.moveTo(cx, cy); else paylineGfx.lineTo(cx, cy);
+        }
+        paylineGfx.strokePath();
+      }
+    };
+
+    const showPreview = () => {
+      this.paylinePreviewTimer?.destroy();
+      drawPaylines();
+      paylineGfx.setVisible(true);
+      this.paylinePreviewTimer = this.time.delayedCall(2000, () => {
+        paylineGfx.clear();
+        paylineGfx.setVisible(false);
+        this.paylinePreviewTimer = null;
+      });
+    };
+
+    const hidePreview = () => {
+      this.paylinePreviewTimer?.destroy();
+      this.paylinePreviewTimer = null;
+      paylineGfx.clear();
+      paylineGfx.setVisible(false);
+    };
+
+    this.slotUI.overrideLinesButton(() => {
+      if (paylineGfx.visible) hidePreview();
+      else showPreview();
+    }, "Lines: 25");
   }
 
   shutdown() {

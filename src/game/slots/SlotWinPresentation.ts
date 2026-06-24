@@ -102,16 +102,17 @@ export class SlotWinPresentation {
 
     const color = LINE_COLORS[lineIndex % LINE_COLORS.length];
     const points: LinePoint[] = [];
+    const perLineYOff = (lineIndex - 12) * 3;
 
     for (let reel = 0; reel < REEL_COUNT; reel++) {
       const row = payline[reel];
       const yOff = this.reelYOffsets[reel] ?? 0;
       const cx = this.gridX + reel * CELL + SYMBOL_SIZE / 2;
-      const cy = this.gridY + yOff + row * CELL + SYMBOL_SIZE / 2;
+      const cy = this.gridY + yOff + row * CELL + SYMBOL_SIZE / 2 + perLineYOff;
       points.push({ reelIndex: reel, rowIndex: row, x: cx, y: cy });
 
       if (reel < matchCount) {
-        this.overlayGfx.lineStyle(3, color, 0.8);
+        this.overlayGfx.lineStyle(5, color, 0.8);
         this.overlayGfx.strokeRect(
           this.gridX + reel * CELL + 2,
           this.gridY + yOff + row * CELL + 2,
@@ -121,7 +122,7 @@ export class SlotWinPresentation {
       }
     }
 
-    this.overlayGfx.lineStyle(4, color, 0.7);
+    this.overlayGfx.lineStyle(6, color, 0.7);
     this.overlayGfx.beginPath();
     this.overlayGfx.moveTo(points[0].x, points[0].y);
     for (let i = 1; i < points.length; i++) {

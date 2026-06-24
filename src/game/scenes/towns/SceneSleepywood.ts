@@ -1,12 +1,15 @@
 import Phaser from "phaser";
 import { BaseScene } from "../BaseScene";
-import { SlotMachine } from "../../slots/SlotMachine";
+import { CascadeSlotMachine } from "../../slots/CascadeSlotMachine";
 import { SlotUI } from "../../slots/SlotUI";
-import { SlotWinPresentation } from "../../slots/SlotWinPresentation";
-import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/SlotConstants";
-import { preloadMobTexturesFor } from "../../slots/SlotSymbolData";
+import { SlotState } from "../../slots/SlotConstants";
 import { SLEEPYWOOD_MOB_SYMBOLS } from "../../slots/SleepywoodSymbolData";
-import { updateBalanceOnServer, fetchBossHP, saveBossHP } from "../../utils/ServerBridge";
+import {
+  CASCADE_REEL_COUNT,
+  CASCADE_VISIBLE_ROWS,
+  CASCADE_PAYLINES,
+} from "../../slots/CascadeSlotConstants";
+import { updateBalanceOnServer, fetchBossHP, saveBossHP, markBossDead } from "../../utils/ServerBridge";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
@@ -15,22 +18,23 @@ import faceData from "../../../../data/maple/face_20000.json";
 import hairData from "../../../../data/maple/hair_30000.json";
 import weaponData from "../../../../data/maple/weapon_1472263.json";
 
-const CELL = SYMBOL_SIZE + SYMBOL_GAP;
-const GRID_WIDTH = REEL_COUNT * CELL - SYMBOL_GAP;
-const GRID_HEIGHT = 3 * CELL - SYMBOL_GAP;
+const CELL = 100;
+const GRID_WIDTH = CASCADE_REEL_COUNT * CELL;
+const GRID_HEIGHT = CASCADE_VISIBLE_ROWS * CELL;
 const BAR_HEIGHT = 72;
 
 const BGM_URL = "https://resource-static.msu.io/data/Sound/Bgm00/SleepyWood.mp3";
 const WIN_SFX_URL = "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc45c686f3ecf63d-1781021996644/static-assets/audio-a093ae4e-d8a9-493d-bf1c-3659ee66ff28.ogg";
 const BOSS_URL = "https://resource-static.msu.io/data/Mob/8130100/stand/{frame}.png";
 const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/8130100/hit1/0.png";
+const BOSS_DIE_URL = "https://resource-static.msu.io/data/Mob/8130100/die1/{frame}.png";
 const BOSS_STAND_FRAMES = 2;
+const BOSS_DIE_FRAMES = 3;
 const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070001/info/icon.png";
 
 export class SceneSleepywood extends BaseScene {
-  private slotMachine!: SlotMachine;
+  private slotMachine!: CascadeSlotMachine;
   private slotUI!: SlotUI;
-  private winPresentation!: SlotWinPresentation;
   private bgMusic: Phaser.Sound.BaseSound | null = null;
   private audioLoaded: boolean = false;
   private player!: MapleSprite;
@@ -39,8 +43,11 @@ export class SceneSleepywood extends BaseScene {
   private shootToggle = false;
   private bossImg!: Phaser.GameObjects.Sprite;
   private bossHPBar!: BossHPBar;
-  private bossHP = 1_000_000;
-  private bossMaxHP = 1_000_000;
+  private bossHP = 150_000_000;
+  private bossMaxHP = 150_000_000;
+  private bossAlive = true;
+  private paylinePreviewGfx!: Phaser.GameObjects.Graphics;
+  private paylinePreviewTimer: Phaser.Time.TimerEvent | null = null;
 
   constructor() {
     super({ key: "SceneSleepywood" });
@@ -48,16 +55,23 @@ export class SceneSleepywood extends BaseScene {
 
   preload() {
     this.preloadTopBarIcons();
-    preloadMobTexturesFor(this, SLEEPYWOOD_MOB_SYMBOLS, "sw_");
+
+    for (const mob of SLEEPYWOOD_MOB_SYMBOLS) {
+      const key = `sleepy_mob_${mob.symbolIndex}`;
+      this.load.image(key, `${mob.cdnBase}/${mob.renderPlan[0].path}`);
+    }
 
     for (const d of [bodyData, headData, faceData, hairData, weaponData]) {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
     for (let f = 0; f < BOSS_STAND_FRAMES; f++) {
-      this.load.image(`boss_stand_${f}`, BOSS_URL.replace("{frame}", String(f)));
+      this.load.image(`sleepy_boss_stand_${f}`, BOSS_URL.replace("{frame}", String(f)));
     }
-    this.load.image("boss_hit", BOSS_HIT_URL);
+    for (let f = 0; f < BOSS_DIE_FRAMES; f++) {
+      this.load.image(`sleepy_boss_die_${f}`, BOSS_DIE_URL.replace("{frame}", String(f)));
+    }
+    this.load.image("sleepy_boss_hit", BOSS_HIT_URL);
     this.load.image("knife_wolbi", KNIFE_URL);
     this.load.audio("bgm_sleepywood", BGM_URL);
     this.load.audio("sfx_win", WIN_SFX_URL);
@@ -95,8 +109,11 @@ export class SceneSleepywood extends BaseScene {
     const topPad = Math.max(0, (availableH - totalBlockH) / 2);
     const gridY = contentTop + topPad + charH;
 
-    this.slotMachine = new SlotMachine(this, gridX, gridY, this.balance, undefined, undefined, undefined, SLEEPYWOOD_MOB_SYMBOLS, "sw_");
-    this.winPresentation = new SlotWinPresentation(this, gridX, gridY, this.slotMachine);
+    const symbolTex: Record<number, string> = {};
+    for (const mob of SLEEPYWOOD_MOB_SYMBOLS) {
+      symbolTex[mob.symbolIndex] = `sleepy_mob_${mob.symbolIndex}`;
+    }
+    this.slotMachine = new CascadeSlotMachine(this, gridX, gridY, this.balance, symbolTex);
 
     const barY = height - BAR_HEIGHT;
     this.slotUI = new SlotUI(this, 0, barY, width, {
@@ -105,9 +122,10 @@ export class SceneSleepywood extends BaseScene {
       onStopAuto: () => this.handleStopAuto(),
       onBetChange: (value) => this.slotMachine.setBet(value),
       onLineChange: (value) => this.slotMachine.setLines(value),
-    }, [3000, 5000, 10000]);
+    }, [10000, 30000, 50000]);
 
-    this.slotUI.updateLineDisplay(25);
+    this.slotMachine.setLines(CASCADE_PAYLINES.length);
+    this.setupPaylinePreview(width, gridX, gridY);
 
     this.slotMachine.setOnBalanceChange((newBalance) => {
       this.setTopBarNumber(newBalance);
@@ -123,10 +141,10 @@ export class SceneSleepywood extends BaseScene {
     this.slotMachine.setOnWin((win) => {
       if (win.totalWin > 0) {
         this.slotUI.showWin(win.totalWin);
-        this.playWinSound();
-        this.winPresentation.start(win.lineWins);
-        this.queueAttack();
-        this.throwKnife(win.totalWin);
+        if (this.bossAlive) {
+          this.queueAttack();
+          this.throwKnife(win.totalWin);
+        }
       }
     });
 
@@ -140,25 +158,21 @@ export class SceneSleepywood extends BaseScene {
       }
     });
 
-    this.winPresentation.onButtonsReady = () => {
-      this.slotMachine.setPresentationDone();
-    };
+    const charPad = 24;
+    const displayAreaMidY = contentTop + topPad + charH / 2;
+    const displayH = Math.min(charH * 0.85, 100);
 
     const gridBorder = this.add.graphics();
     gridBorder.lineStyle(3, 0x4488cc, 0.6);
     gridBorder.strokeRect(gridX - 4, gridY - 4, GRID_WIDTH + 8, GRID_HEIGHT + 8);
     gridBorder.setDepth(0);
 
-    const charPad = 24;
-    const displayAreaMidY = contentTop + topPad + charH / 2;
-    const displayH = Math.min(charH * 0.85, 100);
-
     const hpBarW = GRID_WIDTH * 1.3;
     this.bossHPBar = new BossHPBar(this, width / 2, hpBarY, hpBarW, {
       bossName: "Jr. Balrog",
-      bossIconKey: "boss_stand_0",
-      maxHP: 1000000,
-      currentHP: 1000000,
+      bossIconKey: "sleepy_boss_stand_0",
+      maxHP: 150000000,
+      currentHP: 150000000,
       barColor: 0xcc3333,
     });
 
@@ -166,14 +180,26 @@ export class SceneSleepywood extends BaseScene {
       this.bossHP = Math.min(hp, this.bossMaxHP);
       this.bossHPBar.setHP(this.bossHP);
       if (hp > this.bossMaxHP) saveBossHP("JrBalrog", this.bossHP);
+      if (this.bossHP <= 0) {
+        this.bossAlive = false;
+        this.bossImg.play("jrbalrog_die");
+      }
     });
 
     if (!this.anims.exists("jrbalrog_stand")) {
       this.anims.create({
         key: "jrbalrog_stand",
-        frames: Array.from({ length: BOSS_STAND_FRAMES }, (_, f) => ({ key: `boss_stand_${f}` })),
+        frames: Array.from({ length: BOSS_STAND_FRAMES }, (_, f) => ({ key: `sleepy_boss_stand_${f}` })),
         frameRate: 1000 / 150,
         repeat: -1,
+      });
+    }
+    if (!this.anims.exists("jrbalrog_die")) {
+      this.anims.create({
+        key: "jrbalrog_die",
+        frames: Array.from({ length: BOSS_DIE_FRAMES }, (_, f) => ({ key: `sleepy_boss_die_${f}` })),
+        frameRate: 1000 / 233,
+        repeat: 0,
       });
     }
 
@@ -192,7 +218,7 @@ export class SceneSleepywood extends BaseScene {
     });
     this.player.stand();
 
-    this.bossImg = this.add.sprite(gridX + GRID_WIDTH - charPad, displayAreaMidY, "boss_stand_0");
+    this.bossImg = this.add.sprite(gridX + GRID_WIDTH - charPad, displayAreaMidY, "sleepy_boss_stand_0");
     this.bossImg.setDisplaySize(displayH, displayH);
     this.bossImg.setOrigin(1, 0.5);
     this.bossImg.play("jrbalrog_stand");
@@ -238,7 +264,10 @@ export class SceneSleepywood extends BaseScene {
   }
 
   private handlePlay() {
-    this.winPresentation.stop();
+    this.paylinePreviewTimer?.destroy();
+    this.paylinePreviewTimer = null;
+    this.paylinePreviewGfx?.clear();
+    this.paylinePreviewGfx?.setVisible(false);
     if (!this.slotMachine.play()) {
       const needed = this.slotMachine.currentBet * this.slotMachine.currentLines;
       this.slotUI.showTooltip(
@@ -248,7 +277,6 @@ export class SceneSleepywood extends BaseScene {
   }
 
   private handleAuto() {
-    this.winPresentation.stop();
     this.slotUI.setAutoMode(true);
     this.slotMachine.startAuto();
   }
@@ -297,23 +325,86 @@ export class SceneSleepywood extends BaseScene {
       },
       onComplete: () => {
         knife.destroy();
-        this.bossImg.setTexture("boss_hit");
-        this.time.delayedCall(200, () => {
-          this.bossImg.play("jrbalrog_stand");
-        });
-
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
         saveBossHP("JrBalrog", this.bossHP);
+
+        if (this.bossHP <= 0) {
+          this.bossAlive = false;
+          this.bossImg.setTexture("sleepy_boss_hit");
+          markBossDead("JrBalrog");
+          this.time.delayedCall(200, () => this.bossImg.play("jrbalrog_die"));
+          this.time.delayedCall(1500, () => this.checkAndShowAllClear());
+        } else {
+          this.bossImg.setTexture("sleepy_boss_hit");
+          this.time.delayedCall(200, () => this.bossImg.play("jrbalrog_stand"));
+        }
       },
     });
+  }
+
+  private setupPaylinePreview(width: number, gridX: number, gridY: number) {
+    const CELL = 100;
+    this.paylinePreviewGfx = this.add.graphics().setDepth(5).setVisible(false);
+    const paylineGfx = this.paylinePreviewGfx;
+    const LINE_COLORS = [
+      0xff4444, 0x44ff44, 0x4444ff, 0xffff44, 0xff44ff,
+      0x44ffff, 0xff8844, 0x88ff44, 0x4488ff, 0xff4488,
+      0x88ff88, 0x8888ff, 0xffaa44, 0xaaff44, 0x44aaff,
+      0xff44aa, 0x44ffaa, 0xaa44ff, 0xdddd44, 0x44dddd,
+      0xdd44dd, 0xff6644, 0x66ff44, 0x4466ff, 0xcc88ff,
+    ];
+
+    const drawPaylines = () => {
+      paylineGfx.clear();
+      for (let l = 0; l < CASCADE_PAYLINES.length; l++) {
+        const payline = CASCADE_PAYLINES[l];
+        const color = LINE_COLORS[l % LINE_COLORS.length];
+        const yOff = (l - 12) * 3;
+        paylineGfx.lineStyle(4, color, 0.6);
+        paylineGfx.beginPath();
+        for (let r = 0; r < CASCADE_PAYLINES[0].length; r++) {
+          const row = payline[r];
+          const cx = gridX + r * CELL + CELL / 2;
+          const cy = gridY + row * CELL + CELL / 2 + yOff;
+          if (r === 0) paylineGfx.moveTo(cx, cy); else paylineGfx.lineTo(cx, cy);
+        }
+        paylineGfx.strokePath();
+      }
+    };
+
+    let showTimer: Phaser.Time.TimerEvent | null = null;
+
+    const showPreview = () => {
+      this.paylinePreviewTimer?.destroy();
+      drawPaylines();
+      paylineGfx.setVisible(true);
+      this.paylinePreviewTimer = this.time.delayedCall(2000, () => {
+        paylineGfx.clear();
+        paylineGfx.setVisible(false);
+        this.paylinePreviewTimer = null;
+      });
+    };
+
+    const hidePreview = () => {
+      this.paylinePreviewTimer?.destroy();
+      this.paylinePreviewTimer = null;
+      paylineGfx.clear();
+      paylineGfx.setVisible(false);
+    };
+
+    this.slotUI.overrideLinesButton(() => {
+      if (paylineGfx.visible) hidePreview();
+      else showPreview();
+    }, "Lines: 25");
+
+    this.slotUI.updateLineDisplay(CASCADE_PAYLINES.length);
   }
 
   shutdown() {
     try { this.bgMusic?.stop(); } catch { /* ignore */ }
     this.bgMusic = null;
     this.player?.destroy();
-    this.winPresentation?.destroy();
     this.slotMachine?.destroy();
     this.slotUI?.destroy();
   }
