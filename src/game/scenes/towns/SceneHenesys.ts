@@ -64,7 +64,7 @@ export class SceneHenesys extends BaseScene {
       this.load.image(`henesys_boss_move_${f}`, BOSS_URL.replace("{frame}", String(f)));
     }
     this.load.image("henesys_boss_hit", BOSS_HIT_URL);
-    this.load.image("knife_wolbi", KNIFE_URL);
+    this.load.image("henesys_knife", KNIFE_URL);
     this.load.audio("bgm_gopicnic", BGM_URL);
     this.load.audio("sfx_win", WIN_SFX_URL);
     this.load.once("complete", () => { this.audioLoaded = true; });
@@ -285,8 +285,9 @@ export class SceneHenesys extends BaseScene {
     if (this.attackQueue <= 0) return;
     this.attackQueue--;
     this.isAttacking = true;
-    this.shootToggle = !this.shootToggle;
-    this.player.attack(this.shootToggle ? 1 : 0);
+    const actions = ["swingO1", "swingO2", "swingO3"];
+    const action = actions[Math.floor(Math.random() * actions.length)];
+    this.player.setAction(action);
     this.time.delayedCall(600, () => {
       this.player.stand();
       this.isAttacking = false;
@@ -300,7 +301,7 @@ export class SceneHenesys extends BaseScene {
     const bx = this.bossImg.x - 30;
     const by = this.bossImg.y;
 
-    const knife = this.add.image(px, py, "knife_wolbi").setDepth(10);
+    const knife = this.add.image(px, py, "henesys_knife").setDepth(10);
 
     this.tweens.add({
       targets: knife,

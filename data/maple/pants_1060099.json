@@ -1,11 +1,8 @@
 {
-  "id": "1060024",
+  "id": "1060099",
   "type": "pants",
   "cdnBase": "https://resource-static.msu.io/data",
   "availableStates": [
-    "stand1",
-    "stabO1",
-    "stabO2",
     "alert",
     "fly",
     "heal",
@@ -18,10 +15,13 @@
     "shoot2",
     "shootF",
     "sit",
+    "stabO1",
+    "stabO2",
     "stabOF",
     "stabT1",
     "stabT2",
     "stabTF",
+    "stand1",
     "stand2",
     "swingO1",
     "swingO2",
@@ -42,7 +42,7 @@
       "state": "stand1",
       "frame": "0",
       "part": "pants",
-      "path": "Character/Pants/01060024/stand1/0/pants.png",
+      "path": "Character/Pants/01060099/stand1/0/pants.png",
       "origin": {
         "x": 9,
         "y": 6
@@ -52,7 +52,7 @@
       "sockets": {
         "navel": {
           "x": -6,
-          "y": -5
+          "y": -7
         }
       }
     },
@@ -60,7 +60,7 @@
       "state": "stand1",
       "frame": "1",
       "part": "pants",
-      "path": "Character/Pants/01060024/stand1/1/pants.png",
+      "path": "Character/Pants/01060099/stand1/1/pants.png",
       "origin": {
         "x": 9,
         "y": 6
@@ -70,7 +70,7 @@
       "sockets": {
         "navel": {
           "x": -5,
-          "y": -4
+          "y": -6
         }
       }
     },
@@ -78,7 +78,7 @@
       "state": "stand1",
       "frame": "2",
       "part": "pants",
-      "path": "Character/Pants/01060024/stand1/2/pants.png",
+      "path": "Character/Pants/01060099/stand1/2/pants.png",
       "origin": {
         "x": 9,
         "y": 6
@@ -88,223 +88,7 @@
       "sockets": {
         "navel": {
           "x": -4,
-          "y": -5
-        }
-      }
-    },
-    {
-      "state": "stabO1",
-      "frame": "0",
-      "part": "pants",
-      "path": "Character/Pants/01060024/stabO1/0/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 5
-      },
-      "texture_key": "maple_pants_stabO1_0_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": 6,
-          "y": -3
-        }
-      }
-    },
-    {
-      "state": "stabO1",
-      "frame": "1",
-      "part": "pants",
-      "path": "Character/Pants/01060024/stabO1/1/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 6
-      },
-      "texture_key": "maple_pants_stabO1_1_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -1,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "0",
-      "part": "pants",
-      "path": "Character/Pants/01060024/stabO2/0/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 5
-      },
-      "texture_key": "maple_pants_stabO2_0_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -1,
-          "y": -3
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "1",
-      "part": "pants",
-      "path": "Character/Pants/01060024/stabO2/1/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 6
-      },
-      "texture_key": "maple_pants_stabO2_1_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -3,
-          "y": -1
-        }
-      }
-    },
-    {
-      "state": "shoot1",
-      "frame": "0",
-      "part": "pants",
-      "path": "Character/Pants/01060024/shoot1/0/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 5
-      },
-      "texture_key": "maple_pants_shoot1_0_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -1,
-          "y": -2
-        }
-      }
-    },
-    {
-      "state": "shoot1",
-      "frame": "1",
-      "part": "pants",
-      "path": "Character/Pants/01060024/shoot1/0/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 5
-      },
-      "texture_key": "maple_pants_shoot1_1_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -1,
-          "y": -2
-        }
-      }
-    },
-    {
-      "state": "shoot1",
-      "frame": "2",
-      "part": "pants",
-      "path": "Character/Pants/01060024/shoot1/0/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 5
-      },
-      "texture_key": "maple_pants_shoot1_2_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -1,
-          "y": -2
-        }
-      }
-    },
-    {
-      "state": "shoot2",
-      "frame": "0",
-      "part": "pants",
-      "path": "Character/Pants/01060024/shoot2/0/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 5
-      },
-      "texture_key": "maple_pants_shoot2_0_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -3,
-          "y": -2
-        }
-      }
-    },
-    {
-      "state": "shoot2",
-      "frame": "1",
-      "part": "pants",
-      "path": "Character/Pants/01060024/shoot2/0/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 5
-      },
-      "texture_key": "maple_pants_shoot2_1_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -3,
-          "y": -2
-        }
-      }
-    },
-    {
-      "state": "shoot2",
-      "frame": "2",
-      "part": "pants",
-      "path": "Character/Pants/01060024/shoot2/0/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 5
-      },
-      "texture_key": "maple_pants_shoot2_2_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -3,
-          "y": -2
-        }
-      }
-    },
-    {
-      "state": "shoot2",
-      "frame": "3",
-      "part": "pants",
-      "path": "Character/Pants/01060024/shoot2/0/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 5
-      },
-      "texture_key": "maple_pants_shoot2_3_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -3,
-          "y": -2
-        }
-      }
-    },
-    {
-      "state": "shoot2",
-      "frame": "4",
-      "part": "pants",
-      "path": "Character/Pants/01060024/shoot2/0/pants.png",
-      "origin": {
-        "x": 10,
-        "y": 5
-      },
-      "texture_key": "maple_pants_shoot2_4_pants",
-      "z": "pants",
-      "sockets": {
-        "navel": {
-          "x": -3,
-          "y": -2
+          "y": -7
         }
       }
     },
@@ -312,7 +96,7 @@
       "state": "swingO1",
       "frame": "0",
       "part": "pants",
-      "path": "Character/Pants/01060024/swingO1/0/pants.png",
+      "path": "Character/Pants/01060099/swingO1/0/pants.png",
       "origin": {
         "x": 9,
         "y": 6
@@ -321,8 +105,8 @@
       "z": "pants",
       "sockets": {
         "navel": {
-          "x": -2,
-          "y": -2
+          "x": -3,
+          "y": -4
         }
       }
     },
@@ -330,7 +114,7 @@
       "state": "swingO1",
       "frame": "1",
       "part": "pants",
-      "path": "Character/Pants/01060024/swingO1/1/pants.png",
+      "path": "Character/Pants/01060099/swingO1/1/pants.png",
       "origin": {
         "x": 10,
         "y": 6
@@ -339,8 +123,8 @@
       "z": "pants",
       "sockets": {
         "navel": {
-          "x": -7,
-          "y": -2
+          "x": -8,
+          "y": -4
         }
       }
     },
@@ -348,7 +132,7 @@
       "state": "swingO1",
       "frame": "2",
       "part": "pants",
-      "path": "Character/Pants/01060024/swingO1/2/pants.png",
+      "path": "Character/Pants/01060099/swingO1/2/pants.png",
       "origin": {
         "x": 9,
         "y": 6
@@ -358,7 +142,7 @@
       "sockets": {
         "navel": {
           "x": -2,
-          "y": -1
+          "y": -4
         }
       }
     },
@@ -366,7 +150,7 @@
       "state": "swingO2",
       "frame": "0",
       "part": "pants",
-      "path": "Character/Pants/01060024/swingO2/0/pants.png",
+      "path": "Character/Pants/01060099/swingO2/0/pants.png",
       "origin": {
         "x": 10,
         "y": 5
@@ -375,8 +159,8 @@
       "z": "pants",
       "sockets": {
         "navel": {
-          "x": -4,
-          "y": -3
+          "x": -5,
+          "y": -5
         }
       }
     },
@@ -384,7 +168,7 @@
       "state": "swingO2",
       "frame": "1",
       "part": "pants",
-      "path": "Character/Pants/01060024/swingO2/1/pants.png",
+      "path": "Character/Pants/01060099/swingO2/1/pants.png",
       "origin": {
         "x": 10,
         "y": 6
@@ -394,7 +178,7 @@
       "sockets": {
         "navel": {
           "x": -2,
-          "y": -2
+          "y": -4
         }
       }
     },
@@ -402,7 +186,7 @@
       "state": "swingO2",
       "frame": "2",
       "part": "pants",
-      "path": "Character/Pants/01060024/swingO2/2/pants.png",
+      "path": "Character/Pants/01060099/swingO2/2/pants.png",
       "origin": {
         "x": 9,
         "y": 6
@@ -412,7 +196,7 @@
       "sockets": {
         "navel": {
           "x": -2,
-          "y": -2
+          "y": -4
         }
       }
     },
@@ -420,7 +204,7 @@
       "state": "swingO3",
       "frame": "0",
       "part": "pants",
-      "path": "Character/Pants/01060024/swingO3/0/pants.png",
+      "path": "Character/Pants/01060099/swingO3/0/pants.png",
       "origin": {
         "x": 10,
         "y": 5
@@ -430,7 +214,7 @@
       "sockets": {
         "navel": {
           "x": -4,
-          "y": -1
+          "y": -3
         }
       }
     },
@@ -438,7 +222,7 @@
       "state": "swingO3",
       "frame": "1",
       "part": "pants",
-      "path": "Character/Pants/01060024/swingO3/1/pants.png",
+      "path": "Character/Pants/01060099/swingO3/1/pants.png",
       "origin": {
         "x": 10,
         "y": 6
@@ -447,8 +231,8 @@
       "z": "pants",
       "sockets": {
         "navel": {
-          "x": -8,
-          "y": 0
+          "x": -6,
+          "y": -1
         }
       }
     },
@@ -456,7 +240,7 @@
       "state": "swingO3",
       "frame": "2",
       "part": "pants",
-      "path": "Character/Pants/01060024/swingO3/2/pants.png",
+      "path": "Character/Pants/01060099/swingO1/0/pants.png",
       "origin": {
         "x": 9,
         "y": 6
@@ -465,8 +249,224 @@
       "z": "pants",
       "sockets": {
         "navel": {
-          "x": -6,
+          "x": -7,
+          "y": -4
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "0",
+      "part": "pants",
+      "path": "Character/Pants/01060099/stabO1/0/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 5
+      },
+      "texture_key": "maple_pants_stabO1_0_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -1,
+          "y": -4
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "1",
+      "part": "pants",
+      "path": "Character/Pants/01060099/stabO1/1/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 6
+      },
+      "texture_key": "maple_pants_stabO1_1_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -1,
           "y": -2
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "0",
+      "part": "pants",
+      "path": "Character/Pants/01060099/stabO2/0/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 5
+      },
+      "texture_key": "maple_pants_stabO2_0_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -1,
+          "y": -5
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "1",
+      "part": "pants",
+      "path": "Character/Pants/01060099/stabO2/1/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 6
+      },
+      "texture_key": "maple_pants_stabO2_1_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -3,
+          "y": -3
+        }
+      }
+    },
+    {
+      "state": "shoot1",
+      "frame": "0",
+      "part": "pants",
+      "path": "Character/Pants/01060099/shoot1/0/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 5
+      },
+      "texture_key": "maple_pants_shoot1_0_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -2,
+          "y": -5
+        }
+      }
+    },
+    {
+      "state": "shoot1",
+      "frame": "1",
+      "part": "pants",
+      "path": "Character/Pants/01060099/shoot1/0/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 5
+      },
+      "texture_key": "maple_pants_shoot1_1_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -2,
+          "y": -5
+        }
+      }
+    },
+    {
+      "state": "shoot1",
+      "frame": "2",
+      "part": "pants",
+      "path": "Character/Pants/01060099/shoot1/0/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 5
+      },
+      "texture_key": "maple_pants_shoot1_2_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -2,
+          "y": -5
+        }
+      }
+    },
+    {
+      "state": "shoot2",
+      "frame": "0",
+      "part": "pants",
+      "path": "Character/Pants/01060099/shoot2/0/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 5
+      },
+      "texture_key": "maple_pants_shoot2_0_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -4,
+          "y": -4
+        }
+      }
+    },
+    {
+      "state": "shoot2",
+      "frame": "1",
+      "part": "pants",
+      "path": "Character/Pants/01060099/shoot2/0/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 5
+      },
+      "texture_key": "maple_pants_shoot2_1_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -4,
+          "y": -4
+        }
+      }
+    },
+    {
+      "state": "shoot2",
+      "frame": "2",
+      "part": "pants",
+      "path": "Character/Pants/01060099/shoot2/0/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 5
+      },
+      "texture_key": "maple_pants_shoot2_2_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -4,
+          "y": -4
+        }
+      }
+    },
+    {
+      "state": "shoot2",
+      "frame": "3",
+      "part": "pants",
+      "path": "Character/Pants/01060099/shoot2/0/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 5
+      },
+      "texture_key": "maple_pants_shoot2_3_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -4,
+          "y": -4
+        }
+      }
+    },
+    {
+      "state": "shoot2",
+      "frame": "4",
+      "part": "pants",
+      "path": "Character/Pants/01060099/shoot2/0/pants.png",
+      "origin": {
+        "x": 10,
+        "y": 5
+      },
+      "texture_key": "maple_pants_shoot2_4_pants",
+      "z": "pants",
+      "sockets": {
+        "navel": {
+          "x": -4,
+          "y": -4
         }
       }
     }
@@ -628,16 +628,19 @@
   ],
   "info": {
     "cash": 0,
-    "incMHP": 5,
-    "incPDD": 12,
+    "exItem": 1,
+    "incDEX": 1,
+    "incLUK": 3,
+    "incPDD": 51,
     "islot": "Pn",
-    "price": 500,
+    "price": 14000,
     "reqDEX": 0,
     "reqINT": 0,
     "reqJob": 8,
-    "reqLUK": 35,
-    "reqLevel": 15,
+    "reqLUK": 220,
+    "reqLevel": 80,
     "reqSTR": 0,
+    "setItemID": 365,
     "tuc": 7,
     "vslot": "Pn"
   }

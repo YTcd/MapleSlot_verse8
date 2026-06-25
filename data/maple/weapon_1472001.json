@@ -1,18 +1,18 @@
 {
-  "id": "1472150",
+  "id": "1472001",
   "type": "weapon",
   "cdnBase": "https://resource-static.msu.io/data",
   "availableStates": [
-    "stand1",
-    "stabO1",
-    "stabO2",
     "alert",
     "fly",
     "heal",
     "jump",
     "prone",
     "proneStab",
+    "stabO1",
+    "stabO2",
     "stabOF",
+    "stand1",
     "swingO1",
     "swingO2",
     "swingO3",
@@ -24,7 +24,7 @@
       "state": "stand1",
       "frame": "0",
       "part": "weapon",
-      "path": "Character/Weapon/01472150/walk1/0/weapon.png",
+      "path": "Character/Weapon/01472001/walk1/0/weapon.png",
       "origin": {
         "x": 25,
         "y": 7
@@ -42,7 +42,7 @@
       "state": "stand1",
       "frame": "1",
       "part": "weapon",
-      "path": "Character/Weapon/01472150/walk1/0/weapon.png",
+      "path": "Character/Weapon/01472001/walk1/0/weapon.png",
       "origin": {
         "x": 25,
         "y": 7
@@ -60,7 +60,7 @@
       "state": "stand1",
       "frame": "2",
       "part": "weapon",
-      "path": "Character/Weapon/01472150/walk1/0/weapon.png",
+      "path": "Character/Weapon/01472001/walk1/0/weapon.png",
       "origin": {
         "x": 25,
         "y": 7
@@ -75,82 +75,10 @@
       }
     },
     {
-      "state": "stabO1",
-      "frame": "0",
-      "part": "weapon",
-      "path": "Character/Weapon/01472150/walk1/0/weapon.png",
-      "origin": {
-        "x": 12,
-        "y": 5
-      },
-      "texture_key": "maple_weapon_stabO1_0_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "navel": {
-          "x": -21,
-          "y": 0
-        }
-      }
-    },
-    {
-      "state": "stabO1",
-      "frame": "1",
-      "part": "weapon",
-      "path": "Character/Weapon/01472150/stabO1/1/weapon.png",
-      "origin": {
-        "x": 12,
-        "y": 5
-      },
-      "texture_key": "maple_weapon_stabO1_1_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "navel": {
-          "x": 20,
-          "y": 7
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "0",
-      "part": "weapon",
-      "path": "Character/Weapon/01472150/stabO2/0/weapon.png",
-      "origin": {
-        "x": 12,
-        "y": 5
-      },
-      "texture_key": "maple_weapon_stabO2_0_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "navel": {
-          "x": -18,
-          "y": 11
-        }
-      }
-    },
-    {
-      "state": "stabO2",
-      "frame": "1",
-      "part": "weapon",
-      "path": "Character/Weapon/01472150/stabO1/1/weapon.png",
-      "origin": {
-        "x": 12,
-        "y": 5
-      },
-      "texture_key": "maple_weapon_stabO2_1_weapon",
-      "z": "weaponOverGlove",
-      "sockets": {
-        "navel": {
-          "x": 18,
-          "y": 7
-        }
-      }
-    },
-    {
       "state": "swingO1",
       "frame": "0",
       "part": "weapon",
-      "path": "Character/Weapon/01472150/swingO1/1/weapon.png",
+      "path": "Character/Weapon/01472001/swingO1/1/weapon.png",
       "origin": {
         "x": 11,
         "y": 5
@@ -168,7 +96,7 @@
       "state": "swingO1",
       "frame": "1",
       "part": "weapon",
-      "path": "Character/Weapon/01472150/swingO1/2/weapon.png",
+      "path": "Character/Weapon/01472001/swingO1/2/weapon.png",
       "origin": {
         "x": 11,
         "y": 5
@@ -186,7 +114,7 @@
       "state": "swingO2",
       "frame": "0",
       "part": "weapon",
-      "path": "Character/Weapon/01472150/swingO2/0/weapon.png",
+      "path": "Character/Weapon/01472001/swingO2/0/weapon.png",
       "origin": {
         "x": 12,
         "y": 5
@@ -204,7 +132,7 @@
       "state": "swingO2",
       "frame": "1",
       "part": "weapon",
-      "path": "Character/Weapon/01472150/swingO2/1/weapon.png",
+      "path": "Character/Weapon/01472001/swingO2/1/weapon.png",
       "origin": {
         "x": 12,
         "y": 5
@@ -222,7 +150,7 @@
       "state": "swingO2",
       "frame": "2",
       "part": "weapon",
-      "path": "Character/Weapon/01472150/swingO2/2/weapon.png",
+      "path": "Character/Weapon/01472001/swingO2/2/weapon.png",
       "origin": {
         "x": 12,
         "y": 5
@@ -240,7 +168,7 @@
       "state": "swingO3",
       "frame": "0",
       "part": "weapon",
-      "path": "Character/Weapon/01472150/swingO3/0/weapon.png",
+      "path": "Character/Weapon/01472001/swingO3/0/weapon.png",
       "origin": {
         "x": 12,
         "y": 5
@@ -258,7 +186,7 @@
       "state": "swingO3",
       "frame": "1",
       "part": "weapon",
-      "path": "Character/Weapon/01472150/swingO3/1/weapon.png",
+      "path": "Character/Weapon/01472001/swingO3/1/weapon.png",
       "origin": {
         "x": 12,
         "y": 5
@@ -269,6 +197,78 @@
         "navel": {
           "x": 12,
           "y": 5
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "0",
+      "part": "weapon",
+      "path": "Character/Weapon/01472001/walk1/0/weapon.png",
+      "origin": {
+        "x": 12,
+        "y": 5
+      },
+      "texture_key": "maple_weapon_stabO1_0_weapon",
+      "z": "weaponOverGlove",
+      "sockets": {
+        "navel": {
+          "x": -21,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "1",
+      "part": "weapon",
+      "path": "Character/Weapon/01472001/stabO1/1/weapon.png",
+      "origin": {
+        "x": 12,
+        "y": 5
+      },
+      "texture_key": "maple_weapon_stabO1_1_weapon",
+      "z": "weaponOverGlove",
+      "sockets": {
+        "navel": {
+          "x": 20,
+          "y": 7
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "0",
+      "part": "weapon",
+      "path": "Character/Weapon/01472001/stabO2/0/weapon.png",
+      "origin": {
+        "x": 12,
+        "y": 5
+      },
+      "texture_key": "maple_weapon_stabO2_0_weapon",
+      "z": "weaponOverGlove",
+      "sockets": {
+        "navel": {
+          "x": -18,
+          "y": 11
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "1",
+      "part": "weapon",
+      "path": "Character/Weapon/01472001/stabO1/1/weapon.png",
+      "origin": {
+        "x": 12,
+        "y": 5
+      },
+      "texture_key": "maple_weapon_stabO2_1_weapon",
+      "z": "weaponOverGlove",
+      "sockets": {
+        "navel": {
+          "x": 18,
+          "y": 7
         }
       }
     }
@@ -436,7 +436,7 @@
     "incPAD": 12,
     "incPDD": 1,
     "islot": "Wp",
-    "price": 1,
+    "price": 700,
     "reqDEX": 0,
     "reqINT": 0,
     "reqJob": 8,
@@ -445,7 +445,6 @@
     "reqSTR": 0,
     "sfx": "tGlove",
     "stand": 1,
-    "tradeBlock": 1,
     "tuc": 7,
     "vslot": "Wp",
     "walk": 1

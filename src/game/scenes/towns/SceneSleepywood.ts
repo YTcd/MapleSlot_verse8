@@ -17,7 +17,9 @@ import bodyData from "../../../../data/maple/body_2000.json";
 import headData from "../../../../data/maple/head_12000.json";
 import faceData from "../../../../data/maple/face_20000.json";
 import hairData from "../../../../data/maple/hair_30000.json";
-import weaponData from "../../../../data/maple/weapon_1472263.json";
+import weaponData from "../../../../data/maple/weapon_1472001.json";
+import coatData from "../../../../data/maple/coat_1040110.json";
+import pantsData from "../../../../data/maple/pants_1060099.json";
 
 const CELL = 100;
 const GRID_WIDTH = CASCADE_REEL_COUNT * CELL;
@@ -63,7 +65,7 @@ export class SceneSleepywood extends BaseScene {
       this.load.image(key, `${mob.cdnBase}/${mob.renderPlan[0].path}`);
     }
 
-    for (const d of [bodyData, headData, faceData, hairData, weaponData]) {
+    for (const d of [bodyData, headData, faceData, hairData, weaponData, coatData, pantsData]) {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
@@ -74,7 +76,7 @@ export class SceneSleepywood extends BaseScene {
       this.load.image(`sleepy_boss_die_${f}`, BOSS_DIE_URL.replace("{frame}", String(f)));
     }
     this.load.image("sleepy_boss_hit", BOSS_HIT_URL);
-    this.load.image("knife_wolbi", KNIFE_URL);
+    this.load.image("sleepy_knife", KNIFE_URL);
     this.load.audio("bgm_sleepywood", BGM_URL);
     this.load.audio("sfx_win", WIN_SFX_URL);
     this.load.once("complete", () => { this.audioLoaded = true; });
@@ -210,6 +212,8 @@ export class SceneSleepywood extends BaseScene {
       ...headData.render_plan,
       ...faceData.render_plan,
       ...hairData.render_plan,
+      ...coatData.render_plan,
+      ...pantsData.render_plan,
       ...weaponData.render_plan,
     ];
     this.player = new MapleSprite(this, gridX + charPad, displayAreaMidY, merged, {
@@ -297,8 +301,9 @@ export class SceneSleepywood extends BaseScene {
     if (this.attackQueue <= 0) return;
     this.attackQueue--;
     this.isAttacking = true;
-    this.shootToggle = !this.shootToggle;
-    this.player.attack(this.shootToggle ? 1 : 0);
+    const actions = ["swingO1", "swingO2", "swingO3"];
+    const action = actions[Math.floor(Math.random() * actions.length)];
+    this.player.setAction(action);
     this.time.delayedCall(600, () => {
       this.player.stand();
       this.isAttacking = false;
@@ -312,7 +317,7 @@ export class SceneSleepywood extends BaseScene {
     const bx = this.bossImg.x - 30;
     const by = this.bossImg.y;
 
-    const knife = this.add.image(px, py, "knife_wolbi").setDepth(10);
+    const knife = this.add.image(px, py, "sleepy_knife").setDepth(10);
 
     this.tweens.add({
       targets: knife,

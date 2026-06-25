@@ -76,7 +76,7 @@ export class SceneLudibrium extends BaseScene {
       this.load.image(`ludi_boss_stand_${f}`, BOSS_URL.replace("{frame}", String(f)));
     }
     this.load.image("ludi_boss_hit", BOSS_HIT_URL);
-    this.load.image("knife_wolbi", KNIFE_URL);
+    this.load.image("ludi_knife", KNIFE_URL);
     this.load.audio("bgm_fantasticthinking", BGM_URL);
     this.load.audio("sfx_win", WIN_SFX_URL);
     this.load.once("complete", () => { this.audioLoaded = true; });
@@ -291,8 +291,9 @@ export class SceneLudibrium extends BaseScene {
     if (this.attackQueue <= 0) return;
     this.attackQueue--;
     this.isAttacking = true;
-    this.shootToggle = !this.shootToggle;
-    this.player.attack(this.shootToggle ? 1 : 0);
+    const actions = ["swingO1", "swingO2", "swingO3"];
+    const action = actions[Math.floor(Math.random() * actions.length)];
+    this.player.setAction(action);
     this.time.delayedCall(600, () => {
       this.player.stand();
       this.isAttacking = false;
@@ -306,7 +307,7 @@ export class SceneLudibrium extends BaseScene {
     const bx = this.bossImg.x - 30;
     const by = this.bossImg.y;
 
-    const knife = this.add.image(px, py, "knife_wolbi").setDepth(10);
+    const knife = this.add.image(px, py, "ludi_knife").setDepth(10);
 
     this.tweens.add({
       targets: knife,

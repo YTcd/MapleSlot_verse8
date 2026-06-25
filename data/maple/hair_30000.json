@@ -149,6 +149,330 @@
       }
     },
     {
+      "state": "swingO1",
+      "frame": "0",
+      "part": "hair",
+      "path": "Character/Hair/00030000/default/hair.png",
+      "origin": {
+        "x": 14,
+        "y": 12
+      },
+      "texture_key": "maple_hair_swingO1_0_hair",
+      "z": "hair",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "0",
+      "part": "hairOverHead",
+      "path": "Character/Hair/00030000/default/hairOverHead.png",
+      "origin": {
+        "x": 15,
+        "y": 14
+      },
+      "texture_key": "maple_hair_swingO1_0_hairOverHead",
+      "z": "hairOverHead",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "1",
+      "part": "hair",
+      "path": "Character/Hair/00030000/default/hair.png",
+      "origin": {
+        "x": 14,
+        "y": 12
+      },
+      "texture_key": "maple_hair_swingO1_1_hair",
+      "z": "hair",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "1",
+      "part": "hairOverHead",
+      "path": "Character/Hair/00030000/default/hairOverHead.png",
+      "origin": {
+        "x": 15,
+        "y": 14
+      },
+      "texture_key": "maple_hair_swingO1_1_hairOverHead",
+      "z": "hairOverHead",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "2",
+      "part": "hair",
+      "path": "Character/Hair/00030000/default/hair.png",
+      "origin": {
+        "x": 14,
+        "y": 12
+      },
+      "texture_key": "maple_hair_swingO1_2_hair",
+      "z": "hair",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "2",
+      "part": "hairOverHead",
+      "path": "Character/Hair/00030000/default/hairOverHead.png",
+      "origin": {
+        "x": 15,
+        "y": 14
+      },
+      "texture_key": "maple_hair_swingO1_2_hairOverHead",
+      "z": "hairOverHead",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "0",
+      "part": "hair",
+      "path": "Character/Hair/00030000/default/hair.png",
+      "origin": {
+        "x": 14,
+        "y": 12
+      },
+      "texture_key": "maple_hair_swingO2_0_hair",
+      "z": "hair",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "0",
+      "part": "hairOverHead",
+      "path": "Character/Hair/00030000/default/hairOverHead.png",
+      "origin": {
+        "x": 15,
+        "y": 14
+      },
+      "texture_key": "maple_hair_swingO2_0_hairOverHead",
+      "z": "hairOverHead",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "1",
+      "part": "hair",
+      "path": "Character/Hair/00030000/default/hair.png",
+      "origin": {
+        "x": 14,
+        "y": 12
+      },
+      "texture_key": "maple_hair_swingO2_1_hair",
+      "z": "hair",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "1",
+      "part": "hairOverHead",
+      "path": "Character/Hair/00030000/default/hairOverHead.png",
+      "origin": {
+        "x": 15,
+        "y": 14
+      },
+      "texture_key": "maple_hair_swingO2_1_hairOverHead",
+      "z": "hairOverHead",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "2",
+      "part": "hair",
+      "path": "Character/Hair/00030000/default/hair.png",
+      "origin": {
+        "x": 14,
+        "y": 12
+      },
+      "texture_key": "maple_hair_swingO2_2_hair",
+      "z": "hair",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "2",
+      "part": "hairOverHead",
+      "path": "Character/Hair/00030000/default/hairOverHead.png",
+      "origin": {
+        "x": 15,
+        "y": 14
+      },
+      "texture_key": "maple_hair_swingO2_2_hairOverHead",
+      "z": "hairOverHead",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "0",
+      "part": "hair",
+      "path": "Character/Hair/00030000/default/hair.png",
+      "origin": {
+        "x": 14,
+        "y": 12
+      },
+      "texture_key": "maple_hair_swingO3_0_hair",
+      "z": "hair",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "0",
+      "part": "hairOverHead",
+      "path": "Character/Hair/00030000/default/hairOverHead.png",
+      "origin": {
+        "x": 15,
+        "y": 14
+      },
+      "texture_key": "maple_hair_swingO3_0_hairOverHead",
+      "z": "hairOverHead",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "1",
+      "part": "hair",
+      "path": "Character/Hair/00030000/default/hair.png",
+      "origin": {
+        "x": 14,
+        "y": 12
+      },
+      "texture_key": "maple_hair_swingO3_1_hair",
+      "z": "hair",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "1",
+      "part": "hairOverHead",
+      "path": "Character/Hair/00030000/default/hairOverHead.png",
+      "origin": {
+        "x": 15,
+        "y": 14
+      },
+      "texture_key": "maple_hair_swingO3_1_hairOverHead",
+      "z": "hairOverHead",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "2",
+      "part": "hair",
+      "path": "Character/Hair/00030000/default/hair.png",
+      "origin": {
+        "x": 14,
+        "y": 12
+      },
+      "texture_key": "maple_hair_swingO3_2_hair",
+      "z": "hair",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "2",
+      "part": "hairOverHead",
+      "path": "Character/Hair/00030000/default/hairOverHead.png",
+      "origin": {
+        "x": 15,
+        "y": 14
+      },
+      "texture_key": "maple_hair_swingO3_2_hairOverHead",
+      "z": "hairOverHead",
+      "sockets": {
+        "brow": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
       "state": "stabO1",
       "frame": "0",
       "part": "hair",
