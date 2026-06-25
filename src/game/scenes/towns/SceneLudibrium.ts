@@ -7,6 +7,7 @@ import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/Slot
 import { preloadMobTexturesFor } from "../../slots/SlotSymbolData";
 import { LUDIBRIUM_MOB_SYMBOLS } from "../../slots/LudibriumSymbolData";
 import { updateBalanceOnServer, fetchBossHP, saveBossHP, markBossDead } from "../../utils/ServerBridge";
+import { preloadDamageFont, showDamageNumber } from "../../utils/DamageFont";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
@@ -25,7 +26,7 @@ const WIN_SFX_URL = "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc
 const BOSS_URL = "https://resource-static.msu.io/data/Mob/2600631/stand/{frame}.png";
 const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/2600631/hit1/0.png";
 const BOSS_STAND_FRAMES = 6;
-const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070001/info/icon.png";
+const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070006/info/icon.png";
 
 const LUDI_PAYLINES = [
   [1,1,1,1,1],
@@ -64,6 +65,7 @@ export class SceneLudibrium extends BaseScene {
 
   preload() {
     this.preloadTopBarIcons();
+    preloadDamageFont(this);
     preloadMobTexturesFor(this, LUDIBRIUM_MOB_SYMBOLS, "ludi_");
 
     for (const d of [bodyData, headData, faceData, hairData, weaponData]) {
@@ -319,6 +321,10 @@ export class SceneLudibrium extends BaseScene {
       },
       onComplete: () => {
         knife.destroy();
+        const headX = this.bossImg.x - this.bossImg.displayWidth / 2;
+        const headY = this.bossImg.y - this.bossImg.displayHeight / 2;
+        showDamageNumber(this, headX, headY, damage);
+
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
         saveBossHP("Papulatus", this.bossHP);

@@ -6,13 +6,16 @@ import { SlotWinPresentation } from "../../slots/SlotWinPresentation";
 import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP, PAYLINES } from "../../slots/SlotConstants";
 import { preloadMobTextures } from "../../slots/SlotSymbolData";
 import { updateBalanceOnServer, fetchBossHP, saveBossHP, markBossDead } from "../../utils/ServerBridge";
+import { preloadDamageFont, showDamageNumber } from "../../utils/DamageFont";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
 import headData from "../../../../data/maple/head_12000.json";
 import faceData from "../../../../data/maple/face_20000.json";
 import hairData from "../../../../data/maple/hair_30000.json";
-import weaponData from "../../../../data/maple/weapon_1472263.json";
+import weaponData from "../../../../data/maple/weapon_1472150.json";
+import coatData from "../../../../data/maple/coat_1040165.json";
+import pantsData from "../../../../data/maple/pants_1060024.json";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
 const GRID_WIDTH = REEL_COUNT * CELL - SYMBOL_GAP;
@@ -24,7 +27,7 @@ const WIN_SFX_URL = "https://agent8-games.verse8.io/0xbd5fca74691be09be4a11386cc
 const BOSS_URL = "https://resource-static.msu.io/data/Mob/9300191/move/{frame}.png";
 const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/9300191/hit1/0.png";
 const BOSS_MOVE_FRAMES = 5;
-const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070001/info/icon.png";
+const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070000/info/icon.png";
 
 export class SceneHenesys extends BaseScene {
   private slotMachine!: SlotMachine;
@@ -50,9 +53,10 @@ export class SceneHenesys extends BaseScene {
 
   preload() {
     this.preloadTopBarIcons();
+    preloadDamageFont(this);
     preloadMobTextures(this);
 
-    for (const d of [bodyData, headData, faceData, hairData, weaponData]) {
+    for (const d of [bodyData, headData, faceData, hairData, weaponData, coatData, pantsData]) {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
@@ -191,6 +195,8 @@ export class SceneHenesys extends BaseScene {
       ...faceData.render_plan,
       ...hairData.render_plan,
       ...weaponData.render_plan,
+      ...coatData.render_plan,
+      ...pantsData.render_plan,
     ];
     this.player = new MapleSprite(this, gridX + charPad, displayAreaMidY, merged, {
       zmap: bodyData.zmap,
@@ -309,6 +315,9 @@ export class SceneHenesys extends BaseScene {
       },
       onComplete: () => {
         knife.destroy();
+        const headX = this.bossImg.x - this.bossImg.displayWidth / 2;
+        const headY = this.bossImg.y - this.bossImg.displayHeight / 2;
+        showDamageNumber(this, headX, headY, damage);
 
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);

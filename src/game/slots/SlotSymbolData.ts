@@ -74,12 +74,15 @@ export const MOB_SYMBOLS: MobSymbolDef[] = [
     ],
   },
   {
-    mobId: "2220100", symbolIndex: 6, label: "Blue Mushroom",
-    borderColor: 0x4488dd,
-    cdnBase: CDN, frameCount: 2,
+    mobId: "9300191", symbolIndex: 6, label: "MushMom",
+    borderColor: 0xcc3333,
+    cdnBase: CDN, frameCount: 5,
     renderPlan: [
-      { path: "Mob/2220100/stand/0.png", delay: 180, state: "stand", frame: "0", origin: { x: 27, y: 58 } },
-      { path: "Mob/2220100/move/2.png", delay: 180, state: "stand", frame: "1", origin: { x: 27, y: 55 } },
+      { path: "Mob/9300191/move/0.png", delay: 180, state: "stand", frame: "0", origin: { x: 27, y: 58 } },
+      { path: "Mob/9300191/move/1.png", delay: 180, state: "stand", frame: "1", origin: { x: 27, y: 58 } },
+      { path: "Mob/9300191/move/2.png", delay: 180, state: "stand", frame: "2", origin: { x: 27, y: 58 } },
+      { path: "Mob/9300191/move/3.png", delay: 180, state: "stand", frame: "3", origin: { x: 27, y: 58 } },
+      { path: "Mob/9300191/move/4.png", delay: 180, state: "stand", frame: "4", origin: { x: 27, y: 58 } },
     ],
   },
 ];

@@ -1,0 +1,83 @@
+{
+  "id": "1472150",
+  "type": "weapon",
+  "cdnBase": "https://resource-static.msu.io/data",
+  "availableStates": [
+    "stand1",
+    "stabO1",
+    "stabO2"
+  ],
+  "render_plan": [
+    {
+      "state": "stand1",
+      "frame": "0",
+      "part": "weapon",
+      "path": "Character/Weapon/01472150/stand1/0/weapon.png",
+      "origin": { "x": 17, "y": 14 },
+      "texture_key": "maple_weapon_1472150_stand1_0_weapon",
+      "z": "weaponOverGlove",
+      "sockets": { "hand": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stand1",
+      "frame": "1",
+      "part": "weapon",
+      "path": "Character/Weapon/01472150/stand1/1/weapon.png",
+      "origin": { "x": 17, "y": 14 },
+      "texture_key": "maple_weapon_1472150_stand1_1_weapon",
+      "z": "weaponOverGlove",
+      "sockets": { "hand": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO1",
+      "frame": "0",
+      "part": "weapon",
+      "path": "Character/Weapon/01472150/stabO1/0/weapon.png",
+      "origin": { "x": 13, "y": 13 },
+      "texture_key": "maple_weapon_1472150_stabO1_0_weapon",
+      "z": "weaponOverGlove",
+      "sockets": { "hand": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO1",
+      "frame": "1",
+      "part": "weapon",
+      "path": "Character/Weapon/01472150/stabO1/1/weapon.png",
+      "origin": { "x": 9, "y": 9 },
+      "texture_key": "maple_weapon_1472150_stabO1_1_weapon",
+      "z": "weaponOverGlove",
+      "sockets": { "hand": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO2",
+      "frame": "0",
+      "part": "weapon",
+      "path": "Character/Weapon/01472150/stabO2/0/weapon.png",
+      "origin": { "x": 14, "y": 5 },
+      "texture_key": "maple_weapon_1472150_stabO2_0_weapon",
+      "z": "weaponOverGlove",
+      "sockets": { "hand": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO2",
+      "frame": "1",
+      "part": "weapon",
+      "path": "Character/Weapon/01472150/stabO2/1/weapon.png",
+      "origin": { "x": 11, "y": 9 },
+      "texture_key": "maple_weapon_1472150_stabO2_1_weapon",
+      "z": "weaponOverGlove",
+      "sockets": { "hand": { "x": 0, "y": 0 } }
+    }
+  ],
+  "zmap": null,
+  "info": {
+    "attack": 7,
+    "attackSpeed": 4,
+    "islot": "Wp",
+    "reqJob": 4,
+    "sfx": "tGlove",
+    "stand": 1,
+    "vslot": "Wp",
+    "walk": 1
+  }
+}

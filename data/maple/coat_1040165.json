@@ -1,0 +1,97 @@
+{
+  "id": "1040165",
+  "type": "coat",
+  "cdnBase": "https://resource-static.msu.io/data",
+  "availableStates": [
+    "stand1",
+    "stabO1",
+    "stabO2"
+  ],
+  "render_plan": [
+    {
+      "state": "stand1",
+      "frame": "0",
+      "part": "mailChest",
+      "path": "Character/Coat/01040165/stand1/0/mailChest.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_coat_1040165_stand1_0_mailChest",
+      "z": "mailChest",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stand1",
+      "frame": "1",
+      "part": "mailChest",
+      "path": "Character/Coat/01040165/stand1/1/mailChest.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_coat_1040165_stand1_1_mailChest",
+      "z": "mailChest",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stand1",
+      "frame": "0",
+      "part": "mailArm",
+      "path": "Character/Coat/01040165/stand1/0/mailArm.png",
+      "origin": { "x": 26, "y": 26 },
+      "texture_key": "maple_coat_1040165_stand1_0_mailArm",
+      "z": "mailArm",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stand1",
+      "frame": "1",
+      "part": "mailArm",
+      "path": "Character/Coat/01040165/stand1/1/mailArm.png",
+      "origin": { "x": 26, "y": 26 },
+      "texture_key": "maple_coat_1040165_stand1_1_mailArm",
+      "z": "mailArm",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO1",
+      "frame": "0",
+      "part": "mailChest",
+      "path": "Character/Coat/01040165/stabO1/0/mailChest.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_coat_1040165_stabO1_0_mailChest",
+      "z": "mailChest",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO1",
+      "frame": "1",
+      "part": "mailChest",
+      "path": "Character/Coat/01040165/stabO1/1/mailChest.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_coat_1040165_stabO1_1_mailChest",
+      "z": "mailChest",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO2",
+      "frame": "0",
+      "part": "mailChest",
+      "path": "Character/Coat/01040165/stabO2/0/mailChest.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_coat_1040165_stabO2_0_mailChest",
+      "z": "mailChest",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO2",
+      "frame": "1",
+      "part": "mailChest",
+      "path": "Character/Coat/01040165/stabO2/1/mailChest.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_coat_1040165_stabO2_1_mailChest",
+      "z": "mailChest",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    }
+  ],
+  "zmap": null,
+  "info": {
+    "islot": "Mc",
+    "vslot": "Mc"
+  }
+}

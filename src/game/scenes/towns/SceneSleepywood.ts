@@ -10,6 +10,7 @@ import {
   CASCADE_PAYLINES,
 } from "../../slots/CascadeSlotConstants";
 import { updateBalanceOnServer, fetchBossHP, saveBossHP, markBossDead } from "../../utils/ServerBridge";
+import { preloadDamageFont, showDamageNumber } from "../../utils/DamageFont";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
@@ -30,7 +31,7 @@ const BOSS_HIT_URL = "https://resource-static.msu.io/data/Mob/8130100/hit1/0.png
 const BOSS_DIE_URL = "https://resource-static.msu.io/data/Mob/8130100/die1/{frame}.png";
 const BOSS_STAND_FRAMES = 2;
 const BOSS_DIE_FRAMES = 3;
-const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070001/info/icon.png";
+const KNIFE_URL = "https://resource-static.msu.io/data/Item/Consume/0207/02070003/info/icon.png";
 
 export class SceneSleepywood extends BaseScene {
   private slotMachine!: CascadeSlotMachine;
@@ -55,6 +56,7 @@ export class SceneSleepywood extends BaseScene {
 
   preload() {
     this.preloadTopBarIcons();
+    preloadDamageFont(this);
 
     for (const mob of SLEEPYWOOD_MOB_SYMBOLS) {
       const key = `sleepy_mob_${mob.symbolIndex}`;
@@ -325,6 +327,10 @@ export class SceneSleepywood extends BaseScene {
       },
       onComplete: () => {
         knife.destroy();
+        const headX = this.bossImg.x - this.bossImg.displayWidth / 2;
+        const headY = this.bossImg.y - this.bossImg.displayHeight / 2;
+        showDamageNumber(this, headX, headY, damage);
+
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
         saveBossHP("JrBalrog", this.bossHP);

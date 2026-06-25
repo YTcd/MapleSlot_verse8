@@ -1,0 +1,77 @@
+{
+  "id": "1060024",
+  "type": "pants",
+  "cdnBase": "https://resource-static.msu.io/data",
+  "availableStates": [
+    "stand1",
+    "stabO1",
+    "stabO2"
+  ],
+  "render_plan": [
+    {
+      "state": "stand1",
+      "frame": "0",
+      "part": "pants",
+      "path": "Character/Pants/01060024/stand1/0/pants.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_pants_1060024_stand1_0_pants",
+      "z": "pants",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stand1",
+      "frame": "1",
+      "part": "pants",
+      "path": "Character/Pants/01060024/stand1/1/pants.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_pants_1060024_stand1_1_pants",
+      "z": "pants",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO1",
+      "frame": "0",
+      "part": "pants",
+      "path": "Character/Pants/01060024/stabO1/0/pants.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_pants_1060024_stabO1_0_pants",
+      "z": "pants",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO1",
+      "frame": "1",
+      "part": "pants",
+      "path": "Character/Pants/01060024/stabO1/1/pants.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_pants_1060024_stabO1_1_pants",
+      "z": "pants",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO2",
+      "frame": "0",
+      "part": "pants",
+      "path": "Character/Pants/01060024/stabO2/0/pants.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_pants_1060024_stabO2_0_pants",
+      "z": "pants",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    },
+    {
+      "state": "stabO2",
+      "frame": "1",
+      "part": "pants",
+      "path": "Character/Pants/01060024/stabO2/1/pants.png",
+      "origin": { "x": 36, "y": 55 },
+      "texture_key": "maple_pants_1060024_stabO2_1_pants",
+      "z": "pants",
+      "sockets": { "navel": { "x": 0, "y": 0 } }
+    }
+  ],
+  "zmap": null,
+  "info": {
+    "islot": "Pn",
+    "vslot": "Pn"
+  }
+}
