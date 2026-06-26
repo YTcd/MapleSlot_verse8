@@ -10,7 +10,7 @@ import {
   CASCADE_PAYLINES,
 } from "../../slots/CascadeSlotConstants";
 import { updateBalanceOnServer, fetchBossHP, saveBossHP, markBossDead } from "../../utils/ServerBridge";
-import { preloadDamageFont, showDamageNumber } from "../../utils/DamageFont";
+import { preloadDamageFont, showDamageNumber, showCriticalNumber } from "../../utils/DamageFont";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
@@ -20,6 +20,7 @@ import hairData from "../../../../data/maple/hair_30000.json";
 import weaponData from "../../../../data/maple/weapon_1472001.json";
 import coatData from "../../../../data/maple/coat_1040110.json";
 import pantsData from "../../../../data/maple/pants_1060099.json";
+import capData from "../../../../data/maple/cap_1002357.json";
 
 const CELL = 100;
 const GRID_WIDTH = CASCADE_REEL_COUNT * CELL;
@@ -65,7 +66,7 @@ export class SceneSleepywood extends BaseScene {
       this.load.image(key, `${mob.cdnBase}/${mob.renderPlan[0].path}`);
     }
 
-    for (const d of [bodyData, headData, faceData, hairData, weaponData, coatData, pantsData]) {
+    for (const d of [bodyData, headData, faceData, hairData, weaponData, coatData, pantsData, capData]) {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
@@ -147,7 +148,8 @@ export class SceneSleepywood extends BaseScene {
         this.slotUI.showWin(win.totalWin);
         if (this.bossAlive) {
           this.queueAttack();
-          this.throwKnife(win.totalWin);
+          const isCrit = win.lineWins.some(lw => lw.symbol === 6);
+          this.throwKnife(win.totalWin, isCrit);
         }
       }
     });
@@ -212,6 +214,7 @@ export class SceneSleepywood extends BaseScene {
       ...headData.render_plan,
       ...faceData.render_plan,
       ...hairData.render_plan,
+      ...capData.render_plan,
       ...coatData.render_plan,
       ...pantsData.render_plan,
       ...weaponData.render_plan,
@@ -219,6 +222,7 @@ export class SceneSleepywood extends BaseScene {
     this.player = new MapleSprite(this, gridX + charPad, displayAreaMidY, merged, {
       zmap: bodyData.zmap,
       weapon: weaponData.info,
+      cap: capData.info,
       race: "human",
       facing: "right",
     });
@@ -311,7 +315,7 @@ export class SceneSleepywood extends BaseScene {
     });
   }
 
-  private throwKnife(damage: number) {
+  private throwKnife(damage: number, isCrit: boolean) {
     const px = this.player.x + 40;
     const py = this.player.y - 20;
     const bx = this.bossImg.x - 30;
@@ -334,7 +338,11 @@ export class SceneSleepywood extends BaseScene {
         knife.destroy();
         const headX = this.bossImg.x - this.bossImg.displayWidth / 2;
         const headY = this.bossImg.y - this.bossImg.displayHeight / 2;
-        showDamageNumber(this, headX, headY, damage);
+        if (isCrit) {
+          showCriticalNumber(this, headX, headY, damage);
+        } else {
+          showDamageNumber(this, headX, headY, damage);
+        }
 
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);

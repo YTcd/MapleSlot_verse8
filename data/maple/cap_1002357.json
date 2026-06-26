@@ -1,0 +1,583 @@
+{
+  "id": "1002357",
+  "type": "cap",
+  "cdnBase": "https://resource-static.msu.io/data",
+  "availableStates": [
+    "stand1",
+    "swingO1",
+    "swingO2",
+    "swingO3",
+    "stabO1",
+    "stabO2",
+    "shoot1",
+    "shoot2",
+    "walk1",
+    "alert",
+    "jump",
+    "ladder",
+    "rope",
+    "prone",
+    "heal",
+    "fly"
+  ],
+  "zmap": [
+    "Bd",
+    "Hd",
+    "Hr",
+    "Fc",
+    "At",
+    "backCap",
+    "capBelowAccessory",
+    "Ma",
+    "Pn",
+    "So",
+    "Wp"
+  ],
+  "info": {
+    "vslot": "CpH1H2H3H4H5HfHsHbAe",
+    "reqLevel": 50,
+    "reqJob": 0
+  },
+  "render_plan": [
+    {
+      "state": "stand1",
+      "frame": "0",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "0",
+      "part": "backCap",
+      "path": "Character/Cap/01002357/backDefault/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "backCap",
+      "texture_key": "maple_cap_1002357_back",
+      "sockets": {
+        "brow": {
+          "x": 5,
+          "y": -5
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "1",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "1",
+      "part": "backCap",
+      "path": "Character/Cap/01002357/backDefault/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "backCap",
+      "texture_key": "maple_cap_1002357_back",
+      "sockets": {
+        "brow": {
+          "x": 5,
+          "y": -5
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "2",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "2",
+      "part": "backCap",
+      "path": "Character/Cap/01002357/backDefault/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "backCap",
+      "texture_key": "maple_cap_1002357_back",
+      "sockets": {
+        "brow": {
+          "x": 5,
+          "y": -5
+        }
+      }
+    },
+    {
+      "state": "stand2",
+      "frame": "0",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "stand2",
+      "frame": "1",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "stand2",
+      "frame": "2",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "0",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "1",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "2",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "0",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "1",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "2",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "0",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "1",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "2",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "0",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "1",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "0",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "1",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "shoot1",
+      "frame": "0",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "shoot1",
+      "frame": "1",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "shoot1",
+      "frame": "2",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "shoot2",
+      "frame": "0",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "shoot2",
+      "frame": "1",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "shoot2",
+      "frame": "2",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "shoot2",
+      "frame": "3",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    },
+    {
+      "state": "shoot2",
+      "frame": "4",
+      "part": "capBelowAccessory",
+      "path": "Character/Cap/01002357/default/default.png",
+      "origin": {
+        "x": 15,
+        "y": 25
+      },
+      "z": "capBelowAccessory",
+      "texture_key": "maple_cap_1002357_front",
+      "sockets": {
+        "brow": {
+          "x": 6,
+          "y": -2
+        }
+      }
+    }
+  ]
+}

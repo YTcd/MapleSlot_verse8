@@ -41,8 +41,8 @@ git update-ref refs/heads/master origin/master
 # Load remote's tree into index without touching working tree
 git read-tree HEAD
 
-# Stage working tree changes relative to remote tree
-git add -A
+# Stage working tree changes relative to remote tree (no deletions)
+git add .
 
 # Commit only the actual diff
 git commit -m "local changes" --allow-empty 2>/dev/null || true

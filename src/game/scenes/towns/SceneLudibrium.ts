@@ -7,7 +7,7 @@ import { SlotState, REEL_COUNT, SYMBOL_SIZE, SYMBOL_GAP } from "../../slots/Slot
 import { preloadMobTexturesFor } from "../../slots/SlotSymbolData";
 import { LUDIBRIUM_MOB_SYMBOLS } from "../../slots/LudibriumSymbolData";
 import { updateBalanceOnServer, fetchBossHP, saveBossHP, markBossDead } from "../../utils/ServerBridge";
-import { preloadDamageFont, showDamageNumber } from "../../utils/DamageFont";
+import { preloadDamageFont, showDamageNumber, showCriticalNumber } from "../../utils/DamageFont";
 import { MapleSprite, queueRenderPlan } from "../../../__system__/maple";
 import { BossHPBar } from "../../slots/BossHPBar";
 import bodyData from "../../../../data/maple/body_2000.json";
@@ -146,7 +146,8 @@ export class SceneLudibrium extends BaseScene {
         this.winPresentation.start(win.lineWins);
         if (this.bossAlive) {
           this.queueAttack();
-          this.throwKnife(win.totalWin);
+          const isCrit = win.lineWins.some(lw => lw.symbol === 6);
+          this.throwKnife(win.totalWin, isCrit);
         }
       }
     });
@@ -301,7 +302,7 @@ export class SceneLudibrium extends BaseScene {
     });
   }
 
-  private throwKnife(damage: number) {
+  private throwKnife(damage: number, isCrit: boolean) {
     const px = this.player.x + 40;
     const py = this.player.y - 20;
     const bx = this.bossImg.x - 30;
@@ -324,7 +325,11 @@ export class SceneLudibrium extends BaseScene {
         knife.destroy();
         const headX = this.bossImg.x - this.bossImg.displayWidth / 2;
         const headY = this.bossImg.y - this.bossImg.displayHeight / 2;
-        showDamageNumber(this, headX, headY, damage);
+        if (isCrit) {
+          showCriticalNumber(this, headX, headY, damage);
+        } else {
+          showDamageNumber(this, headX, headY, damage);
+        }
 
         this.bossHP = Math.max(0, this.bossHP - damage);
         this.bossHPBar.setHP(this.bossHP, this.bossMaxHP);
