@@ -225,3 +225,5 @@ Henesys slot machine town scene with:
 - `data/maple/coat_1040165.json`: Dark Nightshift coat render plan (30 entries, stand1/stabO1/stabO2/shoot1/shoot2)
 - `data/maple/pants_1060099.json`: Dark Pirate Pants render plan (24 entries, stand1/swingO1/swingO2/swingO3/stabO1/stabO2/shoot1/shoot2)
 - `data/maple/pants_1060024.json`: Dark Nightshift Pants render plan (15 entries, stand1/stabO1/stabO2/shoot1/shoot2)
+
+- `data/maple/shoes_1072113.json`: Dark Trigger shoes render plan (16 entries, stand1/swingO1/swingO2/swingO3/stabO1/stabO2)

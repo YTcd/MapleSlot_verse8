@@ -14,7 +14,11 @@ import bodyData from "../../../../data/maple/body_2000.json";
 import headData from "../../../../data/maple/head_12000.json";
 import faceData from "../../../../data/maple/face_20000.json";
 import hairData from "../../../../data/maple/hair_30000.json";
-import weaponData from "../../../../data/maple/weapon_1472263.json";
+import weaponData from "../../../../data/maple/weapon_1472052.json";
+import capData from "../../../../data/maple/cap_1004119.json";
+import coatData from "../../../../data/maple/coat_1040084.json";
+import pantsData from "../../../../data/maple/pants_1061071.json";
+import shoesData from "../../../../data/maple/shoes_1072113.json";
 
 const CELL = SYMBOL_SIZE + SYMBOL_GAP;
 const GRID_WIDTH = REEL_COUNT * CELL - SYMBOL_GAP;
@@ -68,7 +72,7 @@ export class SceneLudibrium extends BaseScene {
     preloadDamageFont(this);
     preloadMobTexturesFor(this, LUDIBRIUM_MOB_SYMBOLS, "ludi_");
 
-    for (const d of [bodyData, headData, faceData, hairData, weaponData]) {
+    for (const d of [bodyData, headData, faceData, hairData, weaponData, capData, coatData, pantsData, shoesData]) {
       queueRenderPlan(this, d.cdnBase, d.render_plan);
     }
 
@@ -204,11 +208,16 @@ export class SceneLudibrium extends BaseScene {
       ...headData.render_plan,
       ...faceData.render_plan,
       ...hairData.render_plan,
+      ...capData.render_plan,
+      ...coatData.render_plan,
+      ...pantsData.render_plan,
+      ...shoesData.render_plan,
       ...weaponData.render_plan,
     ];
     this.player = new MapleSprite(this, gridX + charPad, displayAreaMidY, merged, {
       zmap: bodyData.zmap,
       weapon: weaponData.info,
+      cap: capData.info,
       race: "human",
       facing: "right",
     });

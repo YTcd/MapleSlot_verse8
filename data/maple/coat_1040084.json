@@ -1,0 +1,789 @@
+{
+  "id": "1040084",
+  "type": "coat",
+  "cdnBase": "https://resource-static.msu.io/data",
+  "availableStates": [
+    "alert",
+    "fly",
+    "heal",
+    "jump",
+    "ladder",
+    "prone",
+    "proneStab",
+    "rope",
+    "shoot1",
+    "shoot2",
+    "shootF",
+    "sit",
+    "stabO1",
+    "stabO2",
+    "stabOF",
+    "stabT1",
+    "stabT2",
+    "stabTF",
+    "stand1",
+    "stand2",
+    "swingO1",
+    "swingO2",
+    "swingO3",
+    "swingOF",
+    "swingP1",
+    "swingP2",
+    "swingPF",
+    "swingT1",
+    "swingT2",
+    "swingT3",
+    "swingTF",
+    "walk1",
+    "walk2"
+  ],
+  "render_plan": [
+    {
+      "state": "stand1",
+      "frame": "0",
+      "part": "mail",
+      "path": "Character/Coat/01040084/stand1/0/mail.png",
+      "origin": {
+        "x": 11,
+        "y": 9
+      },
+      "texture_key": "maple_coat_stand1_0_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -8,
+          "y": 1
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "0",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/stand1/0/mailArm.png",
+      "origin": {
+        "x": 3,
+        "y": 4
+      },
+      "texture_key": "maple_coat_stand1_0_mailArm",
+      "z": "mailArm",
+      "sockets": {
+        "navel": {
+          "x": -11,
+          "y": 4
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "1",
+      "part": "mail",
+      "path": "Character/Coat/01040084/stand1/1/mail.png",
+      "origin": {
+        "x": 10,
+        "y": 9
+      },
+      "texture_key": "maple_coat_stand1_1_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -3,
+          "y": 3
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "1",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/stand1/1/mailArm.png",
+      "origin": {
+        "x": 3,
+        "y": 4
+      },
+      "texture_key": "maple_coat_stand1_1_mailArm",
+      "z": "mailArm",
+      "sockets": {
+        "navel": {
+          "x": -11,
+          "y": 5
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "2",
+      "part": "mail",
+      "path": "Character/Coat/01040084/stand1/2/mail.png",
+      "origin": {
+        "x": 10,
+        "y": 9
+      },
+      "texture_key": "maple_coat_stand1_2_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -2,
+          "y": 1
+        }
+      }
+    },
+    {
+      "state": "stand1",
+      "frame": "2",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/stand1/2/mailArm.png",
+      "origin": {
+        "x": 4,
+        "y": 4
+      },
+      "texture_key": "maple_coat_stand1_2_mailArm",
+      "z": "mailArm",
+      "sockets": {
+        "navel": {
+          "x": -11,
+          "y": 4
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "0",
+      "part": "mail",
+      "path": "Character/Coat/01040084/swingO1/0/mail.png",
+      "origin": {
+        "x": 11,
+        "y": 9
+      },
+      "texture_key": "maple_coat_swingO1_0_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -1,
+          "y": 3
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "0",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/swingO1/0/mailArm.png",
+      "origin": {
+        "x": 3,
+        "y": 5
+      },
+      "texture_key": "maple_coat_swingO1_0_mailArm",
+      "z": "mailArmOverHair",
+      "sockets": {
+        "navel": {
+          "x": 6,
+          "y": 4
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "1",
+      "part": "mail",
+      "path": "Character/Coat/01040084/swingO1/1/mail.png",
+      "origin": {
+        "x": 10,
+        "y": 10
+      },
+      "texture_key": "maple_coat_swingO1_1_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -5,
+          "y": 2
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "1",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/swingO1/1/mailArm.png",
+      "origin": {
+        "x": 3,
+        "y": 5
+      },
+      "texture_key": "maple_coat_swingO1_1_mailArm",
+      "z": "mailArmOverHair",
+      "sockets": {
+        "navel": {
+          "x": 7,
+          "y": 6
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "2",
+      "part": "mail",
+      "path": "Character/Coat/01040084/swingO1/2/mail.png",
+      "origin": {
+        "x": 11,
+        "y": 9
+      },
+      "texture_key": "maple_coat_swingO1_2_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -4,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO1",
+      "frame": "2",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/swingO1/2/mailArm.png",
+      "origin": {
+        "x": 3,
+        "y": 5
+      },
+      "texture_key": "maple_coat_swingO1_2_mailArm",
+      "z": "mailArmOverHair",
+      "sockets": {
+        "navel": {
+          "x": -5,
+          "y": 15
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "0",
+      "part": "mail",
+      "path": "Character/Coat/01040084/swingO2/0/mail.png",
+      "origin": {
+        "x": 10,
+        "y": 10
+      },
+      "texture_key": "maple_coat_swingO2_0_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -6,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "0",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/swingO2/0/mailArm.png",
+      "origin": {
+        "x": 4,
+        "y": 4
+      },
+      "texture_key": "maple_coat_swingO2_0_mailArm",
+      "z": "mailArmBelowHead",
+      "sockets": {
+        "navel": {
+          "x": 13,
+          "y": 9
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "1",
+      "part": "mail",
+      "path": "Character/Coat/01040084/swingO2/1/mail.png",
+      "origin": {
+        "x": 10,
+        "y": 10
+      },
+      "texture_key": "maple_coat_swingO2_1_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -4,
+          "y": 3
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "1",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/swingO2/1/mailArm.png",
+      "origin": {
+        "x": 3,
+        "y": 5
+      },
+      "texture_key": "maple_coat_swingO2_1_mailArm",
+      "z": "mailArmBelowHeadOverMailChest",
+      "sockets": {
+        "navel": {
+          "x": 14,
+          "y": 5
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "2",
+      "part": "mail",
+      "path": "Character/Coat/01040084/swingO2/2/mail.png",
+      "origin": {
+        "x": 11,
+        "y": 9
+      },
+      "texture_key": "maple_coat_swingO2_2_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -3,
+          "y": 5
+        }
+      }
+    },
+    {
+      "state": "swingO2",
+      "frame": "2",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/swingO2/2/mailArm.png",
+      "origin": {
+        "x": 3,
+        "y": 5
+      },
+      "texture_key": "maple_coat_swingO2_2_mailArm",
+      "z": "mailArm",
+      "sockets": {
+        "navel": {
+          "x": -7,
+          "y": 6
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "0",
+      "part": "mail",
+      "path": "Character/Coat/01040084/swingO3/0/mail.png",
+      "origin": {
+        "x": 10,
+        "y": 10
+      },
+      "texture_key": "maple_coat_swingO3_0_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": 10,
+          "y": 1
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "0",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/swingO3/0/mailArm.png",
+      "origin": {
+        "x": 4,
+        "y": 4
+      },
+      "texture_key": "maple_coat_swingO3_0_mailArm",
+      "z": "mailArm",
+      "sockets": {
+        "navel": {
+          "x": -7,
+          "y": 9
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "1",
+      "part": "mail",
+      "path": "Character/Coat/01040084/swingO3/1/mail.png",
+      "origin": {
+        "x": 10,
+        "y": 10
+      },
+      "texture_key": "maple_coat_swingO3_1_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -6,
+          "y": 4
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "1",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/swingO3/1/mailArm.png",
+      "origin": {
+        "x": 3,
+        "y": 5
+      },
+      "texture_key": "maple_coat_swingO3_1_mailArm",
+      "z": "mailArm",
+      "sockets": {
+        "navel": {
+          "x": 13,
+          "y": 6
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "2",
+      "part": "mail",
+      "path": "Character/Coat/01040084/swingO3/2/mail.png",
+      "origin": {
+        "x": 11,
+        "y": 9
+      },
+      "texture_key": "maple_coat_swingO3_2_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -5,
+          "y": 3
+        }
+      }
+    },
+    {
+      "state": "swingO3",
+      "frame": "2",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/swingO3/2/mailArm.png",
+      "origin": {
+        "x": 3,
+        "y": 5
+      },
+      "texture_key": "maple_coat_swingO3_2_mailArm",
+      "z": "mailArm",
+      "sockets": {
+        "navel": {
+          "x": 2,
+          "y": 4
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "0",
+      "part": "mail",
+      "path": "Character/Coat/01040084/stabO1/0/mail.png",
+      "origin": {
+        "x": 10,
+        "y": 10
+      },
+      "texture_key": "maple_coat_stabO1_0_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": 7,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "0",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/stabO1/0/mailArm.png",
+      "origin": {
+        "x": 4,
+        "y": 4
+      },
+      "texture_key": "maple_coat_stabO1_0_mailArm",
+      "z": "mailArm",
+      "sockets": {
+        "navel": {
+          "x": -9,
+          "y": 7
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "1",
+      "part": "mail",
+      "path": "Character/Coat/01040084/stabO1/1/mail.png",
+      "origin": {
+        "x": 10,
+        "y": 10
+      },
+      "texture_key": "maple_coat_stabO1_1_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -2,
+          "y": 2
+        }
+      }
+    },
+    {
+      "state": "stabO1",
+      "frame": "1",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/stabO1/1/mailArm.png",
+      "origin": {
+        "x": 3,
+        "y": 5
+      },
+      "texture_key": "maple_coat_stabO1_1_mailArm",
+      "z": "mailArmOverHair",
+      "sockets": {
+        "navel": {
+          "x": 18,
+          "y": 5
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "0",
+      "part": "mail",
+      "path": "Character/Coat/01040084/stabO2/0/mail.png",
+      "origin": {
+        "x": 10,
+        "y": 10
+      },
+      "texture_key": "maple_coat_stabO2_0_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": 7,
+          "y": 0
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "0",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/stabO2/0/mailArm.png",
+      "origin": {
+        "x": 4,
+        "y": 4
+      },
+      "texture_key": "maple_coat_stabO2_0_mailArm",
+      "z": "mailArmOverHair",
+      "sockets": {
+        "navel": {
+          "x": -10,
+          "y": 6
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "1",
+      "part": "mail",
+      "path": "Character/Coat/01040084/stabO2/1/mail.png",
+      "origin": {
+        "x": 10,
+        "y": 10
+      },
+      "texture_key": "maple_coat_stabO2_1_mail",
+      "z": "mailChestBelowPants",
+      "sockets": {
+        "navel": {
+          "x": -5,
+          "y": 2
+        }
+      }
+    },
+    {
+      "state": "stabO2",
+      "frame": "1",
+      "part": "mailArm",
+      "path": "Character/Coat/01040084/stabO2/1/mailArm.png",
+      "origin": {
+        "x": 3,
+        "y": 5
+      },
+      "texture_key": "maple_coat_stabO2_1_mailArm",
+      "z": "mailArmOverHair",
+      "sockets": {
+        "navel": {
+          "x": 17,
+          "y": 5
+        }
+      }
+    }
+  ],
+  "zmap": [
+    "Bd",
+    "Hd",
+    "Hr",
+    "Fc",
+    "At",
+    "Af",
+    "Am",
+    "Ae",
+    "As",
+    "Ay",
+    "Cp",
+    "Ri",
+    "Gv",
+    "Wp",
+    "Si",
+    "So",
+    "Pn",
+    "Ws",
+    "Ma",
+    "Wg",
+    "Sr",
+    "Tm",
+    "Sd",
+    "backTamingMobMid",
+    "backMobEquipUnderSaddle",
+    "backSaddle",
+    "backMobEquipMid",
+    "backTamingMobFront",
+    "backMobEquipFront",
+    "mobEquipRear",
+    "tamingMobRear",
+    "saddleRear",
+    "characterEnd",
+    "backWeapon",
+    "backHairBelowHead",
+    "backShieldBelowBody",
+    "backMailChestAccessory",
+    "backCapAccessory",
+    "backAccessoryFace",
+    "backAccessoryEar",
+    "backBody",
+    "backGlove",
+    "backGloveWrist",
+    "backWeaponOverGlove",
+    "backMailChestBelowPants",
+    "backPantsBelowShoes",
+    "backShoesBelowPants",
+    "backPants",
+    "backShoes",
+    "backPantsOverShoesBelowMailChest",
+    "backMailChest",
+    "backPantsOverMailChest",
+    "backMailChestOverPants",
+    "backHead",
+    "backAccessoryFaceOverHead",
+    "backAccessoryOverHead",
+    "backCape",
+    "backHairBelowCap",
+    "backHairBelowCapNarrow",
+    "backHairBelowCapWide",
+    "backWeaponOverHead",
+    "backCap",
+    "backHair",
+    "backCapOverHair",
+    "backShield",
+    "backWeaponOverShield",
+    "backWing",
+    "backHairOverCape",
+    "weaponBelowBody",
+    "hairBelowBody",
+    "capeBelowBody",
+    "shieldBelowBody",
+    "capAccessoryBelowBody",
+    "gloveBelowBody",
+    "gloveWristBelowBody",
+    "body",
+    "gloveOverBody",
+    "mailChestBelowPants",
+    "pantsBelowShoes",
+    "shoes",
+    "pants",
+    "mailChestOverPants",
+    "shoesOverPants",
+    "pantsOverShoesBelowMailChest",
+    "shoesTop",
+    "mailChest",
+    "pantsOverMailChest",
+    "mailChestOverHighest",
+    "gloveWristOverBody",
+    "mailChestTop",
+    "weaponOverBody",
+    "armBelowHead",
+    "mailArmBelowHead",
+    "armBelowHeadOverMailChest",
+    "gloveBelowHead",
+    "mailArmBelowHeadOverMailChest",
+    "gloveWristBelowHead",
+    "weaponOverArmBelowHead",
+    "shield",
+    "weapon",
+    "arm",
+    "hand",
+    "glove",
+    "mailArm",
+    "gloveWrist",
+    "cape",
+    "head",
+    "hairShade",
+    "accessoryFaceBelowFace",
+    "accessoryEyeBelowFace",
+    "face",
+    "accessoryFaceOverFaceBelowCap",
+    "capBelowAccessory",
+    "accessoryEar",
+    "capAccessoryBelowAccFace",
+    "accessoryFace",
+    "accessoryEyeShadow",
+    "accessoryEye",
+    "hair",
+    "cap",
+    "capAccessory",
+    "accessoryEyeOverCap",
+    "hairOverHead",
+    "accessoryOverHair",
+    "accessoryEarOverHair",
+    "capOverHair",
+    "weaponBelowArm",
+    "armOverHairBelowWeapon",
+    "mailArmOverHairBelowWeapon",
+    "armOverHair",
+    "gloveBelowMailArm",
+    "mailArmOverHair",
+    "gloveWristBelowMailArm",
+    "weaponOverArm",
+    "handBelowWeapon",
+    "gloveBelowWeapon",
+    "gloveWristBelowWeapon",
+    "shieldOverHair",
+    "weaponOverHand",
+    "handOverHair",
+    "gloveOverHair",
+    "gloveWristOverHair",
+    "weaponOverGlove",
+    "capeOverHead",
+    "weaponWristOverGlove",
+    "emotionOverBody",
+    "characterStart",
+    "tamingMobMid",
+    "mobEquipUnderSaddle",
+    "saddleFront",
+    "mobEquipMid",
+    "tamingMobFront",
+    "mobEquipFront"
+  ],
+  "info": {
+    "cash": 0,
+    "incLUK": 3,
+    "incMMP": 10,
+    "incPDD": 34,
+    "islot": "Ma",
+    "price": 6100,
+    "reqDEX": 0,
+    "reqINT": 0,
+    "reqJob": 8,
+    "reqLUK": 110,
+    "reqLevel": 40,
+    "reqSTR": 0,
+    "tuc": 7,
+    "vslot": "Ma"
+  }
+}
