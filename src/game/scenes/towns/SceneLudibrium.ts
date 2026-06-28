@@ -123,8 +123,9 @@ export class SceneLudibrium extends BaseScene {
       onStopAuto: () => this.handleStopAuto(),
       onBetChange: (value) => this.slotMachine.setBet(value),
       onLineChange: (value) => this.slotMachine.setLines(value),
-    }, [50000, 100000, 500000]);
+    }, [100000, 500000, 1000000]);
 
+    this.slotMachine.setBet(100000);
     this.slotMachine.setLines(LUDI_PAYLINES.length);
 
     this.setupPaylinePreview(width, gridX, gridY);
